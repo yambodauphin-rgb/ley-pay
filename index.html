@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ley Pay - Marketplace Révolutionnaire</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="logo-conteneur" id="retour-accueil" title="Retour à l'accueil Ley Pay">
+                <img src="image_cef08b.jpg.png" alt="Ley Pay Logo" class="site-logo">
+                <span class="logo">Ley Pay</span>
+            </div>
+            
+            <div class="barre-recherche-box">
+                <input type="text" id="barre-recherche" placeholder="Rechercher un produit ou une marque sur Ley Pay..." oninput="moteurDeRechercheDynamique()">
+                <button>🔍</button>
+            </div>
+
+            <nav>
+                <a href="#" id="lien-accueil" class="nav-actif">Boutique</a>
+                <a href="#" id="lien-favoris">Favoris ❤️ <span id="fav-badge-count">0</span></a>
+                <a href="#" id="lien-compte">Mon Profil 👤</a>
+                <a href="#" id="lien-boutique">Espace Vendeur 🚀</a>
+                <a href="#" id="lien-admin" style="color:#ff6666; font-weight: bold;">Admin 👑</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="barre-outils-amazon">
+        <div>
+            <button class="btn-filtre actif" onclick="filtrerCategorie('tous')">Tout parcourir</button>
+            <button class="btn-filtre" onclick="filtrerCategorie('Habit')">Mode & Vêtements</button>
+            <button class="btn-filtre" onclick="filtrerCategorie('Tech')">High-Tech</button>
+            <button class="btn-filtre" onclick="filtrerCategorie('Maison')">Maison & Déco</button>
+        </div>
+        <div>
+            <a href="https://wa.me/243995833825" target="_blank" style="color: #25D366; text-decoration: none; margin-right: 15px; font-weight: bold;">💬 WhatsApp Admin</a>
+            <a href="tel:+243995833825" style="color: var(--lp-gold); text-decoration: none; font-weight: bold;">📞 Appeler Ley Pay</a>
+        </div>
+    </div>
+
+    <main>
+        <div id="toast-notif" class="notification-toast cache">
+            <span id="toast-texte">Nouvelle notification</span>
+            <button onclick="this.parentElement.classList.add('cache')" style="background:none; border:none; color:black; cursor:pointer; font-weight:bold; font-size:16px;">×</button>
+        </div>
+
+        <section id="section-produits">
+            <div class="hero-banner">
+                <div class="hero-contenu">
+                    <h2>Découvrez l'excellence Ley Pay</h2>
+                    <p>Expédition ultra-rapide Certifiée FBA ou livraison directe par vos marchands locaux préférés.</p>
+                </div>
+            </div>
+
+            <h2 class="titre-section">Explorez nos Univers</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 0 40px; margin-bottom: 30px;">
+                <div class="carte-profil-gauche text-center" style="cursor:pointer;" onclick="filtrerCategorie('Tech')">
+                    <h3 style="margin:0;">💻 High-Tech</h3>
+                    <p style="font-size:12px; color:var(--lp-gold); margin-top:5px;">Voir les articles</p>
+                </div>
+                <div class="carte-profil-gauche text-center" style="cursor:pointer;" onclick="filtrerCategorie('Habit')">
+                    <h3 style="margin:0;">🧥 Mode & Style</h3>
+                    <p style="font-size:12px; color:var(--lp-gold); margin-top:5px;">Voir les articles</p>
+                </div>
+                <div class="carte-profil-gauche text-center" style="cursor:pointer;" onclick="filtrerCategorie('Maison')">
+                    <h3 style="margin:0;">🏠 Maison</h3>
+                    <p style="font-size:12px; color:var(--lp-gold); margin-top:5px;">Voir les articles</p>
+                </div>
+            </div>
+
+            <h2 class="titre-section" id="titre-catalogue-dynamique">Tous nos articles disponibles</h2>
+            <div class="zone-produits" id="grille-produits"></div>
+        </section>
+
+        <section id="section-favoris" class="cache">
+            <h2 class="titre-section">❤️ Votre Liste de Souhaits</h2>
+            <div class="zone-produits" id="grille-favoris"></div>
+        </section>
+
+        <section id="section-compte" class="cache">
+            <div id="bloc-authentification" class="auth-box">
+                <div class="auth-onglets">
+                    <button class="onglet-btn actif" id="tab-login" onclick="basculerOngletAuth('login')">Connexion</button>
+                    <button class="onglet-btn" id="tab-register" onclick="basculerOngletAuth('register')">Inscription</button>
+                </div>
+
+                <form id="form-auth" onsubmit="executerAuthentification(event)">
+                    <div class="champ id-complet-reg cache">
+                        <label>Nom complet :</label>
+                        <input type="text" id="auth-nom" placeholder="Ex: Jean Mukendi">
+                    </div>
+                    <div class="champ">
+                        <label>Adresse E-mail :</label>
+                        <input type="email" id="auth-email" value="client@leypay.com" required>
+                    </div>
+                    <div class="champ">
+                        <label>Mot de passe :</label>
+                        <input type="password" id="auth-mdp" value="12345" required>
+                    </div>
+                    <button type="submit" class="btn-auth-soumettre" id="btn-texte-auth">Se connecter</button>
+                </form>
+            </div>
+
+            <div id="info-profil-connecte" class="cache profil-container">
+                <div class="carte-profil-gauche">
+                    <h3>Mon Compte Client</h3>
+                    <p>Bienvenue, <strong id="txt-nom-client">...</strong> !</p>
+                    <br>
+                    <div class="champ">
+                        <label>Adresse de livraison par défaut :</label>
+                        <input type="text" id="adresse-livraison-input" value="Gombe, Kinshasa, RDC" onchange="sauvegarderProfilClient()">
+                    </div>
+                    <div class="champ">
+                        <label>Réseau Mobile Money préféré :</label>
+                        <select id="paiement-pref-input" onchange="sauvegarderProfilClient()">
+                            <option value="M-Pesa">M-Pesa 📱</option>
+                            <option value="Orange Money">Orange Money 🟠</option>
+                            <option value="Airtel Money">Airtel Money 🔴</option>
+                        </select>
+                    </div>
+                    <button onclick="executerDeconnexion()" class="btn-deconnexion">Déconnexion</button>
+                </div>
+                <div class="carte-profil-droite">
+                    <h3>📦 Vos commandes récentes & Statuts de livraison</h3>
+                    <div id="liste-commandes-client"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-vendeur" class="cache">
+            <div id="vendeur-auth-requis" class="auth-box text-center">
+                <h3>Veuillez d'Anord vous connecter ou créer un compte client pour ouvrir une boutique vendeur.</h3>
+            </div>
+            
+            <div id="corps-espace-vendeur" class="cache">
+                <div class="hero-banner-vendeur">
+                    <h2>Central Vendeur Ley Pay</h2>
+                    <p>Gérez vos stocks, optimisez vos profits et choisissez votre mode logistique.</p>
+                </div>
+
+                <div class="vendeur-kpi-container">
+                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-brut">0.00 $</div><div>Ventes Brutes</div></div>
+                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-solde">0.00 $</div><div>Votre Solde Retirable</div></div>
+                </div>
+
+                <div class="profil-container">
+                    <div class="carte-profil-gauche">
+                        <h3>📦 Publier un nouvel article</h3>
+                        <form onsubmit="vendeurAjouterProduit(event)">
+                            <div class="champ"><label>Nom du produit :</label><input type="text" id="p-nom" required></div>
+                            <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="p-prix" required></div>
+                            <div class="champ"><label>Stock disponible :</label><input type="number" id="p-stock" value="10" required></div>
+                            <div class="champ">
+                                <label>Catégorie :</label>
+                                <select id="p-cat">
+                                    <option value="Tech">High-Tech</option>
+                                    <option value="Habit">Mode</option>
+                                    <option value="Maison">Maison</option>
+                                </select>
+                            </div>
+                            <div class="champ">
+                                <label>Mode Logistique :</label>
+                                <select id="p-logistique" onchange="afficherExplicationLogistique()">
+                                    <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
+                                    <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
+                                </select>
+                                <p id="explication-logistique" style="font-size:11px; color:var(--lp-gold); margin-top:5px;">
+                                    FBM : Vous stockez et livrez vous-même le produit au client.
+                                </p>
+                            </div>
+                            <div class="champ"><label>Photo Principale (Lien URL) :</label><input type="text" id="p-img" value="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400"></div>
+                            <div class="champ"><label>Photo Détail 1 (Lien URL) :</label><input type="text" id="p-img2" placeholder="Optionnel"></div>
+                            <div class="champ"><label>Vidéo de démonstration (Lien URL) :</label><input type="text" id="p-video" placeholder="Optionnel"></div>
+                            
+                            <button type="submit" class="btn-auth-soumettre">Mettre en vente</button>
+                        </form>
+
+                        <h3 style="margin-top:30px;">💸 Demander un versement</h3>
+                        <form onsubmit="vendeurSoumettreRetrait(event)">
+                            <div class="champ"><label>Montant du retrait ($) :</label><input type="number" id="r-montant" min="1" required></div>
+                            <div class="champ"><label>Numéro Mobile Money de réception :</label><input type="text" id="r-tel" placeholder="Ex: 0812345678" required></div>
+                            <button type="submit" class="btn-auth-soumettre" style="background:#10b981; color:white;">Valider la demande</button>
+                        </form>
+                    </div>
+
+                    <div class="carte-profil-droite">
+                        <h3>📊 Suivi de vos stocks sur Ley Pay</h3>
+                        <table class="table-custom">
+                            <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th></tr></thead>
+                            <tbody id="vendeur-table-stocks"></tbody>
+                        </table>
+
+                        <h3 style="margin-top:30px;">📜 Historique de vos retraits</h3>
+                        <table class="table-custom">
+                            <thead><tr><th>ID</th><th>Montant</th><th>Numéro</th><th>Statut</th></tr></thead>
+                            <tbody id="vendeur-table-retraits"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-admin" class="cache">
+            <div id="admin-verrou-box" class="auth-box text-center">
+                <h3 class="titre-vendeur-verrou">Accès Hautement Sécurisé</h3>
+                <p class="desc-vendeur-verrou">Cette zone n'est accessible que sur l'ordinateur du propriétaire de la plateforme.</p>
+                <div class="champ">
+                    <label>Entrez le code secret Administrateur :</label>
+                    <input type="password" id="admin-secret-key" placeholder="••••••••">
+                </div>
+                <button class="btn-auth-soumettre" onclick="verifierCodeAdmin()">Déverrouiller le Panel</button>
+            </div>
+
+            <div id="admin-corps" class="cache">
+                <h2 class="admin-main-titre">👑 Administration Globale & Coffre-Fort de Ley Pay</h2>
+                
+                <div class="vendeur-kpi-container">
+                    <div class="kpi-box"><div class="kpi-val" id="admin-revenu-total">0.00 $</div><div>Revenu Net Cumulé de la Plateforme (Commissions)</div></div>
+                </div>
+
+                <div class="profil-container">
+                    <div class="carte-profil-gauche">
+                        <h3>🛍️ Mettre en vente mes propres produits (Ley Pay)</h3>
+                        <form onsubmit="adminAjouterPropreProduit(event)">
+                            <div class="champ"><label>Nom du produit :</label><input type="text" id="a-nom" required></div>
+                            <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="a-prix" required></div>
+                            <div class="champ"><label>Stock initial :</label><input type="number" id="a-stock" value="50" required></div>
+                            <div class="champ">
+                                <label>Catégorie :</label>
+                                <select id="a-cat"><option value="Tech">High-Tech</option><option value="Habit">Mode</option><option value="Maison">Maison</option></select>
+                            </div>
+                            <div class="champ"><label>Photo Principale :</label><input type="text" id="a-img" value="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"></div>
+                            <div class="champ"><label>Photo Détail 1 :</label><input type="text" id="a-img2" placeholder="Lien URL d'une autre vue"></div>
+                            <div class="champ"><label>Vidéo du produit :</label><input type="text" id="a-video" placeholder="Lien URL Vidéo"></div>
+                            <button type="submit" class="btn-auth-soumettre" style="background:var(--lp-gold);">Publier en tant que Ley Pay</button>
+                        </form>
+                    </div>
+
+                    <div class="carte-profil-droite">
+                        <h3>🛠️ Modération & Droit de Suppression absolue</h3>
+                        <div id="admin-liste-tous-produits" style="margin-bottom:25px;"></div>
+
+                        <h3>💰 Demandes de retraits Mobile Money en attente</h3>
+                        <div id="admin-liste-retraits-validation"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="panier-fenetre" id="panier-lateral">
+            <div class="panier-entete"><h3>Votre Panier 🛒</h3><button class="panier-fermer" onclick="basculerPanier()">×</button></div>
+            <div class="liste-panier" id="panier-items"></div>
+            <div style="padding:20px 0; border-top:1px solid var(--lp-gray-dark);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
+                    <span>Total à régler :</span><span id="panier-total-prix" style="color:var(--lp-gold); font-size:18px;">0.00 $</span>
+                </div>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <button class="btn-auth-soumettre" onclick="validerCommandeGlobale()" style="flex:2;">Passer la commande</button>
+                    <button class="btn-auth-soumettre" onclick="viderToutLePanier()" style="flex:1; background:#ef4444; color:white;">Vider 🗑️</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-boite cache" id="chat-vendeur-box">
+            <div class="chat-header" onclick="fermerChat()"><span>💬 Chat Direct Marchand</span><span>×</span></div>
+            <div class="chat-messages" id="chat-messages-corps"></div>
+            <div class="chat-input-box">
+                <input type="text" id="chat-input-texte" placeholder="Discuter de la livraison ou de la taille...">
+                <button onclick="envoyerMessageChat()">Envoyer</button>
+            </div>
+        </div>
+
+        <div class="panier-flottant-wrapper">
+            <button id="btn-flottant" onclick="basculerPanier()">🛒<span class="badge-compteur" id="panier-badge">0</span></button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ley Pay Corporation - Tous droits réservés. Performance et transactions garanties.</p>
+    </footer>
+
+    <script>
+        let sessionUser = JSON.parse(localStorage.getItem('lp_session')) || null;
+        let produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
+        let commandes = JSON.parse(localStorage.getItem('lp_cmds')) || [];
+        let retraits = JSON.parse(localStorage.getItem('lp_retrs')) || [];
+        let favoris = JSON.parse(localStorage.getItem('lp_favs')) || [];
+        let panier = [];
+        let modeAuthActuel = 'login';
+        let interlocuteurChatActuel = '';
+
+        // Initialisation de produits exemples si vide
+        if(produits.length === 0) {
+            produits = [
+                { id: 201, nom: "Écouteurs Sans Fil Pro", prix: 80, stock: 12, cat: "Tech", logistique: "FBA", commission_taux: 0.10, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400", img2: "", video: "", vendeur: "vendeur@demo.com", valide: true, note: 4.8 },
+                { id: 202, nom: "Chaussure Air Sport", prix: 150, stock: 5, cat: "Habit", logistique: "FBM", commission_taux: 0.05, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", img2: "", video: "", vendeur: "vendeur@demo.com", valide: true, note: 4.5 }
+            ];
+            localStorage.setItem('lp_prods', JSON.stringify(produits));
+        }
+
+        // Système de routage entre onglets de navigation
+        const sections = {
+            'lien-accueil': document.getElementById('section-produits'),
+            'lien-favoris': document.getElementById('section-favoris'),
+            'lien-compte': document.getElementById('section-compte'),
+            'lien-boutique': document.getElementById('section-vendeur'),
+            'lien-admin': document.getElementById('section-admin')
+        };
+
+        Object.keys(sections).forEach(id => {
+            document.getElementById(id).onclick = function(e) {
+                e.preventDefault();
+                Object.values(sections).forEach(s => s.classList.add('cache'));
+                Object.keys(sections).forEach(k => document.getElementById(k).classList.remove('nav-actif'));
+                
+                sections[id].classList.remove('cache');
+                this.classList.add('nav-actif');
+                
+                if(id === 'lien-compte') rafraichirProfilClient();
+                if(id === 'lien-boutique') rafraichirEspaceVendeur();
+                if(id === 'lien-admin') {
+                    document.getElementById('admin-verrou-box').classList.remove('cache');
+                    document.getElementById('admin-corps').classList.add('cache');
+                }
+                if(id === 'lien-favoris') rafraichirFavorisVisual();
+            };
+        });
+        document.getElementById('retour-accueil').onclick = () => document.getElementById('lien-accueil').click();
+
+        function lancerNotification(texte) {
+            const toast = document.getElementById('toast-notif');
+            document.getElementById('toast-texte').textContent = texte;
+            toast.classList.remove('cache');
+            setTimeout(() => toast.classList.add('cache'), 4000);
+        }
+
+        // Moteur d'affichage dynamique de la boutique Ley Pay
+        function afficherCatalogue(items = produits) {
+            const grille = document.getElementById('grille-produits');
+            grille.innerHTML = "";
+            let itemsActifs = items.filter(p => p.valide);
+
+            if(itemsActifs.length === 0) {
+                grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
+                return;
+            }
+
+            itemsActifs.forEach(p => {
+                let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
+                let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
+                
+                grille.innerHTML += `
+                    <div class="produit">
+                        <span class="badge-categorie">${p.cat}</span>
+                        <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
+                        <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
+                        
+                        <div class="produit-info">
+                            <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
+                            <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
+                            ${badgeFulfillment}
+                            <div class="prix" style="margin-top:10px;">${p.prix.toFixed(2)} $</div>
+                            <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
+                        </div>
+
+                        <div style="display:flex; gap:5px; margin-top:10px;">
+                            <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
+                            <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filtrerCategorie(cat) {
+            document.querySelectorAll('.btn-filtre').forEach(b => b.classList.remove('actif'));
+            if(cat === 'tous') {
+                document.getElementById('titre-catalogue-dynamique').textContent = "Tous nos articles disponibles";
+                afficherCatalogue(produits);
+            } else {
+                document.getElementById('titre-catalogue-dynamique').textContent = "Catégorie : " + cat;
+                afficherCatalogue(produits.filter(p => p.cat === cat));
+            }
+        }
+
+        function moteurDeRechercheDynamique() {
+            let val = document.getElementById('barre-recherche').value.toLowerCase();
+            let filtres = produits.filter(p => p.nom.toLowerCase().includes(val) || p.cat.toLowerCase().includes(val));
+            afficherCatalogue(filtres);
+        }
+
+        function voirDetailsFiche(id) {
+            let p = produits.find(prod => prod.id === id);
+            if(!p) return;
+            let infoMedia = `Fiche Produit : ${p.nom}\n\n`;
+            if(p.img2) infoMedia += `Image secondaire disponible : ${p.img2}\n`;
+            if(p.video) infoMedia += `Vidéo démonstrative reliée : ${p.video}\n`;
+            alert(infoMedia + `Prix : ${p.prix} $\nLogistique : ${p.logistique}\nStock : ${p.stock} pièces restantes.`);
+        }
+
+        // GESTION AUTHENTIFICATION (INSCRIPTION & CONNEXION)
+        function basculerOngletAuth(mode) {
+            modeAuthActuel = mode;
+            document.getElementById('tab-login').classList.remove('actif');
+            document.getElementById('tab-register').classList.remove('actif');
+            
+            if(mode === 'login') {
+                document.getElementById('tab-login').classSet.add('actif');
+                document.querySelector('.id-complet-reg').classList.add('cache');
+                document.getElementById('btn-texte-auth').textContent = "Se connecter";
+            } else {
+                document.getElementById('tab-register').classList.add('actif');
+                document.querySelector('.id-complet-reg').classList.remove('cache');
+                document.getElementById('btn-texte-auth').textContent = "Créer mon compte Ley Pay";
+            }
+        }
+
+        function executerAuthentification(e) {
+            e.preventDefault();
+            let email = document.getElementById('auth-email').value;
+            let nom = document.getElementById('auth-nom').value || "Utilisateur Ley Pay";
+            
+            sessionUser = { email: email, nom: nom };
+            localStorage.setItem('lp_session', JSON.stringify(sessionUser));
+            
+            lancerNotification("Authentification réussie !");
+            rafraichirProfilClient();
+            rafraichirEspaceVendeur();
+        }
+
+        function executerDeconnexion() {
+            sessionUser = null;
+            localStorage.removeItem('lp_session');
+            panier = [];
+            calculerPanierTotaux();
+            rafraichirProfilClient();
+            rafraichirEspaceVendeur();
+            lancerNotification("Vous êtes maintenant déconnecté.");
+        }
+
+        function rafraichirProfilClient() {
+            if(sessionUser) {
+                document.getElementById('bloc-authentification').classList.add('cache');
+                document.getElementById('info-profil-connecte').classList.remove('cache');
+                document.getElementById('txt-nom-client').textContent = sessionUser.nom;
+                
+                const corps = document.getElementById('liste-commandes-client');
+                corps.innerHTML = "";
+                let mesCmds = commandes.filter(c => c.client === sessionUser.email);
+                
+                if(mesCmds.length === 0) {
+                    corps.innerHTML = "<p style='color:#888;'>Aucune commande passée pour l'instant.</p>";
+                }
+                mesCmds.reverse().forEach(c => {
+                    corps.innerHTML += `
+                        <div class="bloc-amazon-profil">
+                            <strong>Commande ID : ${c.id}</strong><br>
+                            Article : ${c.produit} <br>
+                            Montant Payé : ${c.montant} $ | Statut : <span style="color:var(--lp-gold); font-weight:bold;">${c.statut}</span>
+                        </div>
+                    `;
+                });
+            } else {
+                document.getElementById('bloc-authentification').classList.remove('cache');
+                document.getElementById('info-profil-connecte').classList.add('cache');
+            }
+        }
+
+        // LOGIQUE COMPLÈTE DU PANIER FLOTTANT
+        function basculerPanier() { document.getElementById('panier-lateral').classList.toggle('ouvert'); }
+
+        function ajouterPanier(id) {
+            let prod = produits.find(p => p.id === id);
+            if(prod.stock <= 0) { alert("Désolé, rupture de stock critique pour ce produit !"); return; }
+            
+            let exist = panier.find(item => item.id === id);
+            if(exist) exist.qty++; else panier.push({ ...prod, qty: 1 });
+            
+            lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
+            calculerPanierTotaux();
+        }
+
+        function calculerPanierTotaux() {
+            let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
+            document.getElementById('panier-total-prix').textContent = total.toFixed(2) + " $";
+            document.getElementById('panier-badge').textContent = panier.reduce((sum, i) => sum + i.qty, 0);
+            
+            const corps = document.getElementById('panier-items');
+            corps.innerHTML = "";
+            panier.forEach(item => {
+                corps.innerHTML += `
+                    <div class="item-panier">
+                        <div>
+                            <strong>${item.nom}</strong><br>
+                            <span style="font-size:12px; color:var(--lp-gold);">${item.prix} $ x ${item.qty}</span>
+                        </div>
+                        <div>${(item.prix * item.qty).toFixed(2)} $</div>
+                    </div>
+                `;
+            });
+        }
+
+        function validerCommandeGlobale() {
+            if(!sessionUser) {
+                alert("Veuillez vous inscrire ou vous connecter dans l'onglet 'Mon Profil' avant de payer.");
+                document.getElementById('lien-compte').click();
+                return;
+            }
+            if(panier.length === 0) return;
+
+            panier.forEach(item => {
+                let brut = item.prix * item.qty;
+                let commissionTaux = item.logistique === 'FBA' ? 0.10 : 0.05;
+                let commMontant = brut * commissionTaux;
+                
+                commandes.push({
+                    id: "CMD-" + Math.floor(Math.random()*1000000),
+                    client: sessionUser.email,
+                    vendeur: item.vendeur,
+                    produit: item.nom + ` (x${item.qty})`,
+                    montant: brut,
+                    commission: commMontant,
+                    statut: "Payé - En attente d'expédition"
+                });
+
+                let original = produits.find(p => p.id === item.id);
+                if(original) original.stock -= item.qty;
+            });
+
+            localStorage.setItem('lp_cmds', JSON.stringify(commandes));
+            localStorage.setItem('lp_prods', JSON.stringify(produits));
+            
+            panier = [];
+            calculerPanierTotaux();
+            basculerPanier();
+            lancerNotification("Paiement reçu avec succès ! Répartition automatique validée.");
+            afficherCatalogue();
+        }
+
+        // ESPACE SELLER CENTRAL (VENDEURS PERFORMANCE FBA/FBM)
+        function afficherExplicationLogistique() {
+            const choix = document.getElementById('p-logistique').value;
+            const explication = document.getElementById('explication-logistique');
+            if(choix === 'FBA') {
+                explication.textContent = "FBA : Ley Pay stocke, emballe et livre votre colis. Commission de 10%. Vos ventes augmentent de 40% !";
+            } else {
+                explication.textContent = "FBM : Vous gérez vous-même l'expédition et le colis. Commission réduite à 5%.";
+            }
+        }
+
+        function rafraichirEspaceVendeur() {
+            const req = document.getElementById('vendeur-auth-requis');
+            const corp = document.getElementById('corps-espace-vendeur');
+            if(!sessionUser) { req.classList.remove('cache'); corp.classList.add('cache'); return; }
+            req.classList.add('cache'); corp.classList.remove('cache');
+
+            let mesOffres = produits.filter(p => p.vendeur === sessionUser.email);
+            let mesVentes = commandes.filter(c => c.vendeur === sessionUser.email);
+            
+            let totalBrut = mesVentes.reduce((sum, c) => sum + c.montant, 0);
+            let totalCommissions = mesVentes.reduce((sum, c) => sum + c.commission, 0);
+            let sommeRetraite = retraits.filter(r => r.vendeur === sessionUser.email && r.statut === "Validé").reduce((sum, r) => sum + r.montant, 0);
+            let soldeNet = (totalBrut - totalCommissions) - sommeRetraite;
+
+            document.getElementById('v-kpi-brut').textContent = totalBrut.toFixed(2) + " $";
+            document.getElementById('v-kpi-solde').textContent = soldeNet.toFixed(2) + " $";
+
+            const tStocks = document.getElementById('vendeur-table-stocks');
+            tStocks.innerHTML = "";
+            mesOffres.forEach(p => {
+                tStocks.innerHTML += `<tr><td>${p.nom}</td><td><strong>${p.logistique}</strong></td><td>${p.prix} $</td><td>${p.stock} u</td><td>${p.valide ? '✅ En ligne' : '⏳ Modération'}</td></tr>`;
+            });
+
+            const tRetraits = document.getElementById('vendeur-table-retraits');
+            tRetraits.innerHTML = "";
+            retraits.filter(r => r.vendeur === sessionUser.email).forEach(r => {
+                tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
+            });
+        }
+
+        function vendeurAjouterProduit(e) {
+            e.preventDefault();
+            let modeLog = document.getElementById('p-logistique').value;
+            let taux = modeLog === 'FBA' ? 0.10 : 0.05;
+
+            produits.push({
+                id: Date.now(),
+                nom: document.getElementById('p-nom').value,
+                prix: parseFloat(document.getElementById('p-prix').value),
+                stock: parseInt(document.getElementById('p-stock').value),
+                cat: document.getElementById('p-cat').value,
+                logistique: modeLog,
+                commission_taux: taux,
+                img: document.getElementById('p-img').value,
+                img2: document.getElementById('p-img2').value || "",
+                video: document.getElementById('p-video').value || "",
+                vendeur: sessionUser.email,
+                valide: true, // Auto-validation pour démo fluide
+                note: 5.0
+            });
+
+            localStorage.setItem('lp_prods', JSON.stringify(produits));
+            lancerNotification("Votre produit de performance est désormais sur le marché !");
+            document.getElementById('p-nom').value = "";
+            rafraichirEspaceVendeur();
+            afficherCatalogue();
+        }
+
+        function vendeurSoumettreRetrait(e) {
+            e.preventDefault();
+            let amt = parseFloat(document.getElementById('r-montant').value);
+            retraits.push({
+                id: "RET-" + Math.floor(Math.random()*100000),
+                vendeur: sessionUser.email,
+                montant: amt,
+                telephone: document.getElementById('r-tel').value,
+                statut: "En attente"
+            });
+            localStorage.setItem('lp_retrs', JSON.stringify(retraits));
+            lancerNotification("Demande enregistrée. Validation imminente par la direction.");
+            rafraichirEspaceVendeur();
+        }
+
+        // PANEL ADMINISTRATEUR ROYAL ET SECURISÉ (MOT DE PASSE COMPLET)
+        function verifierCodeAdmin() {
+            let mdp = document.getElementById('admin-secret-key').value;
+            if(mdp === "YDPLATEFORME2026") {
+                document.getElementById('admin-verrou-box').classList.add('cache');
+                document.getElementById('admin-corps').classList.remove('cache');
+                rafraichirEspaceAdmin();
+            } else {
+                alert("Code secret d'administration erroné. Accès refusé ! Only Admin computer allowed.");
+            }
+        }
+
+        function rafraichirEspaceAdmin() {
+            // Calcul global des commissions perçues de Ley Pay (Revenu plateforme)
+            let totalRevenuPlateforme = commandes.reduce((sum, c) => sum + c.commission, 0);
+            document.getElementById('admin-revenu-total').textContent = totalRevenuPlateforme.toFixed(2) + " $";
+
+            // Liste de modération avec droit de suppression absolue
+            const listeMod = document.getElementById('admin-liste-tous-produits');
+            listeMod.innerHTML = "";
+            produits.forEach(p => {
+                listeMod.innerHTML += `
+                    <div class="bloc-amazon-profil" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><strong>${p.nom}</strong> (${p.prix} $) - Vendeur : ${p.vendeur}</div>
+                        <button onclick="adminSupprimerNimporteQuoi(${p.id})" style="background:#cc0c39; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">Supprimer ❌</button>
+                    </div>
+                `;
+            });
+
+            // Approbation directe des virements vers Mobile Money
+            const listeRetraits = document.getElementById('admin-liste-retraits-validation');
+            listeRetraits.innerHTML = "";
+            let enAttente = retraits.filter(r => r.statut === "En attente");
+            
+            if(enAttente.length === 0) {
+                listeRetraits.innerHTML = "<p style='color:#888;'>Aucune demande de versement en suspens.</p>";
+            }
+            enAttente.forEach(r => {
+                listeRetraits.innerHTML += `
+                    <div class="bloc-amazon-profil">
+                        Marchand : ${r.vendeur} <br>
+                        Fonds demandés : <strong>${r.montant} $</strong> via ${r.telephone} <br><br>
+                        <button onclick="adminApprouverRetrait('${r.id}')" style="background:#10b981; color:white; border:none; padding:5px 10px; cursor:pointer; font-weight:bold; border-radius:3px;">Confirmer le Transfert Mobile Money ✅</button>
+                    </div>
+                `;
+            });
+        }
+
+        function adminAjouterPropreProduit(e) {
+            e.preventDefault();
+            produits.push({
+                id: Date.now(),
+                nom: "[Ley Pay Officiel] " + document.getElementById('a-nom').value,
+                prix: parseFloat(document.getElementById('a-prix').value),
+                stock: parseInt(document.getElementById('a-stock').value),
+                cat: document.getElementById('a-cat').value,
+                logistique: "FBA",
+                commission_taux: 0.10, // Revenu direct
+                img: document.getElementById('a-img').value,
+                img2: document.getElementById('a-img2').value || "",
+                video: document.getElementById('a-video').value || "",
+                vendeur: "admin@leypay.com", // Votre compte propre
+                valide: true,
+                note: 5.0
+            });
+            localStorage.setItem('lp_prods', JSON.stringify(produits));
+            lancerNotification("Votre propre produit est publié sur la plateforme !");
+            rafraichirEspaceAdmin();
+            afficherCatalogue();
+        }
+
+        function adminSupprimerNimporteQuoi(id) {
+            if(confirm("Confirmez-vous la suppression immédiate et irréversible de cet élément ?")) {
+                produits = produits.filter(p => p.id !== id);
+                localStorage.setItem('lp_prods', JSON.stringify(produits));
+                rafraichirEspaceAdmin();
+                afficherCatalogue();
+                lancerNotification("L'élément a été supprimé de tout le site.");
+            }
+        }
+
+        function adminApprouverRetrait(id) {
+            let r = retraits.find(ret => ret.id === id);
+            if(r) r.statut = "Validé";
+            localStorage.setItem('lp_retrs', JSON.stringify(retraits));
+            rafraichirEspaceAdmin();
+            lancerNotification("Virement validé, le solde du vendeur a été mis à jour.");
+        }
+
+        // MESSAGERIE INTERACTIVE CLIENT/VENDEUR
+        function ouvrirChat(vendeurEmail) {
+            interlocuteurChatActuel = vendeurEmail;
+            document.getElementById('chat-vendeur-box').classList.remove('cache');
+            const corps = document.getElementById('chat-messages-corps');
+            corps.innerHTML = `<p style="color:#888; font-size:11px; text-align:center;">Canal Ley Pay chiffré ouvert avec ${vendeurEmail}</p>`;
+        }
+        function fermerChat() { document.getElementById('chat-vendeur-box').classList.add('cache'); }
+        
+        function envoyerMessageChat() {
+            const input = document.getElementById('chat-input-texte');
+            if(!input.value) return;
+            const corps = document.getElementById('chat-messages-corps');
+            corps.innerHTML += `<p style="margin:5px 0; text-align:right;"><strong>Moi:</strong> ${input.value}</p>`;
+            
+            setTimeout(() => {
+                corps.innerHTML += `<p style="margin:5px 0; color:var(--lp-gold);"><strong>${interlocuteurChatActuel}:</strong> Bien reçu ! Nous planifions la livraison au hub Ley Pay.</p>`;
+                corps.scrollTop = corps.scrollHeight;
+            }, 1000);
+            input.value = "";
+        }
+
+        function basculerFavori(id) {
+            if(favoris.includes(id)) favoris = favoris.filter(f => f !== id);
+            else favoris.push(id);
+            localStorage.setItem('lp_favs', JSON.stringify(favoris));
+            document.getElementById('fav-badge-count').textContent = favoris.length;
+            afficherCatalogue();
+        }
+
+        function rafraichirFavorisVisual() {
+            const grille = document.getElementById('grille-favoris');
+            grille.innerHTML = "";
+            let mesFavs = produits.filter(p => favoris.includes(p.id));
+            if(mesFavs.length === 0) { grille.innerHTML = "<p style='padding:0 40px;'>Votre liste de favoris est actuellement vide.</p>"; return; }
+            afficherCatalogue(mesFavs);
+        }
+        // Nouvelle fonction pour récupérer les produits depuis l'API MySQL
+        async function chargerProduitsDepuisBDD() {
+            try {
+                const reponse = await fetch('/api/produits');
+                if (!reponse.ok) throw new Error("Erreur réseau lors du chargement");
+                
+                // On remplace la variable locale par les vraies données de ta table MySQL
+                produits = await reponse.json(); 
+                
+                // On affiche le catalogue avec les bons stocks
+                afficherCatalogue(); 
+            } catch (erreur) {
+                console.error("❌ Impossible de charger les produits depuis MySQL :", erreur);
+            }
+        }
+        // 1. Affichage du catalogue avec la quantité (Stock restant)
+        function afficherCatalogue(items = produits) {
+            const grille = document.getElementById('grille-produits');
+            grille.innerHTML = "";
+            let itemsActifs = items.filter(p => p.valide);
+
+            if(itemsActifs.length === 0) {
+                grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
+                return;
+            }
+
+            itemsActifs.forEach(p => {
+                let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
+                let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
+                
+                // Gestion de l'affichage textuel du stock
+                let texteStock = p.stock > 0 ? `En stock : ${p.stock} unités` : `<span style="color:#ef4444; font-weight:bold;">Rupture de stock</span>`;
+
+                grille.innerHTML += `
+                    <div class="produit">
+                        <span class="badge-categorie">${p.cat}</span>
+                        <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
+                        <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
+                        
+                        <div class="produit-info">
+                            <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
+                            <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
+                            ${badgeFulfillment}
+                            <p style="margin: 5px 0; font-size:13px; color:#666; font-weight:bold;">${texteStock}</p>
+                            <div class="prix" style="margin-top:5px;">${p.prix.toFixed(2)} $</div>
+                            <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
+                        </div>
+
+                        <div style="display:flex; gap:5px; margin-top:10px;">
+                            <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
+                            <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 2. Contrôle des stocks lors de l'ajout
+        function ajouterPanier(id) {
+            let prod = produits.find(p => p.id === id);
+            
+            // On vérifie ce qui est déjà dans le panier pour ne pas dépasser le stock réel
+            let dansPanier = panier.find(item => item.id === id);
+            let quantiteActuelleDansPanier = dansPanier ? dansPanier.qty : 0;
+
+            if(prod.stock <= quantiteActuelleDansPanier) { 
+                alert(`Désolé, impossible d'ajouter plus d'unités. Stock maximal atteint (${prod.stock}).`); 
+                return; 
+            }
+            
+            if(dansPanier) dansPanier.qty++; else panier.push({ ...prod, qty: 1 });
+            
+            lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
+            calculerPanierTotaux();
+        }
+
+        // 3. Calcul des totaux et affichage dynamique du panier avec bouton de suppression unitaire
+        function calculerPanierTotaux() {
+            let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
+            document.getElementById('panier-total-prix').textContent = total.toFixed(2) + " $";
+            document.getElementById('panier-badge').textContent = panier.reduce((sum, i) => sum + i.qty, 0);
+            
+            const corps = document.getElementById('panier-items');
+            corps.innerHTML = "";
+            
+            if(panier.length === 0) {
+                corps.innerHTML = "<p style='text-align:center; color:#888; margin-top:20px;'>Votre panier est vide.</p>";
+                return;
+            }
+
+            panier.forEach(item => {
+                corps.innerHTML += `
+                    <div class="item-panier" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed #eee;">
+                        <div>
+                            <strong>${item.nom}</strong><br>
+                            <span style="font-size:12px; color:var(--lp-gold);">${item.prix} $ x ${item.qty}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-weight:bold;">${(item.prix * item.qty).toFixed(2)} $</span>
+                            <button onclick="retirerUnProduit(${item.id})" style="background:#f3f4f6; border:1px solid #ccc; border-radius:4px; width:25px; height:25px; cursor:pointer; font-weight:bold;" title="Retirer 1 unité">-</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 4. NOUVEAUTÉ : Retirer une seule unité d'un produit du panier
+        function retirerUnProduit(id) {
+            let itemIndex = panier.findIndex(item => item.id === id);
+            if(itemIndex === -1) return;
+
+            if(panier[itemIndex].qty > 1) {
+                panier[itemIndex].qty--; // On baisse la quantité de 1
+                lancerNotification("Une unité a été retirée.");
+            } else {
+                panier.splice(itemIndex, 1); // Si la quantité tombe à 0, on enlève complètement le produit du tableau
+                lancerNotification("Produit retiré du panier.");
+            }
+            calculerPanierTotaux();
+        }
+
+        // 5. NOUVEAUTÉ : Vider entièrement le panier d'un coup
+        function viderToutLePanier() {
+            if(panier.length === 0) return;
+            if(confirm("Voulez-vous vraiment vider tout votre panier ?")) {
+                panier = [];
+                calculerPanierTotaux();
+                lancerNotification("Le panier a été vidé.");
+            }
+        }
+
+        // Lancement initial du catalogue général
+        chargerProduitsDepuisBDD();
+        document.getElementById('fav-badge-count').textContent = favoris.length;
+    </script>
+</body>
+</html>

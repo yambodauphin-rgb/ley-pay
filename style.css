@@ -1,0 +1,755 @@
+/* ==========================================================================
+   LEY PAY - FEUILLE DE STYLE COMPLETE (CHARTE : NOIR, OR, BLANC)
+   ========================================================================== */
+
+/* --- INITIALISATION ET COULEURS GLOBALES (:ROOT) --- */
+:root { 
+    --lp-gold: #d4af37; 
+    --lp-gold-dark: #aa8413;
+    --lp-black: #111111; 
+    --lp-black-light: #1a1a1a;
+    --lp-white: #ffffff;
+    --lp-gray-dark: #222222;
+    --lp-gray-text: #888888;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--lp-black);
+    color: var(--lp-white);
+}
+
+.cache {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* --- HAUT DE PAGE / HEADER --- */
+header {
+    background-color: var(--lp-black-light);
+    padding: 12px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 2px solid var(--lp-gold);
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.logo-conteneur {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.site-logo {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
+}
+
+.logo {
+    color: var(--lp-gold);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Barre de recherche */
+.barre-recherche-box {
+    display: flex;
+    flex: 1;
+    max-width: 700px;
+    border: 1px solid var(--lp-gold);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.barre-recherche-box input {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    font-size: 14px;
+    outline: none;
+    background-color: var(--lp-white);
+    color: #333333;
+}
+
+.barre-recherche-box button {
+    background-color: var(--lp-gold);
+    border: none;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.barre-recherche-box button:hover {
+    background-color: var(--lp-gold-dark);
+}
+
+/* Navigation principale */
+nav {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+nav a {
+    color: var(--lp-white);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+}
+
+nav a:hover, nav a.nav-actif {
+    color: var(--lp-gold) !important;
+    border-bottom: 2px solid var(--lp-gold);
+    border-radius: 0;
+}
+
+.btn-compte-nav {
+    background-color: var(--lp-black);
+    border: 1px solid var(--lp-gold) !important;
+}
+
+/* --- BARRE D'OUTILS FILTRES --- */
+.barre-outils-amazon {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    background: #0a0a0a;
+    padding: 10px 20px;
+    color: white;
+    font-size: 13px;
+    align-items: center;
+    border-bottom: 1px solid var(--lp-gray-dark);
+}
+
+.btn-filtre {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--lp-white);
+    padding: 6px 15px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.btn-filtre:hover, .btn-filtre.actif {
+    border-color: var(--lp-gold);
+    color: var(--lp-gold);
+    font-weight: bold;
+}
+
+.selecteurs-globaux select {
+    background: var(--lp-black);
+    color: white;
+    border: 1px solid var(--lp-gold);
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* --- DESIGN DES HERO BANNERS --- */
+.hero-banner {
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    color: var(--lp-white);
+    padding: 50px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    text-align: center;
+    border: 1px solid var(--lp-gray-dark);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-contenu {
+    max-width: 600px;
+}
+
+.hero-banner h2, .hero-contenu h2 {
+    color: var(--lp-gold);
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.btn-hero {
+    max-width: 200px;
+    margin-top: 15px;
+    display: block;
+}
+
+.hero-banner-vendeur {
+    background: linear-gradient(135deg, var(--lp-black-light), #050505);
+    color: white;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    border-left: 4px solid var(--lp-gold);
+}
+
+.hero-banner-vendeur h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: var(--lp-gold);
+}
+
+/* --- GRILLE DE PRODUITS (CARTES BLANCHES SUR FOND SOMBRE) --- */
+.titre-section {
+    padding: 30px 40px 10px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--lp-gold);
+}
+
+.zone-produits {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+    padding: 20px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.produit {
+    background: var(--lp-white);
+    border-radius: 8px;
+    padding: 18px;
+    position: relative;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #333333;
+}
+
+.produit:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(212, 175, 55, 0.25);
+}
+
+.badge-favoris {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.2s;
+    z-index: 10;
+}
+
+.badge-favoris:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+}
+
+.badge-categorie {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--lp-black);
+    color: var(--lp-gold);
+    border: 1px solid var(--lp-gold);
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.badge-fulfillment {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-top: 10px;
+    align-self: flex-start;
+}
+
+.badge-fba {
+    background: #000000;
+    color: var(--lp-gold);
+    border: 1px solid var(--lp-gold);
+}
+
+.img-produit {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.produit-info h3 {
+    font-size: 15px;
+    color: #111111;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.prix-box {
+    margin: 12px 0;
+}
+
+.prix-original {
+    text-decoration: line-through;
+    color: var(--lp-gray-text);
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+.prix, .prix-actuel {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000000;
+}
+
+.vendeur-nom-label {
+    font-size: 12px;
+    color: #666666;
+    margin-bottom: 12px;
+}
+
+.btn-acheter {
+    width: 100%;
+    background-color: var(--lp-gold);
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: background 0.3s, color 0.3s;
+    text-align: center;
+    color: var(--lp-black);
+}
+
+.btn-acheter:hover {
+    background-color: var(--lp-gold-dark);
+    color: var(--lp-white);
+}
+
+/* --- BOITES D'AUTHENTIFICATION ET FORMULAIRES --- */
+.auth-box, .formulaire-vendeur {
+    max-width: 500px;
+    margin: 50px auto;
+    background: var(--lp-black-light);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--lp-gray-dark);
+}
+
+.auth-onglets {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.onglet-btn {
+    flex: 1;
+    padding: 10px;
+    background: var(--lp-black);
+    border: 1px solid var(--lp-gray-dark);
+    color: var(--lp-white);
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.onglet-btn.actif {
+    background: var(--lp-black-light);
+    border: 1px solid var(--lp-gold);
+    color: var(--lp-gold);
+}
+
+.champ {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.champ label {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--lp-gold);
+    text-transform: uppercase;
+}
+
+.champ input, .champ select {
+    width: 100%;
+    padding: 12px;
+    background: #222222;
+    border: 1px solid #444444;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.champ input:focus, .champ select:focus {
+    border-color: var(--lp-gold);
+}
+
+.btn-auth-soumettre, .btn-vendre-soumettre {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--lp-gold);
+    border: none;
+    color: var(--lp-black);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-auth-soumettre:hover, .btn-vendre-soumettre:hover {
+    background-color: var(--lp-gold-dark);
+    color: var(--lp-white);
+}
+
+.btn-deconnexion {
+    background: #d9534f;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    max-width: 200px;
+    margin: 20px auto;
+    display: block;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.btn-deconnexion:hover {
+    background: #c9302c;
+}
+
+/* --- STRUCTURE TABLEAUX DE BORD PROFIL / VENDEURS / ADMIN --- */
+.profil-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.carte-profil-gauche, .carte-profil-droite {
+    background: var(--lp-black-light);
+    border: 1px solid var(--lp-gray-dark);
+    border-radius: 8px;
+    padding: 25px;
+    color: var(--lp-white);
+}
+
+.carte-profil-gauche h3, .carte-profil-droite h3 {
+    color: var(--lp-gold);
+    border-bottom: 1px solid var(--lp-gray-dark);
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.bloc-amazon-profil {
+    border: 1px solid var(--lp-gray-dark);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #222222;
+}
+
+.vendeur-kpi-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+    max-width: 1400px;
+    margin: 0 auto 25px auto;
+    padding: 0 40px;
+}
+
+.kpi-box {
+    flex: 1;
+    padding: 20px;
+    background: var(--lp-black-light);
+    border-radius: 6px;
+    text-align: center;
+    border: 1px solid var(--lp-gray-dark);
+    border-top: 4px solid var(--lp-gold);
+}
+
+.kpi-val {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--lp-gold);
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: var(--lp-black-light);
+}
+
+.table-custom th, .table-custom td {
+    border: 1px solid var(--lp-gray-dark);
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.table-custom th {
+    background: #0a0a0a;
+    color: var(--lp-gold);
+}
+
+.boutique-info-top {
+    max-width: 500px;
+    margin: 15px auto;
+    font-size: 13px;
+    text-align: left;
+    background: #222222;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid var(--lp-gray-dark);
+}
+
+.titre-vendeur-verrou { color: var(--lp-gold); margin-bottom: 10px; }
+.titre-creation-boutique { color: var(--lp-gold); margin-bottom: 15px; }
+.desc-creation-boutique { font-size: 13px; color: var(--lp-gray-text); margin-bottom: 15px; }
+.btn-activation-boutique { background-color: #10b981; color: white; border: none; }
+.estimation-resultats { margin-top: 10px; font-size: 14px; }
+.profit-ligne { margin-top: 5px; }
+.profit-ligne strong { color: #10b981; }
+.admin-main-titre { text-align: center; margin-top: 20px; color: var(--lp-gold); }
+
+/* --- PANIER LATÉRAL & FLOTTANT --- */
+.panier-fenetre { 
+    position: fixed; 
+    top: 0; 
+    right: -360px; 
+    width: 320px; 
+    height: 100%; 
+    background: var(--lp-black-light); 
+    border-left: 2px solid var(--lp-gold);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+    z-index: 2000; 
+    transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    padding: 24px; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.panier-fenetre.ouvert { right: 0; }
+
+.panier-entete { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 1px solid var(--lp-gray-dark); 
+    padding-bottom: 15px; 
+}
+
+.panier-entete h3 { color: var(--lp-gold); margin: 0; }
+
+.panier-fermer { 
+    background: none; 
+    border: none; 
+    font-size: 28px; 
+    cursor: pointer; 
+    color: var(--lp-white); 
+}
+
+.liste-panier { 
+    flex: 1; 
+    overflow-y: auto; 
+    margin-top: 15px; 
+}
+
+.item-panier { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 15px; 
+    padding-bottom: 10px; 
+    border-bottom: 1px solid var(--lp-gray-dark); 
+}
+
+.panier-flottant-wrapper {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2000;
+}
+
+#btn-flottant {
+    background-color: var(--lp-gold);
+    color: var(--lp-black);
+    border: none;
+    width: 60px;
+    height: 60px;
+    font-size: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: 0.3s;
+}
+
+#btn-flottant:hover {
+    transform: scale(1.1);
+    background-color: var(--lp-gold-dark);
+    color: white;
+}
+
+.badge-compteur { 
+    position: absolute; 
+    top: -2px; 
+    right: -2px; 
+    background: #ff3b30; 
+    color: white; 
+    font-size: 11px; 
+    font-weight: bold; 
+    padding: 3px 7px; 
+    border-radius: 50%; 
+}
+
+/* --- CHAT BOX & NOTIFICATIONS TOAST --- */
+.notification-toast { 
+    position: fixed; 
+    bottom: 95px; 
+    left: 20px; 
+    background: var(--lp-gold); 
+    color: var(--lp-black); 
+    padding: 14px 24px; 
+    border-radius: 4px; 
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
+    z-index: 3000; 
+    font-size: 14px; 
+    font-weight: bold; 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+
+.chat-boite { 
+    position: fixed; 
+    bottom: 0; 
+    right: 400px; 
+    width: 320px; 
+    height: 380px; 
+    background: var(--lp-black-light); 
+    border: 1px solid var(--lp-gold); 
+    border-radius: 8px 8px 0 0; 
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.5); 
+    z-index: 1500; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.chat-header { 
+    background: #0a0a0a; 
+    color: var(--lp-gold); 
+    padding: 12px 15px; 
+    font-weight: bold; 
+    display: flex; 
+    justify-content: space-between; 
+    cursor: pointer; 
+    border-bottom: 1px solid var(--lp-gray-dark); 
+}
+
+.chat-messages { 
+    flex: 1; 
+    padding: 15px; 
+    overflow-y: auto; 
+    font-size: 13px; 
+    background: #111111; 
+}
+
+.chat-input-box { 
+    display: flex; 
+    border-top: 1px solid #333333; 
+    background: #222222; 
+}
+
+.chat-input-box input { 
+    flex: 1; 
+    padding: 12px; 
+    border: none; 
+    outline: none; 
+    background: transparent; 
+    color: white; 
+}
+
+.chat-input-box button { 
+    background: var(--lp-gold); 
+    border: none; 
+    color: var(--lp-black); 
+    padding: 0 15px; 
+    cursor: pointer; 
+    font-weight: bold; 
+}
+
+/* --- BAS DE PAGE / FOOTER --- */
+footer {
+    background-color: var(--lp-black-light);
+    color: var(--lp-white);
+    padding: 25px;
+    text-align: center;
+    font-size: 13px;
+    margin-top: 50px;
+    border-top: 1px solid var(--lp-gray-dark);
+}
