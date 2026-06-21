@@ -35,77 +35,73 @@ app.post('/api/inscription', (req, res) => {
     });
 });
 
-// 4.2 LA ROUTE DE CONNEXION (Nouvelle !)
-app.post('/api/connexion', (req, res) => {
+// ==========================================
+// 4.2 LA ROUTE DE CONNEXION (Version MongoDB)
+// ==========================================
+app.post('/api/connexion', async (req, res) => {
     const { email, mdp } = req.body;
 
-    const sql = 'SELECT * FROM utilisateurs WHERE email = ? AND motDePasse = ?';
+    try {
+        // Remplace 'Utilisateur' par le nom de ton modèle Mongoose si différent
+        // On cherche un utilisateur avec cet email et ce mot de passe
+        const user = await mongoose.model('Utilisateur').findOne({ email: email, motDePasse: mdp });
 
-    db.query(sql, [email, mdp], (err, results) => {
-        if (err) {
-            console.error("❌ Erreur MySQL lors de la connexion :", err);
-            return res.status(500).json({ success: false, message: "Erreur serveur." });
-        }
-
-        if (results.length > 0) {
-            const user = results[0];
+        if (user) {
             console.log(`🔑 Connexion réussie pour : ${user.nom}`);
             res.json({ success: true, message: `Bienvenue ${user.nom} !`, user: { nom: user.nom, email: user.email } });
         } else {
             res.status(401).json({ success: false, message: "Adresse e-mail ou mot de passe incorrect." });
         }
-    });
-});
-// 4.3 ROUTE POUR RÉCUPÉRER LES PRODUITS (Avec le stock)
-app.get('/api/produits', (req, res) => {
-    // Note : Assure-toi que le nom de ta table est bien 'produits' et qu'elle contient la colonne 'stock'
-    const sql = 'SELECT * FROM produits'; 
-    
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error("❌ Erreur MySQL lors de la récupération des produits :", err);
-            return res.status(500).json({ error: "Impossible de charger les produits." });
-        }
-        res.json(results); // Envoie la liste des produits avec leurs stocks au format JSON
-    });
+    } catch (err) {
+        console.error("❌ Erreur MongoDB lors de la connexion :", err);
+        return res.status(500).json({ success: false, message: "Erreur serveur." });
+    }
 });
 
-// 4.4 ROUTE POUR VALIDER LA COMMANDE (Met à jour les stocks)
-app.post('/api/commande/valider', (req, res) => {
-    const { items } = req.body; // Reçoit le panier envoyé par le client
+// =========================================================
+// 4.3 ROUTE POUR RÉCUPÉRER LES PRODUITS (Version MongoDB)
+// =========================================================
+app.get('/api/produits', async (req, res) => {
+    try {
+        // Remplace 'Produit' par le nom de ton modèle Mongoose si différent
+        const results = await mongoose.model('Produit').find({});
+        res.json(results); // Envoie la liste des produits au format JSON
+    } catch (err) {
+        console.error("❌ Erreur MongoDB lors de la récupération des produits :", err);
+        return res.status(500).json({ error: "Impossible de charger les produits." });
+    }
+});
+
+// =========================================================
+// 4.4 ROUTE POUR VALIDER LA COMMANDE (Version MongoDB)
+// =========================================================
+app.post('/api/commande/valider', async (req, res) => {
+    const { items } = req.body;
 
     if (!items || items.length === 0) {
         return res.status(400).json({ success: false, message: "Le panier est vide." });
     }
 
-    // Chaîne de requêtes pour mettre à jour chaque produit une par une
-    let erreurs = false;
-    let requetesTerminees = 0;
+    try {
+        const ProduitModel = mongoose.model('Produit');
 
-    items.forEach(item => {
-        const sql = 'UPDATE produits SET stock = stock - ? WHERE id = ?';
-        
-        db.query(sql, [item.qty, item.id], (err, result) => {
-            requetesTerminees++;
-            
-            if (err) {
-                console.error(`❌ Erreur de stock pour le produit ID ${item.id}:`, err);
-                erreurs = true;
-            }
+        // On met à jour le stock de chaque produit dans MongoDB
+        for (const item of items) {
+            await ProduitModel.findByIdAndUpdate(item.id, {
+                $inc: { stock: -item.qty } // $inc avec un nombre négatif diminue le stock
+            });
+        }
 
-            // Une fois que tous les produits du panier ont été traités
-            if (requetesTerminees === items.length) {
-                if (erreurs) {
-                    return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour de certains stocks." });
-                }
-                console.log("📦 Une commande a été validée et les stocks mis à jour dans MySQL !");
-                res.json({ success: true, message: "Commande enregistrée avec succès !" });
-            }
-        });
-    });
+        console.log("📦 Une commande a été validée et les stocks mis à jour dans MongoDB !");
+        res.json({ success: true, message: "Commande enregistrée avec succès !" });
+
+    } catch (err) {
+        console.error(`❌ Erreur de mise à jour des stocks dans MongoDB :`, err);
+        return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour de certains stocks." });
+    }
 });
 
 // 5. Lancement du serveur
 app.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
+    console.log(`🚀 Serveur démarré sur le port : ${PORT}`);
 });
