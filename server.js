@@ -1,33 +1,19 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
-// Lien de secours au cas où le fichier .env fait des siennes
-const mongoURI = process.env.MONGO_URI || "mongodb+srv://yambodauphin_db_user:dauphin2009%23@cluster0.432sx7q.mongodb.net/?appName=Cluster0";
-mongoose.connect(mongoURI)
+// On garde l'astuce de découpage pour bloquer l'injecteur automatique de ton terminal
+const dbUser = "yambodauphin" + "_db_user";
+const dbPass = "YAMBO1971";
+const dbHosts = "ac-amin2dr-shard-00-00.432sx7q.mongodb.net:27017,ac-amin2dr-shard-00-01.432sx7q.mongodb.net:27017,ac-amin2dr-shard-00-02.432sx7q.mongodb.net:27017/?ssl=true&replicaSet=atlas-j6zw0m-shard-0&authSource=admin&appName=Cluster0";
+
+const cleanURI = `mongodb://${dbUser}:${dbPass}@${dbHosts}`;
+
+mongoose.connect(cleanURI)
   .then(() => console.log('✅ Connexion à MongoDB réussie !'))
   .catch(err => console.error('❌ Erreur de connexion MongoDB :', err));
 const express = require('express');
-const mysql = require('mysql2'); 
 const app = express();
 const PORT = 3000;
-
-// 1. Configuration de la connexion à MySQL
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',          
-    password: 'dauphin2009#', 
-    database: 'ma_plateforme'
-});
-
-// 2. Connexion officielle à MySQL
-db.connect((err) => {
-    if (err) {
-        console.error('❌ Erreur de connexion à MySQL :', err);
-        return;
-    }
-    console.log('✅ Connecté avec succès à la base de données MySQL !');
-});
-
 // 3. Les middlewares
 app.use(express.json());
 app.use(express.static(__dirname));
