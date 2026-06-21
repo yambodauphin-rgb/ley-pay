@@ -1,3 +1,11 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
+
+// Lien de secours au cas où le fichier .env fait des siennes
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://yambodauphin_db_user:dauphin2009%23@cluster0.432sx7q.mongodb.net/?appName=Cluster0";
+mongoose.connect(mongoURI)
+  .then(() => console.log('✅ Connexion à MongoDB réussie !'))
+  .catch(err => console.error('❌ Erreur de connexion MongoDB :', err));
 const express = require('express');
 const mysql = require('mysql2'); 
 const app = express();
