@@ -164,6 +164,10 @@
                                 </select>
                             </div>
                             <div class="champ">
+    <label for="p-image">Photo du produit :</label>
+    <input type="file" id="p-image" accept="image/*" required>
+</div>
+                            <div class="champ">
                                 <label>Mode Logistique :</label>
                                 <select id="p-logistique" onchange="afficherExplicationLogistique()">
                                     <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
@@ -608,10 +612,23 @@
 }
 
         function vendeurAjouterProduit(e) {
-            e.preventDefault();
-            let modeLog = document.getElementById('p-logistique').value;
-            let taux = modeLog === 'FBA' ? 0.10 : 0.05;
+    e.preventDefault();
+    
+    let modeLog = document.getElementById('p-logistique').value;
+    let taux = modeLog === 'FBA' ? 0.10 : 0.05;
 
+    // 1. Récupérer le fichier image depuis ton nouveau champ
+    const imageInput = document.getElementById('p-image');
+    const fichier = imageInput.files[0];
+
+    if (fichier) {
+        const reader = new FileReader();
+
+        // Cette fonction se déclenche automatiquement dès que l'image a été lue et convertie en Base64
+        reader.onload = function(event) {
+            const imageBase64 = event.target.result;
+
+            // 2. On ajoute le produit avec l'image convertie en texte
             produits.push({
                 id: Date.now(),
                 nom: document.getElementById('p-nom').value,
@@ -620,13 +637,31 @@
                 cat: document.getElementById('p-cat').value,
                 logistique: modeLog,
                 commission_taux: taux,
-                img: document.getElementById('p-img').value,
-                img2: document.getElementById('p-img2').value || "",
-                video: document.getElementById('p-video').value || "",
-                vendeur: sessionUser.email,
-                valide: true, // Auto-validation pour démo fluide
-                note: 5.0
+                image: imageBase64, // Stockage de l'image ici
+                vendeur: sessionUser.email
             });
+
+            // 3. Sauvegarde dans le localStorage
+            localStorage.setItem('lp_prods', JSON.stringify(produits));
+            
+            if (typeof lancerNotification === "function") {
+                lancerNotification("Produit ajouté avec succès !");
+            } else {
+                alert("Produit ajouté avec succès !");
+            }
+
+            // On réinitialise (vide) le formulaire
+            e.target.reset();
+
+            // On actualise les affichages
+            afficherCatalogue();
+            rafraichirEspaceVendeur();
+        };
+
+        // Lancer la lecture de l'image
+        reader.readAsDataURL(fichier);
+    }
+}
 
             localStorage.setItem('lp_prods', JSON.stringify(produits));
             lancerNotification("Votre produit de performance est désormais sur le marché !");
