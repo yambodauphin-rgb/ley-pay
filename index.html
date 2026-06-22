@@ -163,24 +163,22 @@
                                     <option value="Maison">Maison</option>
                                 </select>
                             </div>
-                            <div class="champ">
-    <label for="p-image">Photo du produit :</label>
-    <input type="file" id="p-image" accept="image/*" required>
-</div>
-                            <div class="champ">
-                                <label>Mode Logistique :</label>
-                                <select id="p-logistique" onchange="afficherExplicationLogistique()">
-                                    <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
-                                    <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
-                                </select>
-                                <p id="explication-logistique" style="font-size:11px; color:var(--lp-gold); margin-top:5px;">
-                                    FBM : Vous stockez et livrez vous-même le produit au client.
-                                </p>
-                            </div>
-                            <div class="champ"><label>Photo Principale (Lien URL) :</label><input type="text" id="p-img" value="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400"></div>
-                            <div class="champ"><label>Photo Détail 1 (Lien URL) :</label><input type="text" id="p-img2" placeholder="Optionnel"></div>
-                            <div class="champ"><label>Vidéo de démonstration (Lien URL) :</label><input type="text" id="p-video" placeholder="Optionnel"></div>
-                            
+                           <div class="champ">
+                        <label for="p-image1">Photo Principale (Stockage) :</label>
+                        <input type="file" id="p-image1" accept="image/*" required>
+                    </div>
+                    <div class="champ">
+                        <label for="p-image2">Photo Détail 1 (Stockage) :</label>
+                        <input type="file" id="p-image2" accept="image/*" required>
+                    </div>
+                    <div class="champ">
+                        <label for="p-image3">Photo Détail 2 (Stockage) :</label>
+                        <input type="file" id="p-image3" accept="image/*" required>
+                    </div>
+                    <div class="champ">
+                        <label for="p-image4">Photo Détail 3 (Stockage) :</label>
+                        <input type="file" id="p-image4" accept="image/*" required>
+                    </div>
                             <button type="submit" class="btn-auth-soumettre">Mettre en vente</button>
                         </form>
 
@@ -608,45 +606,74 @@
     }
 }
 
-function vendeurAjouterProduit(e) {
+// Fonction utilitaire pour transformer un fichier en Base64 via une Promesse
+function convertirFichierEnBase64(fichier) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => resolve(event.target.result);
+        reader.onerror = (erreur) => reject(erreur);
+        reader.readAsDataURL(fichier);
+    });
+}
+
+async function vendeurAjouterProduit(e) {
     e.preventDefault();
     
     let modeLog = document.getElementById('p-logistique').value;
     let taux = modeLog === 'FBA' ? 0.10 : 0.05;
 
-    const imageInput = document.getElementById('p-image');
-    const fichier = imageInput.files[0];
+    // Récupération des 4 fichiers sélectionnés sur le téléphone/PC
+    const file1 = document.getElementById('p-image1').files[0];
+    const file2 = document.getElementById('p-image2').files[0];
+    const file3 = document.getElementById('p-image3').files[0];
+    const file4 = document.getElementById('p-image4').files[0];
 
-    if (fichier) {
-        const reader = new FileReader();
+    // Sécurité : on vérifie que le vendeur a bien mis les 4 photos
+    if (!file1 || !file2 || !file3 || !file4) {
+        alert("Veuillez sélectionner les 4 photos obligatoires.");
+        return;
+    }
 
-        reader.onload = function(event) {
-            const imageBase64 = event.target.result;
+    try {
+        // Conversion simultanée des 4 images en texte Base64
+        const [base64Img1, base64Img2, base64Img3, base64Img4] = await Promise.all([
+            convertirFichierEnBase64(file1),
+            convertirFichierEnBase64(file2),
+            convertirFichierEnBase64(file3),
+            convertirFichierEnBase64(file4)
+        ]);
 
-            produits.push({
-                id: Date.now(),
-                nom: document.getElementById('p-nom').value,
-                prix: parseFloat(document.getElementById('p-prix').value),
-                stock: parseInt(document.getElementById('p-stock').value),
-                cat: document.getElementById('p-cat').value,
-                logistique: modeLog,
-                commission_taux: taux,
-                img: imageBase64,
-                vendeur: sessionUser.email
-            });
+        // Ajout du produit avec ses 4 images distinctes
+        produits.push({
+            id: Date.now(),
+            nom: document.getElementById('p-nom').value,
+            prix: parseFloat(document.getElementById('p-prix').value),
+            stock: parseInt(document.getElementById('p-stock').value),
+            cat: document.getElementById('p-cat').value,
+            logistique: modeLog,
+            commission_taux: taux,
+            img: base64Img1,          // Photo principale (Boutique)
+            img_detail1: base64Img2,  // Photo détail 1
+            img_detail2: base64Img3,  // Photo détail 2
+            img_detail3: base64Img4,  // Photo détail 3
+            vendeur: sessionUser.email
+        });
 
-            localStorage.setItem('lp_prods', JSON.stringify(produits));
-            
-            e.target.reset();
+        // Sauvegarde sur le stockage de Ley Pay
+        localStorage.setItem('lp_prods', JSON.stringify(produits));
+        
+        // Vider le formulaire
+        e.target.reset();
 
-            // Actualisation automatique de la page
-            if (typeof afficherCatalogue === "function") afficherCatalogue();
-            if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
-            
-            alert("Produit ajouté avec succès !");
-        };
+        // Actualisation instantanée de la boutique et du tableau des stocks
+        if (typeof afficherCatalogue === "function") afficherCatalogue();
+        if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
+        
+        alert("Votre produit complet avec ses 4 photos a bien été mis en vente !");
 
-        reader.readAsDataURL(fichier);
+    } catch (erreur) {
+        console.error("Erreur de conversion :", erreur);
+        alert("Une erreur est survenue lors du traitement des images. Utilisez des photos plus légères.");
     }
 }
 
