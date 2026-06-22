@@ -574,23 +574,20 @@
             document.getElementById('v-kpi-brut').textContent = totalBrut.toFixed(2) + " $";
             document.getElementById('v-kpi-solde').textContent = soldeNet.toFixed(2) + " $";
 
-            const tStocks = document.getElementById('vendeur-table-stocks');
-            tStocks.innerHTML = "";
-          mesOffres.forEach(p => {
+           mesOffres.forEach(p => {
         tStocks.innerHTML += `<tr>
             <td>${p.nom}</td>
             <td><strong>${p.logistique || p.cat}</strong></td>
             <td>${p.prix} $</td>
             <td>${p.stock} u</td>
             <td><span style="color:#10b981; font-weight:bold;">En vente</span></td>
-            <td>
+          <td>
                 <button onclick="supprimerPropreProduit(${p.id})" style="background:#ef4444; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">
                     Supprimer 🗑️
                 </button>
             </td>
         </tr>`;
     });
-
             const tRetraits = document.getElementById('vendeur-table-retraits');
             tRetraits.innerHTML = "";
             retraits.filter(r => r.vendeur === sessionUser.email).forEach(r => {
@@ -611,24 +608,21 @@
     }
 }
 
-        function vendeurAjouterProduit(e) {
+function vendeurAjouterProduit(e) {
     e.preventDefault();
     
     let modeLog = document.getElementById('p-logistique').value;
     let taux = modeLog === 'FBA' ? 0.10 : 0.05;
 
-    // 1. Récupérer le fichier image depuis ton nouveau champ
     const imageInput = document.getElementById('p-image');
     const fichier = imageInput.files[0];
 
     if (fichier) {
         const reader = new FileReader();
 
-        // Cette fonction se déclenche automatiquement dès que l'image a été lue et convertie en Base64
         reader.onload = function(event) {
             const imageBase64 = event.target.result;
 
-            // 2. On ajoute le produit avec l'image convertie en texte
             produits.push({
                 id: Date.now(),
                 nom: document.getElementById('p-nom').value,
@@ -637,38 +631,24 @@
                 cat: document.getElementById('p-cat').value,
                 logistique: modeLog,
                 commission_taux: taux,
-                image: imageBase64, // Stockage de l'image ici
+                img: imageBase64,
                 vendeur: sessionUser.email
             });
 
-            // 3. Sauvegarde dans le localStorage
             localStorage.setItem('lp_prods', JSON.stringify(produits));
             
-            if (typeof lancerNotification === "function") {
-                lancerNotification("Produit ajouté avec succès !");
-            } else {
-                alert("Produit ajouté avec succès !");
-            }
-
-            // On réinitialise (vide) le formulaire
             e.target.reset();
 
-            // On actualise les affichages
-            afficherCatalogue();
-            rafraichirEspaceVendeur();
+            // Actualisation automatique de la page
+            if (typeof afficherCatalogue === "function") afficherCatalogue();
+            if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
+            
+            alert("Produit ajouté avec succès !");
         };
 
-        // Lancer la lecture de l'image
         reader.readAsDataURL(fichier);
     }
 }
-
-            localStorage.setItem('lp_prods', JSON.stringify(produits));
-            lancerNotification("Votre produit de performance est désormais sur le marché !");
-            document.getElementById('p-nom').value = "";
-            rafraichirEspaceVendeur();
-            afficherCatalogue();
-        }
 
         function vendeurSoumettreRetrait(e) {
             e.preventDefault();
