@@ -191,7 +191,7 @@
                     <div class="carte-profil-droite">
                         <h3>📊 Suivi de vos stocks sur Ley Pay</h3>
                         <table class="table-custom">
-                            <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th></tr></thead>
+                            <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th><th>Action</th></tr></thead>
                             <tbody id="vendeur-table-stocks"></tbody>
                         </table>
 
@@ -572,9 +572,20 @@
 
             const tStocks = document.getElementById('vendeur-table-stocks');
             tStocks.innerHTML = "";
-            mesOffres.forEach(p => {
-                tStocks.innerHTML += `<tr><td>${p.nom}</td><td><strong>${p.logistique}</strong></td><td>${p.prix} $</td><td>${p.stock} u</td><td>${p.valide ? '✅ En ligne' : '⏳ Modération'}</td></tr>`;
-            });
+          mesOffres.forEach(p => {
+        tStocks.innerHTML += `<tr>
+            <td>${p.nom}</td>
+            <td><strong>${p.logistique || p.cat}</strong></td>
+            <td>${p.prix} $</td>
+            <td>${p.stock} u</td>
+            <td><span style="color:#10b981; font-weight:bold;">En vente</span></td>
+            <td>
+                <button onclick="supprimerPropreProduit(${p.id})" style="background:#ef4444; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">
+                    Supprimer 🗑️
+                </button>
+            </td>
+        </tr>`;
+    });
 
             const tRetraits = document.getElementById('vendeur-table-retraits');
             tRetraits.innerHTML = "";
@@ -582,6 +593,19 @@
                 tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
             });
         }
+        function supprimerPropreProduit(id) {
+    if (confirm("Voulez-vous vraiment supprimer cet article de votre boutique Ley Pay ?")) {
+        // 1. Supprime le produit du tableau global
+        produits = produits.filter(p => p.id !== id);
+        
+        // 2. Sauvegarde la modification dans le localStorage
+        localStorage.setItem('lp_prods', JSON.stringify(produits));
+        
+        // 3. Rafraîchit instantanément le catalogue et l'espace vendeur
+        afficherCatalogue();
+        rafraichirEspaceVendeur();
+    }
+}
 
         function vendeurAjouterProduit(e) {
             e.preventDefault();
