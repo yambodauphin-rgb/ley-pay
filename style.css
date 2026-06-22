@@ -752,4 +752,55 @@ footer {
     font-size: 13px;
     margin-top: 50px;
     border-top: 1px solid var(--lp-gray-dark);
+}/* ====================================================
+   MODULE RESPONSIVE : ADAPTATION POUR ÉCRANS MOBILES
+   ==================================================== */
+@media (max-width: 768px) {
+    
+    /* 1. Le header s'organise verticalement au lieu de rester en ligne */
+    header, .header-top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    /* 2. La barre de recherche prend toute la largeur sur mobile */
+    .barre-recherche-box {
+        width: 90% !important;
+        max-width: 100%;
+    }
+
+    /* 3. Les liens de navigation (Boutique, Favoris...) s'alignent proprement */
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        width: 100%;
+    }
+
+    /* 4. Gestion des conteneurs globaux et listes de produits */
+    .container, .produits-liste, .grid-produits {
+        display: flex;
+        flex-direction: column; /* Aligne les cartes de produits l'une en dessous de l'autre */
+        align-items: center;
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* 5. Les cartes de produits s'adaptent à la largeur de l'écran du téléphone */
+    .produit-card, .carte-produit {
+        width: 90% !important;
+        max-width: 350px;
+        margin: 10px 0;
+    }
+
+    /* 6. Empêche les images de déborder de l'écran */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
 }
