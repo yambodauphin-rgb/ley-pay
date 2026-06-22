@@ -773,7 +773,7 @@ footer {
         max-width: 100%;
     }
 
-    /* 3. Les liens de navigation (Boutique, Favoris...) s'alignent proprement */
+    /* 3. Les liens de navigation s'alignent proprement */
     nav {
         display: flex;
         flex-wrap: wrap;
@@ -782,25 +782,70 @@ footer {
         width: 100%;
     }
 
-    /* 4. Gestion des conteneurs globaux et listes de produits */
-    .container, .produits-liste, .grid-produits {
-        display: flex;
-        flex-direction: column; /* Aligne les cartes de produits l'une en dessous de l'autre */
-        align-items: center;
-        width: 100%;
-        padding: 10px;
+    /* 4. Gestion de la grille de produits principale */
+    .zone-produits, #grille-produits {
+        display: grid;
+        grid-template-columns: 1fr !important; /* Une seule colonne sur mobile */
+        gap: 20px;
+        padding: 10px !important;
     }
 
-    /* 5. Les cartes de produits s'adaptent à la largeur de l'écran du téléphone */
-    .produit-card, .carte-produit {
-        width: 90% !important;
-        max-width: 350px;
-        margin: 10px 0;
-    }
-
-    /* 6. Empêche les images de déborder de l'écran */
+    /* 5. Empêche les images de déborder */
     img {
         max-width: 100%;
         height: auto;
+    }
+
+    /* ==========================================
+       CORRECTION COMPLÈTE ESPACE VENDEUR (HTML)
+       ========================================== */
+
+    /* Blocs de statistiques (KPI) sur une seule colonne */
+    .vendeur-kpi-container {
+        display: flex;
+        flex-direction: column !important;
+        gap: 10px;
+        padding: 10px !important;
+    }
+
+    .kpi-box {
+        width: 100% !important;
+    }
+
+    /* Force les colonnes Gauche (Formulaire) et Droite (Tableaux) à s'empiler */
+    .profil-container {
+        display: flex;
+        flex-direction: column !important;
+        padding: 10px !important;
+        gap: 20px;
+    }
+
+    .carte-profil-gauche, .carte-profil-droite {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        padding: 15px !important;
+    }
+
+    /* Rendre les formulaires et tous les champs fluides */
+    .carte-profil-gauche form, .champ {
+        width: 100% !important;
+    }
+
+    .champ input, 
+    .champ textarea, 
+    .champ select,
+    .btn-auth-soumettre {
+        width: 100% !important;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Tableaux de suivi des stocks et retraits scrollables */
+    .table-custom {
+        display: block;
+        width: 100% !important;
+        overflow-x: auto; /* Permet de glisser de gauche à droite sur mobile */
+        white-space: nowrap; 
     }
 }
