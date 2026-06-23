@@ -350,43 +350,46 @@
             setTimeout(() => toast.classList.add('cache'), 4000);
         }
 
-        // Moteur d'affichage dynamique de la boutique Ley Pay
-        function afficherCatalogue(items = produits) {
-            const grille = document.getElementById('grille-produits');
-            grille.innerHTML = "";
-            let itemsActifs = items.filter(p => p.valide);
+       
+           // Moteur d'affichage dynamique de la boutique Ley Pay
+function afficherCatalogue(items = produits) {
+    const grille = document.getElementById('grille-produits');
+    grille.innerHTML = "";
+    
+    // Modification ici : accepte les produits qui n'ont pas explicitement "valide = false"
+    let itemsActifs = items.filter(p => p.valide !== false);
 
-            if(itemsActifs.length === 0) {
-                grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
-                return;
-            }
+    if (itemsActifs.length === 0) {
+        grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
+        return;
+    }
 
-            itemsActifs.forEach(p => {
-                let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
-                let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
+    itemsActifs.forEach(p => {
+        let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
+        let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
+        
+        grille.innerHTML += `
+            <div class="produit">
+                <span class="badge-categorie">${p.cat}</span>
+                <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
+                <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
                 
-                grille.innerHTML += `
-                    <div class="produit">
-                        <span class="badge-categorie">${p.cat}</span>
-                        <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
-                        <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
-                        
-                        <div class="produit-info">
-                            <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
-                            <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
-                            ${badgeFulfillment}
-                            <div class="prix" style="margin-top:10px;">${p.prix.toFixed(2)} $</div>
-                            <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
-                        </div>
+                <div class="produit-info">
+                    <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
+                    <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
+                    ${badgeFulfillment}
+                    <div class="prix" style="margin-top:10px;">${p.prix.toFixed(2)} $</div>
+                    <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
+                </div>
 
-                        <div style="display:flex; gap:5px; margin-top:10px;">
-                            <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
-                            <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
+                    <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
+                </div>
+            </div>
+        `;
+    });
+}
 
         function filtrerCategorie(cat) {
             document.querySelectorAll('.btn-filtre').forEach(b => b.classList.remove('actif'));
