@@ -162,8 +162,17 @@
                                     <option value="Habit">Mode</option>
                                     <option value="Maison">Maison</option>
                                 </select>
-                            </div>
-                           <div class="champ">
+/                           </div>
+
+                    <div class="champ">
+                        <label>Mode Logistique :</label>
+                        <select id="p-logistique">
+                            <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
+                            <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
+                        </select>
+                    </div>
+
+                    <div class="champ">
                         <label for="p-image1">Photo Principale (Stockage) :</label>
                         <input type="file" id="p-image1" accept="image/*" required>
                     </div>
@@ -676,7 +685,6 @@ async function vendeurAjouterProduit(e) {
         alert("Une erreur est survenue lors du traitement des images. Utilisez des photos plus légères.");
     }
 }
-
         function vendeurSoumettreRetrait(e) {
             e.preventDefault();
             let amt = parseFloat(document.getElementById('r-montant').value);
