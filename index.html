@@ -565,42 +565,56 @@
         }
 
         function rafraichirEspaceVendeur() {
-            const req = document.getElementById('vendeur-auth-requis');
-            const corp = document.getElementById('corps-espace-vendeur');
-            if(!sessionUser) { req.classList.remove('cache'); corp.classList.add('cache'); return; }
-            req.classList.add('cache'); corp.classList.remove('cache');
+    const req = document.getElementById('vendeur-auth-requis');
+    const corp = document.getElementById('corps-espace-vendeur');
+    if(!sessionUser) { req.classList.remove('cache'); corp.classList.add('cache'); return; }
+    req.classList.add('cache'); corp.classList.remove('cache');
 
-            let mesOffres = produits.filter(p => p.vendeur === sessionUser.email);
-            let mesVentes = commandes.filter(c => c.vendeur === sessionUser.email);
-            
-            let totalBrut = mesVentes.reduce((sum, c) => sum + c.montant, 0);
-            let totalCommissions = mesVentes.reduce((sum, c) => sum + c.commission, 0);
-            let sommeRetraite = retraits.filter(r => r.vendeur === sessionUser.email && r.statut === "Validé").reduce((sum, r) => sum + r.montant, 0);
-            let soldeNet = (totalBrut - totalCommissions) - sommeRetraite;
+    let mesOffres = produits.filter(p => p.vendeur === sessionUser.email);
+    let mesVentes = commandes.filter(c => c.vendeur === sessionUser.email);
+    
+    let totalBrut = mesVentes.reduce((sum, c) => sum + c.montant, 0);
+    let totalCommissions = mesVentes.reduce((sum, c) => sum + c.commission, 0);
+    let sommeRetraite = retraits.filter(r => r.vendeur === sessionUser.email && r.statut === "Validé").reduce((sum, r) => sum + r.montant, 0);
+    let soldeNet = (totalBrut - totalCommissions) - sommeRetraite;
 
-            document.getElementById('v-kpi-brut').textContent = totalBrut.toFixed(2) + " $";
-            document.getElementById('v-kpi-solde').textContent = soldeNet.toFixed(2) + " $";
+    document.getElementById('v-kpi-brut').textContent = totalBrut.toFixed(2) + " $";
+    document.getElementById('v-kpi-solde').textContent = soldeNet.toFixed(2) + " $";
 
-           mesOffres.forEach(p => {
-        tStocks.innerHTML += `<tr>
-            <td>${p.nom}</td>
-            <td><strong>${p.logistique || p.cat}</strong></td>
-            <td>${p.prix} $</td>
-            <td>${p.stock} u</td>
-            <td><span style="color:#10b981; font-weight:bold;">En vente</span></td>
-          <td>
-                <button onclick="supprimerPropreProduit(${p.id})" style="background:#ef4444; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">
-                    Supprimer 🗑️
-                </button>
-            </td>
-        </tr>`;
-    });
-            const tRetraits = document.getElementById('vendeur-table-retraits');
-            tRetraits.innerHTML = "";
-            retraits.filter(r => r.vendeur === sessionUser.email).forEach(r => {
-                tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
-            });
-        }
+    // 1. Récupération sécurisée du tableau des stocks (on cible le tbody de table-custom)
+    const tStocks = document.querySelector('.table-custom tbody') || document.getElementById('t-stocks');
+    
+    if (tStocks) {
+        // 2. IMPORTANT : On vide le tableau pour éviter les doublons d'affichage
+        tStocks.innerHTML = ""; 
+        
+        // 3. Remplissage du tableau avec les offres du vendeur
+        mesOffres.forEach(p => {
+            tStocks.innerHTML += `<tr>
+                <td>${p.nom}</td>
+                <td><strong>${p.logistique || p.cat}</strong></td>
+                <td>${p.prix} $</td>
+                <td>${p.stock} u</td>
+                <td><span style="color:#10b981; font-weight:bold;">En vente</span></td>
+                <td>
+                    <button onclick="supprimerPropreProduit(${p.id})" style="background:#ef4444; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">
+                        Supprimer 🗑️
+                    </button>
+                </td>
+            </tr>`;
+        });
+    } else {
+        console.warn("Le conteneur du tableau des stocks n'a pas été trouvé dans le HTML.");
+    }
+
+    const tRetraits = document.getElementById('vendeur-table-retraits');
+    if (tRetraits) {
+        tRetraits.innerHTML = "";
+        retraits.filter(r => r.vendeur === sessionUser.email).forEach(r => {
+            tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
+        });
+    }
+}
         function supprimerPropreProduit(id) {
     if (confirm("Voulez-vous vraiment supprimer cet article de votre boutique Ley Pay ?")) {
         // 1. Supprime le produit du tableau global
@@ -615,37 +629,44 @@
     }
 }
 
-// Fonction utilitaire pour compresser et transformer un fichier en Base64 via Canvas
 function convertirFichierEnBase64(fichier) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (event) => {
             const img = new Image();
             img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 800; // Limite la largeur à 800px max pour économiser l'espace
-                let width = img.width;
-                let height = img.height;
+                try {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    let width = img.width;
+                    let height = img.height;
 
-                if (width > MAX_WIDTH) {
-                    height *= MAX_WIDTH / width;
-                    width = MAX_WIDTH;
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Tente de récupérer la version compressée
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                    resolve(dataUrl);
+                } catch (err) {
+                    // En cas d'échec du Canvas, on renvoie l'image d'origine sans compression
+                    resolve(event.target.result);
                 }
-
-                canvas.width = width;
-                canvas.height = height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-
-                // Exportation en JPEG avec 60% de qualité (images légères garanties !)
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-                resolve(dataUrl);
             };
-            img.onerror = (erreur) => reject(erreur);
+            img.onerror = () => {
+                // Si l'objet Image plante, on utilise directement le résultat brut du reader
+                resolve(event.target.result);
+            };
             img.src = event.target.result;
         };
-        reader.onerror = (erreur) => reject(erreur);
+        reader.onerror = () => resolve(""); // Évite de faire planter le Promise.all si un fichier est corrompu
         reader.readAsDataURL(fichier);
     });
 }
