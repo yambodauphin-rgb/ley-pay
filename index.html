@@ -615,11 +615,36 @@
     }
 }
 
-// Fonction utilitaire pour transformer un fichier en Base64 via une Promesse
+// Fonction utilitaire pour compresser et transformer un fichier en Base64 via Canvas
 function convertirFichierEnBase64(fichier) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = (event) => resolve(event.target.result);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 800; // Limite la largeur à 800px max pour économiser l'espace
+                let width = img.width;
+                let height = img.height;
+
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Exportation en JPEG avec 60% de qualité (images légères garanties !)
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                resolve(dataUrl);
+            };
+            img.onerror = (erreur) => reject(erreur);
+            img.src = event.target.result;
+        };
         reader.onerror = (erreur) => reject(erreur);
         reader.readAsDataURL(fichier);
     });
@@ -644,7 +669,7 @@ async function vendeurAjouterProduit(e) {
     }
 
     try {
-        // Conversion simultanée des 4 images en texte Base64
+        // Conversion et compression simultanée des 4 images
         const [base64Img1, base64Img2, base64Img3, base64Img4] = await Promise.all([
             convertirFichierEnBase64(file1),
             convertirFichierEnBase64(file2),
@@ -652,8 +677,8 @@ async function vendeurAjouterProduit(e) {
             convertirFichierEnBase64(file4)
         ]);
 
-        // Ajout du produit avec ses 4 images distinctes
-        produits.push({
+        // Création de l'objet produit
+        const nouveauProduit = {
             id: Date.now(),
             nom: document.getElementById('p-nom').value,
             prix: parseFloat(document.getElementById('p-prix').value),
@@ -661,28 +686,34 @@ async function vendeurAjouterProduit(e) {
             cat: document.getElementById('p-cat').value,
             logistique: modeLog,
             commission_taux: taux,
-            img: base64Img1,          // Photo principale (Boutique)
+            img: base64Img1,          // Photo principale
             img_detail1: base64Img2,  // Photo détail 1
             img_detail2: base64Img3,  // Photo détail 2
             img_detail3: base64Img4,  // Photo détail 3
-            vendeur: sessionUser.email
-        });
+            vendeur: (typeof sessionUser !== "undefined" && sessionUser) ? sessionUser.email : "vendeur@test.com"
+        };
 
-        // Sauvegarde sur le stockage de Ley Pay
+        // Sécurité : s'assurer que le tableau 'produits' existe bien
+        if (typeof produits === "undefined" || !Array.isArray(produits)) {
+            produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
+        }
+
+        // Ajout local et sauvegarde
+        produits.push(nouveauProduit);
         localStorage.setItem('lp_prods', JSON.stringify(produits));
         
-        // Vider le formulaire
+        // Vider le formulaire complet
         e.target.reset();
 
         // Actualisation instantanée de la boutique et du tableau des stocks
         if (typeof afficherCatalogue === "function") afficherCatalogue();
         if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
         
-        alert("Votre produit complet avec ses 4 photos a bien été mis en vente !");
+        alert("Votre produit complet avec ses 4 photos compressées a bien été mis en vente !");
 
     } catch (erreur) {
-        console.error("Erreur de conversion :", erreur);
-        alert("Une erreur est survenue lors du traitement des images. Utilisez des photos plus légères.");
+        console.error("Détail de l'erreur détectée :", erreur);
+        alert("Une erreur est survenue lors du traitement des images.");
     }
 }
         function vendeurSoumettreRetrait(e) {
