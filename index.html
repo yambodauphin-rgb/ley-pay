@@ -714,30 +714,60 @@ async function vendeurAjouterProduit(e) {
             img_detail1: base64Img2,  // Photo détail 1
             img_detail2: base64Img3,  // Photo détail 2
             img_detail3: base64Img4,  // Photo détail 3
-            vendeur: (typeof sessionUser !== "undefined" && sessionUser) ? sessionUser.email : "vendeur@test.com"
+            vendeur: (typeof sessionUser !== "undefined" && sessionUser) ? sessionUser.email : "vendeur@test.com",
+            valide: true              // S'assure que le produit est actif dès le départ
         };
 
-        // Sécurité : s'assurer que le tableau 'produits' existe bien
-        if (typeof produits === "undefined" || !Array.isArray(produits)) {
-            produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
+        // --- ENVOI EN LIGNE VERS TON SERVEUR RENDER / MYSQL ---
+        const reponse = await fetch('/api/produits', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(nouveauProduit)
+        });
+
+        if (!reponse.ok) {
+            throw new Error("Le serveur en ligne n'a pas pu valider l'enregistrement.");
         }
 
-        // Ajout local et sauvegarde
-        produits.push(nouveauProduit);
-        localStorage.setItem('lp_prods', JSON.stringify(produits));
+        // Si le serveur accepte le produit, on recharge la liste propre depuis la BDD
+        if (typeof chargerProduitsDepuisBDD === "function") {
+            await chargerProduitsDepuisBDD();
+        } else {
+            // Plan de secours local au cas où
+            if (typeof produits === "undefined" || !Array.isArray(produits)) {
+                produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
+            }
+            produits.push(nouveauProduit);
+            localStorage.setItem('lp_prods', JSON.stringify(produits));
+            if (typeof afficherCatalogue === "function") afficherCatalogue();
+        }
         
         // Vider le formulaire complet
         e.target.reset();
 
-        // Actualisation instantanée de la boutique et du tableau des stocks
-        if (typeof afficherCatalogue === "function") afficherCatalogue();
+        // Actualisation instantanée du tableau des stocks
         if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
         
-        alert("Votre produit complet avec ses 4 photos compressées a bien été mis en vente !");
+        alert("🎉 Succès ! Votre produit est officiellement publié sur la base de données globale de Ley Pay !");
 
     } catch (erreur) {
         console.error("Détail de l'erreur détectée :", erreur);
-        alert("Une erreur est survenue lors du traitement des images.");
+        
+        // REPLI HORS-LIGNE : Si ton serveur MySQL ou Render rencontre une erreur réseau
+        console.warn("Enregistrement en mode local (Secours informatique).");
+        if (typeof produits === "undefined" || !Array.isArray(produits)) {
+            produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
+        }
+        produits.push(nouveauProduit);
+        localStorage.setItem('lp_prods', JSON.stringify(produits));
+        
+        e.target.reset();
+        if (typeof afficherCatalogue === "function") afficherCatalogue();
+        if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
+        
+        alert("⚠️ Note : Enregistré localement sur cet ordinateur car la base de données réseau est momentanément inaccessible.");
     }
 }
         function vendeurSoumettreRetrait(e) {
