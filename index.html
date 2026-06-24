@@ -786,6 +786,7 @@ async function vendeurAjouterProduit(e) {
         alert("⚠️ Note : Enregistré localement sur cet ordinateur car la base de données réseau est momentanément inaccessible.");
     }
 }
+window.vendeurAjouterProduit = vendeurAjouterProduit;
         function vendeurSoumettreRetrait(e) {
             e.preventDefault();
             let amt = parseFloat(document.getElementById('r-montant').value);
