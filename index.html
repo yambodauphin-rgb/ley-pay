@@ -881,82 +881,89 @@ async function vendeurAjouterProduit(e) {
             if(mesFavs.length === 0) { grille.innerHTML = "<p style='padding:0 40px;'>Votre liste de favoris est actuellement vide.</p>"; return; }
             afficherCatalogue(mesFavs);
         }
-        // Nouvelle fonction pour récupérer les produits depuis l'API MySQL
-        async function chargerProduitsDepuisBDD() {
-            try {
-                const reponse = await fetch('/api/produits');
-                if (!reponse.ok) throw new Error("Erreur réseau lors du chargement");
+        // Nouvelle fonction pour récupérer les produits depuis l'API MySQL avec secours LocalStorage
+async function chargerProduitsDepuisBDD() {
+    try {
+        const reponse = await fetch('/api/produits');
+        if (!reponse.ok) throw new Error("Erreur réseau lors du chargement");
+        
+        // On remplace la variable locale par les vraies données de ta table MySQL
+        produits = await reponse.json(); 
+        localStorage.setItem('lp_prods', JSON.stringify(produits));
+    } catch (erreur) {
+        console.warn("❌ Impossible de charger depuis MySQL. Passage sur le stockage local :", erreur);
+        
+        // Système de secours : Si MySQL échoue, on charge les produits locaux
+        produits = JSON.parse(localStorage.getItem('lp_prods')) || produits;
+    } finally {
+        // Quoi qu'il arrive (succès ou échec réseau), on force l'affichage du catalogue
+        afficherCatalogue(); 
+    }
+}
+
+// 1. Affichage du catalogue avec la quantité (Stock restant)
+function afficherCatalogue(items = produits) {
+    const grille = document.getElementById('grille-produits');
+    grille.innerHTML = "";
+    
+    // Correction ici : accepte les produits créés localement (qui n'ont pas p.valide = false)
+    let itemsActifs = items.filter(p => p.valide !== false);
+
+    if (itemsActifs.length === 0) {
+        grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
+        return;
+    }
+
+    itemsActifs.forEach(p => {
+        let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
+        let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
+        
+        // Gestion de l'affichage textuel du stock
+        let texteStock = p.stock > 0 ? `En stock : ${p.stock} unités` : `<span style="color:#ef4444; font-weight:bold;">Rupture de stock</span>`;
+
+        grille.innerHTML += `
+            <div class="produit">
+                <span class="badge-categorie">${p.cat}</span>
+                <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
+                <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
                 
-                // On remplace la variable locale par les vraies données de ta table MySQL
-                produits = await reponse.json(); 
-                
-                // On affiche le catalogue avec les bons stocks
-                afficherCatalogue(); 
-            } catch (erreur) {
-                console.error("❌ Impossible de charger les produits depuis MySQL :", erreur);
-            }
-        }
-        // 1. Affichage du catalogue avec la quantité (Stock restant)
-        function afficherCatalogue(items = produits) {
-            const grille = document.getElementById('grille-produits');
-            grille.innerHTML = "";
-            let itemsActifs = items.filter(p => p.valide);
+                <div class="produit-info">
+                    <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
+                    <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
+                    ${badgeFulfillment}
+                    <p style="margin: 5px 0; font-size:13px; color:#666; font-weight:bold;">${texteStock}</p>
+                    <div class="prix" style="margin-top:5px;">${p.prix.toFixed(2)} $</div>
+                    <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
+                </div>
 
-            if(itemsActifs.length === 0) {
-                grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
-                return;
-            }
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
+                    <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
+                </div>
+            </div>
+        `;
+    });
+}
 
-            itemsActifs.forEach(p => {
-                let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
-                let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
-                
-                // Gestion de l'affichage textuel du stock
-                let texteStock = p.stock > 0 ? `En stock : ${p.stock} unités` : `<span style="color:#ef4444; font-weight:bold;">Rupture de stock</span>`;
+// 2. Contrôle des stocks lors de l'ajout
+function ajouterPanier(id) {
+    let prod = produits.find(p => p.id === id);
+    if (!prod) return;
+    
+    // On vérifie ce qui est déjà dans le panier pour ne pas dépasser le stock réel
+    let dansPanier = panier.find(item => item.id === id);
+    let quantiteActuelleDansPanier = dansPanier ? dansPanier.qty : 0;
 
-                grille.innerHTML += `
-                    <div class="produit">
-                        <span class="badge-categorie">${p.cat}</span>
-                        <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
-                        <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
-                        
-                        <div class="produit-info">
-                            <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
-                            <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
-                            ${badgeFulfillment}
-                            <p style="margin: 5px 0; font-size:13px; color:#666; font-weight:bold;">${texteStock}</p>
-                            <div class="prix" style="margin-top:5px;">${p.prix.toFixed(2)} $</div>
-                            <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
-                        </div>
-
-                        <div style="display:flex; gap:5px; margin-top:10px;">
-                            <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
-                            <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // 2. Contrôle des stocks lors de l'ajout
-        function ajouterPanier(id) {
-            let prod = produits.find(p => p.id === id);
-            
-            // On vérifie ce qui est déjà dans le panier pour ne pas dépasser le stock réel
-            let dansPanier = panier.find(item => item.id === id);
-            let quantiteActuelleDansPanier = dansPanier ? dansPanier.qty : 0;
-
-            if(prod.stock <= quantiteActuelleDansPanier) { 
-                alert(`Désolé, impossible d'ajouter plus d'unités. Stock maximal atteint (${prod.stock}).`); 
-                return; 
-            }
-            
-            if(dansPanier) dansPanier.qty++; else panier.push({ ...prod, qty: 1 });
-            
-            lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
-            calculerPanierTotaux();
-        }
-
+    if (prod.stock <= quantiteActuelleDansPanier) { 
+        alert(`Désolé, impossible d'ajouter plus d'unités. Stock maximal atteint (${prod.stock}).`); 
+        return; 
+    }
+    
+    if (dansPanier) dansPanier.qty++; else panier.push({ ...prod, qty: 1 });
+    
+    lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
+    calculerPanierTotaux();
+}
         // 3. Calcul des totaux et affichage dynamique du panier avec bouton de suppression unitaire
         function calculerPanierTotaux() {
             let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
