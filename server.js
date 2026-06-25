@@ -11,28 +11,67 @@ const cleanURI = `mongodb://${dbUser}:${dbPass}@${dbHosts}`;
 mongoose.connect(cleanURI)
   .then(() => console.log('✅ Connexion à MongoDB réussie !'))
   .catch(err => console.error('❌ Erreur de connexion MongoDB :', err));
+
+// =========================================================
+// 1. DÉFINITION DES SCHÉMAS ET MODÈLES MONGOOSE (REQUIS)
+// =========================================================
+
+// Schéma pour les Produits
+const produitSchema = new mongoose.Schema({
+    id: { type: Number, required: true },
+    nom: { type: String, required: true },
+    prix: { type: Number, required: true },
+    stock: { type: Number, required: true },
+    cat: { type: String, required: true },
+    logistique: { type: String, required: true },
+    commission_taux: { type: Number, required: true },
+    img: { type: String, required: true },
+    img_detail1: { type: String },
+    img_detail2: { type: String },
+    img_detail3: { type: String },
+    vendeur: { type: String, default: "vendeur@test.com" },
+    valide: { type: Boolean, default: true }
+});
+// Enregistrement du modèle 'Produit'
+mongoose.model('Produit', produitSchema);
+
+// Schéma pour les Utilisateurs
+const utilisateurSchema = new mongoose.Schema({
+    nom: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    motDePasse: { type: String, required: true }
+});
+// Enregistrement du modèle 'Utilisateur'
+mongoose.model('Utilisateur', utilisateurSchema);
+
+// =========================================================
+
 const express = require('express');
 const app = express();
 const PORT = 3000;
+
 // 3. Les middlewares
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// 4.1 La route d'inscription
+// 4.1 La route d'inscription (Note : utilise MySQL d'après ton code actuel)
 app.post('/api/inscription', (req, res) => {
     const { nom, email, mdp } = req.body; 
     
     const sql = 'INSERT INTO utilisateurs (nom, email, motDePasse) VALUES (?, ?, ?)';
     
-    db.query(sql, [nom, email, mdp], (err, result) => {
-        if (err) {
-            console.error("❌ Erreur MySQL :", err);
-            return res.status(500).json({ message: "Erreur lors de l'enregistrement." });
-        }
-        
-        console.log(`👤 Nouvel utilisateur inscrit : ${nom}`);
-        res.json({ message: `Compte créé avec succès dans MySQL pour ${nom} !` });
-    });
+    if (typeof db !== "undefined") {
+        db.query(sql, [nom, email, mdp], (err, result) => {
+            if (err) {
+                console.error("❌ Erreur MySQL :", err);
+                return res.status(500).json({ message: "Erreur lors de l'enregistrement." });
+            }
+            console.log(`👤 Nouvel utilisateur inscrit : ${nom}`);
+            res.json({ message: `Compte créé avec succès dans MySQL pour ${nom} !` });
+        });
+    } else {
+        res.status(500).json({ message: "Base de données MySQL non configurée." });
+    }
 });
 
 // ==========================================
@@ -42,8 +81,6 @@ app.post('/api/connexion', async (req, res) => {
     const { email, mdp } = req.body;
 
     try {
-        // Remplace 'Utilisateur' par le nom de ton modèle Mongoose si différent
-        // On cherche un utilisateur avec cet email et ce mot de passe
         const user = await mongoose.model('Utilisateur').findOne({ email: email, motDePasse: mdp });
 
         if (user) {
@@ -63,9 +100,8 @@ app.post('/api/connexion', async (req, res) => {
 // =========================================================
 app.get('/api/produits', async (req, res) => {
     try {
-        // Remplace 'Produit' par le nom de ton modèle Mongoose si différent
         const results = await mongoose.model('Produit').find({});
-        res.json(results); // Envoie la liste des produits au format JSON
+        res.json(results); 
     } catch (err) {
         console.error("❌ Erreur MongoDB lors de la récupération des produits :", err);
         return res.status(500).json({ error: "Impossible de charger les produits." });
@@ -85,10 +121,9 @@ app.post('/api/commande/valider', async (req, res) => {
     try {
         const ProduitModel = mongoose.model('Produit');
 
-        // On met à jour le stock de chaque produit dans MongoDB
         for (const item of items) {
             await ProduitModel.findByIdAndUpdate(item.id, {
-                $inc: { stock: -item.qty } // $inc avec un nombre négatif diminue le stock
+                $inc: { stock: -item.qty } 
             });
         }
 
