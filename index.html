@@ -691,10 +691,10 @@ async function vendeurAjouterProduit(e) {
     const elImg4 = document.getElementById('p-image4');
 
     if (!elLogistique || !elNom || !elPrix || !elStock || !elCat || !elImg1 || !elImg2 || !elImg3 || !elImg4) {
-        alert("⚠️ Erreur technique : Un ou plusieurs identifiants (IDs) du formulaire sont introuvables dans le code HTML. Vérifie tes 'p-nom', 'p-image1', etc.");
+        alert("⚠️ Erreur technique : Un ou plusieurs identifiants (IDs) du formulaire sont introuvables.");
         return;
     }
-    
+
     let modeLog = elLogistique.value;
     let taux = modeLog === 'FBA' ? 0.10 : 0.05;
 
