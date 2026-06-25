@@ -699,34 +699,53 @@ function afficherCatalogue(items = produits) {
             lancerNotification("Vous êtes maintenant déconnecté.");
         }
 
-        function rafraichirProfilClient() {
-            if(sessionUser) {
-                document.getElementById('bloc-authentification').classList.add('cache');
-                document.getElementById('info-profil-connecte').classList.remove('cache');
-                document.getElementById('txt-nom-client').textContent = sessionUser.nom;
-                
-                const corps = document.getElementById('liste-commandes-client');
-                corps.innerHTML = "";
-                let mesCmds = commandes.filter(c => c.client === sessionUser.email);
-                
-                if(mesCmds.length === 0) {
-                    corps.innerHTML = "<p style='color:#888;'>Aucune commande passée pour l'instant.</p>";
-                }
-                mesCmds.reverse().forEach(c => {
-                    corps.innerHTML += `
-                        <div class="bloc-amazon-profil">
-                            <strong>Commande ID : ${c.id}</strong><br>
-                            Article : ${c.produit} <br>
-                            Montant Payé : ${c.montant} $ | Statut : <span style="color:var(--lp-gold); font-weight:bold;">${c.statut}</span>
-                        </div>
-                    `;
-                });
+       function rafraichirProfilClient() {
+    if(sessionUser) {
+        document.getElementById('bloc-authentification').classList.add('cache');
+        document.getElementById('info-profil-connecte').classList.remove('cache');
+        document.getElementById('txt-nom-client').textContent = sessionUser.nom;
+        
+        const corps = document.getElementById('liste-commandes-client');
+        corps.innerHTML = "";
+        let mesCmds = commandes.filter(c => c.client === sessionUser.email);
+        
+        if(mesCmds.length === 0) {
+            corps.innerHTML = "<p style='color:#888;'>Aucune commande passée pour l'instant.</p>";
+        }
+        mesCmds.reverse().forEach(c => {
+            corps.innerHTML += `
+                <div class="bloc-amazon-profil">
+                    <strong>Commande ID : ${c.id}</strong><br>
+                    Article : ${c.produit} <br>
+                    Montant Payé : ${c.montant} $ | Statut : <span style="color:var(--lp-gold); font-weight:bold;">${c.statut}</span>
+                </div>
+            `;
+        });
+
+        // =========================================================================
+        // 🔒 ZONE DE SÉCURITÉ : Cache ou montre le bouton selon le statut vendeur
+        // =========================================================================
+        const btnMettreEnVente = document.getElementById('btn-mettre-en-vente-client'); 
+        
+        const aDejaUneBoutique = (typeof sessionUser !== "undefined" && sessionUser) && 
+                                 (sessionUser.boutiqueCreee || (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email)));
+
+        if (btnMettreEnVente) {
+            if (!aDejaUneBoutique) {
+                // Si c'est un simple client, on lui cache le bouton de mise en vente
+                btnMettreEnVente.classList.add('cache');
             } else {
-                document.getElementById('bloc-authentification').classList.remove('cache');
-                document.getElementById('info-profil-connecte').classList.add('cache');
+                // Si c'est un vendeur validé, il peut voir le bouton
+                btnMettreEnVente.classList.remove('cache');
             }
         }
+        // =========================================================================
 
+    } else {
+        document.getElementById('bloc-authentification').classList.remove('cache');
+        document.getElementById('info-profil-connecte').classList.add('cache');
+    }
+}
         // LOGIQUE COMPLÈTE DU PANIER FLOTTANT
         function basculerPanier() { document.getElementById('panier-lateral').classList.toggle('ouvert'); }
 
