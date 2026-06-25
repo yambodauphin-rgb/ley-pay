@@ -976,6 +976,24 @@ async function vendeurAjouterProduit(e) {
         return;
     }
 
+    // =========================================================================
+    // 🔒 AJOUT SÉCURITÉ : Blocage des simples clients qui n'ont pas de boutique
+    // =========================================================================
+    const aDejaUneBoutique = (typeof sessionUser !== "undefined" && sessionUser) && 
+                             (sessionUser.boutiqueCreee || (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email)));
+
+    if (!aDejaUneBoutique) {
+        alert("⚠️ Accès refusé : Vous devez d'abord remplir le formulaire d'inscription dans l'onglet 'ESPACE VENDEUR' pour pouvoir mettre un produit en vente.");
+        
+        // Redirection automatique vers l'onglet Espace Vendeur
+        const lienBoutique = document.getElementById('lien-boutique');
+        if (lienBoutique) {
+            lienBoutique.click(); 
+        }
+        return; // Bloque et arrête définitivement l'exécution ici
+    }
+    // =========================================================================
+
     // 3. Calcul des variables de logistique
     let modeLog = elLogistique.value;
     let taux = modeLog === 'FBA' ? 0.10 : 0.05;
@@ -1017,7 +1035,7 @@ async function vendeurAjouterProduit(e) {
             img_detail1: base64Img2,
             img_detail2: base64Img3,
             img_detail3: base64Img4,
-            vendeur: (typeof sessionUser !== "undefined" && sessionUser) ? sessionUser.email : "vendeur@test.com",
+            vendeur: sessionUser.email,
             valide: true
         };
 
@@ -1070,21 +1088,6 @@ async function vendeurAjouterProduit(e) {
     }
 }
 window.vendeurAjouterProduit = vendeurAjouterProduit;
-        function vendeurSoumettreRetrait(e) {
-            e.preventDefault();
-            let amt = parseFloat(document.getElementById('r-montant').value);
-            retraits.push({
-                id: "RET-" + Math.floor(Math.random()*100000),
-                vendeur: sessionUser.email,
-                montant: amt,
-                telephone: document.getElementById('r-tel').value,
-                statut: "En attente"
-            });
-            localStorage.setItem('lp_retrs', JSON.stringify(retraits));
-            lancerNotification("Demande enregistrée. Validation imminente par la direction.");
-            rafraichirEspaceVendeur();
-        }
-
         // PANEL ADMINISTRATEUR ROYAL ET SECURISÉ (MOT DE PASSE COMPLET)
         function verifierCodeAdmin() {
             let mdp = document.getElementById('admin-secret-key').value;
