@@ -1101,4 +1101,6 @@ footer {
     .pin-digit { width: 35px !important; height: 35px; font-size: 16px; }
     .pin-container-6 { gap: 6px; }
     .champs-alignes { flex-direction: column; gap: 0; }
+}.cache {
+    display: none !important;
 }
