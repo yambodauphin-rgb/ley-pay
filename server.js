@@ -46,6 +46,7 @@ mongoose.model('Utilisateur', utilisateurSchema);
 
 // =========================================================
 
+const path = require('path'); // AJOUTE CETTE LIGNE ICI 
 const express = require('express');
 const app = express();
 const PORT = 3000;
