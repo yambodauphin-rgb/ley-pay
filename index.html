@@ -162,35 +162,36 @@
                                     <option value="Habit">Mode</option>
                                     <option value="Maison">Maison</option>
                                 </select>
-/                           </div>
+                            </div>
 
-                    <div class="champ">
-                        <label>Mode Logistique :</label>
-                        <select id="p-logistique">
-                            <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
-                            <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
-                        </select>
-                    </div>
+                            <div class="champ">
+                                <label>Mode Logistique :</label>
+                                <select id="p-logistique">
+                                    <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
+                                    <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
+                                </select>
+                            </div>
 
-                    <div class="champ">
-                        <label for="p-image1">Photo Principale (Stockage) :</label>
-                        <input type="file" id="p-image1" accept="image/*" required>
-                    </div>
-                    <div class="champ">
-                        <label for="p-image2">Photo Détail 1 (Stockage) :</label>
-                        <input type="file" id="p-image2" accept="image/*" required>
-                    </div>
-                    <div class="champ">
-                        <label for="p-image3">Photo Détail 2 (Stockage) :</label>
-                        <input type="file" id="p-image3" accept="image/*" required>
-                    </div>
-                    <div class="champ">
-                        <label for="p-image4">Photo Détail 3 (Stockage) :</label>
-                        <input type="file" id="p-image4" accept="image/*" required>
-                    </div>
+                            <div class="champ">
+                                <label for="p-image1">Photo Principale (Stockage) :</label>
+                                <input type="file" id="p-image1" accept="image/*" required>
+                            </div>
+                            <div class="champ">
+                                <label for="p-image2">Photo Détail 1 (Stockage) :</label>
+                                <input type="file" id="p-image2" accept="image/*" required>
+                            </div>
+                            <div class="champ">
+                                <label for="p-image3">Photo Détail 2 (Stockage) :</label>
+                                <input type="file" id="p-image3" accept="image/*" required>
+                            </div>
+                            <div class="champ">
+                                <label for="p-image4">Photo Détail 3 (Stockage) :</label>
+                                <input type="file" id="p-image4" accept="image/*" required>
+                            </div>
+                            
                             <button type="submit" class="btn-auth-soumettre">Mettre en vente</button>
                         </form>
-
+                    </div>
                         <h3 style="margin-top:30px;">💸 Demander un versement</h3>
                         <form onsubmit="vendeurSoumettreRetrait(event)">
                             <div class="champ"><label>Montant du retrait ($) :</label><input type="number" id="r-montant" min="1" required></div>
