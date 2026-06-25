@@ -107,6 +107,26 @@ app.get('/api/produits', async (req, res) => {
         return res.status(500).json({ error: "Impossible de charger les produits." });
     }
 });
+// =========================================================
+// ROUTE POUR PUBLIER UN PRODUIT DIRECTEMENT EN LIGNE (MongoDB)
+// =========================================================
+app.post('/api/produits', async (req, res) => {
+    try {
+        const ProduitModel = mongoose.model('Produit');
+        
+        // Crée le produit avec les données reçues (nom, prix, images en Base64...)
+        const nouveauProduit = new ProduitModel(req.body);
+        
+        // Enregistrement immédiat dans MongoDB Atlas
+        await nouveauProduit.save();
+        
+        console.log(`📦 Nouveau produit publié en ligne : ${req.body.nom}`);
+        res.status(201).json({ success: true, message: "Produit publié avec succès !" });
+    } catch (err) {
+        console.error("❌ Erreur lors de la publication du produit :", err);
+        res.status(500).json({ error: "Impossible de publier le produit sur la plateforme." });
+    }
+});
 
 // =========================================================
 // 4.4 ROUTE POUR VALIDER LA COMMANDE (Version MongoDB)
