@@ -568,7 +568,7 @@ function afficherCatalogue(items = produits) {
             }
         }
 
-        function rafraichirEspaceVendeur() {
+       function rafraichirEspaceVendeur() {
     const req = document.getElementById('vendeur-auth-requis');
     const corp = document.getElementById('corps-espace-vendeur');
     if(!sessionUser) { req.classList.remove('cache'); corp.classList.add('cache'); return; }
@@ -592,7 +592,7 @@ function afficherCatalogue(items = produits) {
         // 2. IMPORTANT : On vide le tableau pour éviter les doublons d'affichage
         tStocks.innerHTML = ""; 
         
-        // 3. Remplissage du tableau avec les offres du vendeur
+        // 3. Remplissage du tableau avec les offres du vendeur (ID MongoDB connecté)
         mesOffres.forEach(p => {
             tStocks.innerHTML += `<tr>
                 <td>${p.nom}</td>
@@ -601,7 +601,7 @@ function afficherCatalogue(items = produits) {
                 <td>${p.stock} u</td>
                 <td><span style="color:#10b981; font-weight:bold;">En vente</span></td>
                 <td>
-                    <button onclick="supprimerPropreProduit(${p.id})" style="background:#ef4444; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">
+                    <button onclick="supprimerPropreProduit('${p._id}')" style="background:#ef4444; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">
                         Supprimer 🗑️
                     </button>
                 </td>
@@ -619,20 +619,36 @@ function afficherCatalogue(items = produits) {
         });
     }
 }
-        function supprimerPropreProduit(id) {
-    if (confirm("Voulez-vous vraiment supprimer cet article de votre boutique Ley Pay ?")) {
-        // 1. Supprime le produit du tableau global
-        produits = produits.filter(p => p.id !== id);
-        
-        // 2. Sauvegarde la modification dans le localStorage
-        localStorage.setItem('lp_prods', JSON.stringify(produits));
-        
-        // 3. Rafraîchit instantanément le catalogue et l'espace vendeur
-        afficherCatalogue();
-        rafraichirEspaceVendeur();
+
+async function supprimerPropreProduit(id) {
+    if (confirm("Voulez-vous vraiment supprimer définitivement cet article de la plateforme Ley Pay ?")) {
+        try {
+            // 1. Envoi de la demande de suppression réelle à la base de données MongoDB sur Render
+            const response = await fetch(`/api/produits/${id}`, {
+                method: 'DELETE'
+            });
+            
+            const resultat = await response.json();
+            
+            if (resultat.success) {
+                alert(resultat.message);
+                
+                // 2. Supprime aussi du tableau local pour l'affichage immédiat
+                produits = produits.filter(p => p._id !== id);
+                localStorage.setItem('lp_prods', JSON.stringify(produits));
+                
+                // 3. Rafraîchit l'écran
+                if (typeof afficherCatalogue === "function") afficherCatalogue();
+                rafraichirEspaceVendeur();
+            } else {
+                alert("Erreur du serveur : " + resultat.message);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la communication avec le serveur :", error);
+            alert("Impossible de joindre le serveur pour supprimer le produit.");
+        }
     }
 }
-
 function convertirFichierEnBase64(fichier) {
     return new Promise((resolve) => {
         const reader = new FileReader();
