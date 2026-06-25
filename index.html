@@ -132,91 +132,332 @@
             </div>
         </section>
 
-        <section id="section-vendeur" class="cache">
-            <div id="vendeur-auth-requis" class="auth-box text-center">
-                <h3>Veuillez d'Anord vous connecter ou créer un compte client pour ouvrir une boutique vendeur.</h3>
-            </div>
+       <section id="section-vendeur" class="cache">
+    <div id="vendeur-auth-requis" class="auth-box text-center">
+        <h3>Veuillez d'Abord vous connecter ou créer un compte client pour ouvrir une boutique vendeur.</h3>
+    </div>
+    
+    <div id="formulaire-inscription-boutique" class="inscription-vendeur-container cache">
+        <div class="logo-espace-vendeur">
+            <span class="logo-ley">LEY</span> <span class="logo-pay">Pay Business</span>
+        </div>
+        <h2><i class="fas fa-store-alt"></i> Formulaire d'inscription Vendeur</h2>
+        <p class="subtitle">Veuillez remplir l'intégralité des sections pour activer vos fonctionnalités vendeurs.</p>
+
+        <form id="form-inscription-vendeur" onsubmit="gererInscriptionVendeur(event)">
             
-            <div id="corps-espace-vendeur" class="cache">
-                <div class="hero-banner-vendeur">
-                    <h2>Central Vendeur Ley Pay</h2>
-                    <p>Gérez vos stocks, optimisez vos profits et choisissez votre mode logistique.</p>
+            <div class="section-inscription" id="etape-1-profil">
+                <h3><span class="badge-num">1</span> Informations personnelles</h3>
+                
+                <div class="champ-groupe">
+                    <label>Nom complet</label>
+                    <div class="input-avec-icone">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="vendeur-nom" placeholder="Entrez votre nom complet" required>
+                    </div>
                 </div>
 
-                <div class="vendeur-kpi-container">
-                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-brut">0.00 $</div><div>Ventes Brutes</div></div>
-                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-solde">0.00 $</div><div>Votre Solde Retirable</div></div>
+                <div class="champ-groupe">
+                    <label>Nom de la boutique</label>
+                    <div class="input-avec-icone">
+                        <i class="fas fa-store"></i>
+                        <input type="text" id="boutique-nom-form" placeholder="Entrez le nom de votre boutique" required>
+                    </div>
                 </div>
 
-                <div class="profil-container">
-                    <div class="carte-profil-gauche">
-                        <h3>📦 Publier un nouvel article</h3>
-                        <form onsubmit="vendeurAjouterProduit(event)">
-                            <div class="champ"><label>Nom du produit :</label><input type="text" id="p-nom" required></div>
-                            <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="p-prix" required></div>
-                            <div class="champ"><label>Stock disponible :</label><input type="number" id="p-stock" value="10" required></div>
-                            <div class="champ">
-                                <label>Catégorie :</label>
-                                <select id="p-cat">
-                                    <option value="Tech">High-Tech</option>
-                                    <option value="Habit">Mode</option>
-                                    <option value="Maison">Maison</option>
-                                </select>
-                            </div>
-
-                            <div class="champ">
-                                <label>Mode Logistique :</label>
-                                <select id="p-logistique">
-                                    <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
-                                    <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
-                                </select>
-                            </div>
-
-                            <div class="champ">
-                                <label for="p-image1">Photo Principale (Stockage) :</label>
-                                <input type="file" id="p-image1" accept="image/*" required>
-                            </div>
-                            <div class="champ">
-                                <label for="p-image2">Photo Détail 1 (Stockage) :</label>
-                                <input type="file" id="p-image2" accept="image/*" required>
-                            </div>
-                            <div class="champ">
-                                <label for="p-image3">Photo Détail 2 (Stockage) :</label>
-                                <input type="file" id="p-image3" accept="image/*" required>
-                            </div>
-                            <div class="champ">
-                                <label for="p-image4">Photo Détail 3 (Stockage) :</label>
-                                <input type="file" id="p-image4" accept="image/*" required>
-                            </div>
-                            
-                            <button type="button" onclick="vendeurAjouterProduit(event)" class="btn-auth-soumettre">Mettre en vente</button>
-                        </form>
+                <div class="champ-groupe">
+                    <label>Email</label>
+                    <div class="input-avec-icone">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="vendeur-email" placeholder="exemple@email.com" required>
                     </div>
-                        <h3 style="margin-top:30px;">💸 Demander un versement</h3>
-                        <form onsubmit="vendeurSoumettreRetrait(event)">
-                            <div class="champ"><label>Montant du retrait ($) :</label><input type="number" id="r-montant" min="1" required></div>
-                            <div class="champ"><label>Numéro Mobile Money de réception :</label><input type="text" id="r-tel" placeholder="Ex: 0812345678" required></div>
-                            <button type="submit" class="btn-auth-soumettre" style="background:#10b981; color:white;">Valider la demande</button>
-                        </form>
+                </div>
+
+                <div class="champ-groupe">
+                    <label>Numéro de téléphone</label>
+                    <div class="phone-input-container">
+                        <div class="select-prefixe">
+                            <i class="fas fa-phone-alt"></i>
+                            <select id="vendeur-prefixe">
+                                <option value="+243">+243</option>
+                            </select>
+                        </div>
+                        <input type="tel" id="vendeur-telephone" placeholder="Numéro de téléphone" required>
                     </div>
+                </div>
 
-                    <div class="carte-profil-droite">
-                        <h3>📊 Suivi de vos stocks sur Ley Pay</h3>
-                        <table class="table-custom">
-                            <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th><th>Action</th></tr></thead>
-                            <tbody id="vendeur-table-stocks"></tbody>
-                        </table>
-
-                        <h3 style="margin-top:30px;">📜 Historique de vos retraits</h3>
-                        <table class="table-custom">
-                            <thead><tr><th>ID</th><th>Montant</th><th>Numéro</th><th>Statut</th></tr></thead>
-                            <tbody id="vendeur-table-retraits"></tbody>
-                        </table>
+                <div class="champs-alignes">
+                    <div class="champ-groupe">
+                        <label>Pays</label>
+                        <div class="input-avec-icone">
+                            <i class="fas fa-globe"></i>
+                            <select id="vendeur-pays" required>
+                                <option value="RDC">République Démocratique du Congo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="champ-groupe">
+                        <label>Ville</label>
+                        <div class="input-avec-icone">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" id="vendeur-ville" placeholder="Votre ville" required>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
 
+            <div class="section-inscription" id="etape-2-kyc">
+                <h3><span class="badge-num">2</span> Vérification d'identité (sécurité)</h3>
+                <div class="bloc-telechargement-kyc">
+                    <div class="box-upload">
+                        <span>Photo de la pièce d'identité</span>
+                        <div class="upload-zone-interne">
+                            <i class="fas fa-id-card size-upload-icon"></i>
+                            <label for="file-id-card" class="btn-upload-label"><i class="fas fa-arrow-up"></i> Télécharger</label>
+                            <input type="file" id="file-id-card" accept="image/*" required>
+                        </div>
+                    </div>
+                    <div class="box-upload">
+                        <span>Selfie avec la pièce d'identité</span>
+                        <div class="upload-zone-interne">
+                            <i class="fas fa-user-shield size-upload-icon"></i>
+                            <label for="file-selfie" class="btn-upload-label"><i class="fas fa-arrow-up"></i> Télécharger</label>
+                            <input type="file" id="file-selfie" accept="image/*" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-inscription" id="etape-3-boutique">
+                <h3><span class="badge-num">3</span> Informations sur la boutique</h3>
+                
+                <div class="champ-groupe">
+                    <label>Catégorie</label>
+                    <div class="boutons-selection-categories">
+                        <button type="button" class="btn-cat-select active" onclick="selectionnerCategorieForm('Mode')"><i class="fas fa-tshirt"></i> Mode</button>
+                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Beauté')"><i class="fas fa-magic"></i> Beauté</button>
+                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Maison')"><i class="fas fa-home"></i> Maison</button>
+                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Technologie')"><i class="fas fa-laptop"></i> Technologie</button>
+                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Autres')"><i class="fas fa-ellipsis-h"></i> Autres</button>
+                    </div>
+                    <input type="hidden" id="boutique-categorie-input" value="Mode">
+                </div>
+
+                <div class="champ-groupe">
+                    <label>Description de la boutique</label>
+                    <textarea id="boutique-description" rows="4" placeholder="Décrivez votre boutique, vos produits..." required></textarea>
+                </div>
+
+                <div class="champ-groupe">
+                    <label>Logo de la boutique (optionnel)</label>
+                    <div class="upload-logo-zone">
+                        <i class="far fa-image"></i>
+                        <div>
+                            <label for="file-logo" style="cursor:pointer; font-weight:600; color:#D4AF37;">Télécharger votre logo</label>
+                            <p style="margin:5px 0 0 0; font-size:11px; color:#aaa;">PNG, JPG (max. 2MB)</p>
+                        </div>
+                        <input type="file" id="file-logo" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-inscription" id="etape-4-paiement">
+                <h3><span class="badge-num">4</span> Informations de paiement</h3>
+                
+                <div class="champ-groupe">
+                    <label>Nom du titulaire du compte</label>
+                    <input type="text" id="paiement-titulaire" placeholder="Entrez le nom du titulaire" required>
+                </div>
+
+                <div class="champ-groupe">
+                    <label>Moyen de paiement</label>
+                    <div class="onglets-paiement">
+                        <button type="button" class="btn-pay-methode active" onclick="changerMethodePaiement('Mobile Money')"><i class="fas fa-mobile-alt"></i> Mobile Money</button>
+                        <button type="button" class="btn-pay-methode" onclick="changerMethodePaiement('Banque')"><i class="fas fa-university"></i> Banque</button>
+                        <button type="button" class="btn-pay-methode" onclick="changerMethodePaiement('PayPal')"><i class="fab fa-paypal"></i> PayPal</button>
+                        <button type="button" class="btn-pay-methode" onclick="changerMethodePaiement('Autre')"><i class="fas fa-ellipsis-h"></i> Autre</button>
+                    </div>
+                    <input type="hidden" id="paiement-methode-input" value="Mobile Money">
+                </div>
+
+                <div id="details-momo-bloc" class="details-paiement-box">
+                    <h4>Détails Mobile Money</h4>
+                    <div class="champ-groupe">
+                        <label>Nom du réseau utilisé</label>
+                        <select id="momo-reseau">
+                            <option value="Airtel Money">Airtel Money</option>
+                            <option value="Orange Money">Orange Money</option>
+                            <option value="M-Pesa">M-Pesa</option>
+                            <option value="Afrimoney">Afrimoney</option>
+                        </select>
+                    </div>
+                    <div class="champ-groupe">
+                        <label>Numéro Mobile Money</label>
+                        <div class="phone-input-container">
+                            <select style="width:70px; background:#222; color:white; border:1px solid #444;"><option>+243</option></select>
+                            <input type="tel" id="momo-numero" placeholder="Entrez votre numéro">
+                        </div>
+                    </div>
+                    <div class="champ-groupe">
+                        <label>Nom enregistré sur le compte</label>
+                        <input type="text" id="momo-nom-compte" placeholder="Nom tel qu'enregistré sur le compte">
+                    </div>
+                    <div class="checkbox-simple">
+                        <input type="checkbox" id="momo-confirmation" checked required>
+                        <label for="momo-confirmation">Je confirme que ce moyen de paiement m'appartient.</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-inscription" id="etape-5-securite">
+                <h3><span class="badge-num">5</span> Sécurité du compte</h3>
+                
+                <div class="champ-groupe">
+                    <label>Créer un mot de passe</label>
+                    <div class="input-avec-pass">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="secure-pass" placeholder="Entrez un mot de passe" required>
+                    </div>
+                </div>
+
+                <div class="champ-groupe">
+                    <label>Confirmer le mot de passe</label>
+                    <div class="input-avec-pass">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="secure-pass-conf" placeholder="Confirmez votre mot de passe" required>
+                    </div>
+                </div>
+
+                <div class="champ-groupe">
+                    <label>Code PIN vendeur (6 chiffres)</label>
+                    <div class="pin-container-6">
+                        <input type="text" maxlength="1" class="pin-digit" required>
+                        <input type="text" maxlength="1" class="pin-digit" required>
+                        <input type="text" maxlength="1" class="pin-digit" required>
+                        <input type="text" maxlength="1" class="pin-digit" required>
+                        <input type="text" maxlength="1" class="pin-digit" required>
+                        <input type="text" maxlength="1" class="pin-digit" required>
+                    </div>
+                    <input type="hidden" id="secure-pin-final">
+                </div>
+
+                <div class="champ-groupe">
+                    <label>Activer la double authentification</label>
+                    <div class="onglets-paiement">
+                        <button type="button" class="btn-2fa active"><i class="fas fa-comment-alt"></i> SMS</button>
+                        <button type="button" class="btn-2fa"><i class="fas fa-envelope"></i> Email</button>
+                        <button type="button" class="btn-2fa"><i class="fas fa-shield-alt"></i> Application</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-inscription" id="etape-6-conditions">
+                <h3><span class="badge-num">6</span> Conditions d'utilisation</h3>
+                
+                <div class="liste-conditions-cases">
+                    <div class="condition-item">
+                        <input type="checkbox" id="cond-legaux" required>
+                        <label for="cond-legaux">Je confirme que mes produits sont légaux et ne violent aucune loi.</label>
+                    </div>
+                    <div class="condition-item">
+                        <input type="checkbox" id="cond-ventes" required>
+                        <label for="cond-ventes">J'accepte les conditions de vente de la plateforme.</label>
+                    </div>
+                    <div class="condition-item">
+                        <input type="checkbox" id="cond-conf" required>
+                        <label for="cond-conf">J'accepte la politique de confidentialité.</label>
+                    </div>
+                </div>
+
+                <div class="clause-securite-police">
+                    <div class="entete-alerte">
+                        <i class="fas fa-gavel"></i>
+                        <span>AVERTISSEMENT JURIDIQUE DE SÉCURITÉ</span>
+                    </div>
+                    <p class="texte-alerte">
+                        En cas de toute fonctionnalité illégale, d'actes inégaux ou d'escroquerie constatés sur votre compte, 
+                        <strong>préparez-vous à être arrêté immédiatement par ma police et vous serez traduit devant le tribunal.</strong>
+                    </p>
+                    <div class="checkbox-validation-obligatoire">
+                        <input type="checkbox" id="accepter-police-tribunal" required>
+                        <label for="accepter-police-tribunal">
+                            Je certifie avoir lu et compris cet avertissement. J'accepte les poursuites judiciaires et l'arrestation immédiate en cas d'escroquerie de ma part.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-creer-boutique-final">
+                <i class="fas fa-lock"></i> Créer ma boutique
+            </button>
+        </form>
+    </div>
+
+    <div id="corps-espace-vendeur" class="cache">
+        <div class="hero-banner-vendeur">
+            <h2>Central Vendeur Ley Pay</h2>
+            <p>Gérez vos stocks, optimisez vos profits et choisissez votre mode logistique.</p>
+        </div>
+
+        <div class="vendeur-kpi-container">
+            <div class="kpi-box"><div class="kpi-val" id="v-kpi-brut">0.00 $</div><div>Ventes Brutes</div></div>
+            <div class="kpi-box"><div class="kpi-val" id="v-kpi-solde">0.00 $</div><div>Votre Solde Retirable</div></div>
+        </div>
+
+        <div class="profil-container">
+            <div class="carte-profil-gauche">
+                <h3>📦 Publier un nouvel article</h3>
+                <form onsubmit="vendeurAjouterProduit(event)">
+                    <div class="champ"><label>Nom du produit :</label><input type="text" id="p-nom" required></div>
+                    <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="p-prix" required></div>
+                    <div class="champ"><label>Stock disponible :</label><input type="number" id="p-stock" value="10" required></div>
+                    <div class="champ">
+                        <label>Catégorie :</label>
+                        <select id="p-cat">
+                            <option value="Tech">High-Tech</option>
+                            <option value="Habit">Mode</option>
+                            <option value="Maison">Maison</option>
+                        </select>
+                    </div>
+                    <div class="champ">
+                        <label>Mode Logistique :</label>
+                        <select id="p-logistique">
+                            <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
+                            <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
+                        </select>
+                    </div>
+                    <div class="champ"><label for="p-image1">Photo Principale :</label><input type="file" id="p-image1" accept="image/*" required></div>
+                    <div class="champ"><label for="p-image2">Photo Détail 1 :</label><input type="file" id="p-image2" accept="image/*" required></div>
+                    <div class="champ"><label for="p-image3">Photo Détail 2 :</label><input type="file" id="p-image3" accept="image/*" required></div>
+                    <div class="champ"><label for="p-image4">Photo Détail 3 :</label><input type="file" id="p-image4" accept="image/*" required></div>
+                    
+                    <button type="submit" class="btn-auth-soumettre">Mettre en vente</button>
+                </form>
+                
+                <h3 style="margin-top:30px;">💸 Demander un versement</h3>
+                <form onsubmit="vendeurSoumettreRetrait(event)">
+                    <div class="champ"><label>Montant du retrait ($) :</label><input type="number" id="r-montant" min="1" required></div>
+                    <div class="champ"><label>Numéro Mobile Money :</label><input type="text" id="r-tel" placeholder="Ex: 0812345678" required></div>
+                    <button type="submit" class="btn-auth-soumettre" style="background:#10b981; color:white;">Valider la demande</button>
+                </form>
+            </div>
+
+            <div class="carte-profil-droite">
+                <h3>📊 Suivi de vos stocks</h3>
+                <table class="table-custom">
+                    <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th><th>Action</th></tr></thead>
+                    <tbody id="vendeur-table-stocks"></tbody>
+                </table>
+
+                <h3 style="margin-top:30px;">📜 Historique des retraits</h3>
+                <table class="table-custom">
+                    <thead><tr><th>ID</th><th>Montant</th><th>Numéro</th><th>Statut</th></tr></thead>
+                    <tbody id="vendeur-table-retraits"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
         <section id="section-admin" class="cache">
             <div id="admin-verrou-box" class="auth-box text-center">
                 <h3 class="titre-vendeur-verrou">Accès Hautement Sécurisé</h3>
@@ -1088,6 +1329,107 @@ function ajouterPanier(id) {
         // Lancement initial du catalogue général
         chargerProduitsDepuisBDD();
         document.getElementById('fav-badge-count').textContent = favoris.length;
+        // =========================================================================
+// GESTION DYNAMIQUE DE L'INSCRIPTION ET DE L'ESPACE VENDEUR (LEY BUSINESS)
+// =========================================================================
+
+/**
+ * Étape 3 : Sélection dynamique de la catégorie de la boutique
+ */
+function selectionnerCategorieForm(categorie) {
+    // Supprime la classe active de tous les boutons de catégorie
+    document.querySelectorAll('.btn-cat-select').forEach(btn => btn.classList.remove('active'));
+    
+    // Ajoute la classe active au bouton cliqué
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
+    
+    // Stocke la valeur choisie dans le champ masqué pour l'envoi du formulaire
+    document.getElementById('boutique-categorie-input').value = categorie;
+    console.log("Catégorie sélectionnée :", categorie);
+}
+
+/**
+ * Étape 4 : Basculement des modes de paiement avec affichage contextuel de Mobile Money
+ */
+function changerMethodePaiement(methode) {
+    // Modifie le style actif sur les boutons
+    document.querySelectorAll('.btn-pay-methode').forEach(btn => btn.classList.remove('active'));
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
+    
+    // Met à jour la valeur finale
+    document.getElementById('paiement-methode-input').value = methode;
+    
+    // Affiche ou masque dynamiquement le sous-formulaire Mobile Money
+    const momoBloc = document.getElementById('details-momo-bloc');
+    if (methode === 'Mobile Money') {
+        momoBloc.style.display = 'block';
+        // Rendre les champs internes requis si Mobile Money est choisi
+        momoBloc.querySelectorAll('input[type="tel"]').forEach(input => input.required = true);
+    } else {
+        momoBloc.style.display = 'none';
+        momoBloc.querySelectorAll('input[type="tel"]').forEach(input => input.required = false);
+    }
+    console.log("Moyen de paiement configuré sur :", methode);
+}
+
+/**
+ * Étape 5 : Gestion intelligente de la saisie fluide du Code PIN (6 chiffres distincts)
+ */
+document.querySelectorAll('.pin-digit').forEach((input, index, listeChamps) => {
+    // Événement d'écriture : passe automatiquement au champ suivant
+    input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < listeChamps.length - 1) {
+            listeChamps[index + 1].focus();
+        }
+        
+        // Calcule en temps réel le code PIN concaténé complet
+        let codePinConcatene = "";
+        listeChamps.forEach(champ => codePinConcatene += champ.value);
+        document.getElementById('secure-pin-final').value = codePinConcatene;
+    });
+
+    // Événement de retour arrière : retourne au champ précédent si vide
+    input.addEventListener('keydown', (e) => {
+        if (e.key === "Backspace" && input.value.length === 0 && index > 0) {
+            listeChamps[index - 1].focus();
+        }
+    });
+});
+
+/**
+ * Étape 6 : Interception de la soumission du formulaire et validation stricte
+ */
+function gererInscriptionVendeur(event) {
+    event.preventDefault(); // Empêche le rechargement forcé de la page
+
+    // Validation de sécurité : Vérification de la longueur du code PIN à 6 chiffres
+    const codePinFinal = document.getElementById('secure-pin-final').value;
+    if (!codePinFinal || codePinFinal.length !== 6) {
+        alert("⚠️ Erreur de sécurité : Veuillez saisir un code PIN complet à 6 chiffres.");
+        return;
+    }
+
+    // Récupération des données pour simulation ou envoi API
+    const nomBoutique = document.querySelector('input[placeholder="Entrez le nom de votre boutique"]').value;
+    const categorie = document.getElementById('boutique-categorie-input').value;
+    const paiement = document.getElementById('paiement-methode-input').value;
+
+    // Notification de succès éclatante
+    alert("🎉 Félicitations ! Votre boutique '" + nomBoutique + "' (" + categorie + ") a été créée avec succès sur LEY Business.\nMode de versement configuré : " + paiement);
+    
+    // Transition d'affichage vers l'Espace Vendeur en direct
+    const formulaireSection = document.getElementById('formulaire-inscription-boutique');
+    const espaceVendeurSection = document.getElementById('corps-espace-vendeur'); 
+    
+    if(formulaireSection && espaceVendeurSection) {
+        formulaireSection.style.display = 'none';
+        espaceVendeurSection.style.display = 'block'; // Affiche votre tableau de bord
+    }
+}
     </script>
 </body>
 </html>

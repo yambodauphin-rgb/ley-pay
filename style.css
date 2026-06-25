@@ -859,3 +859,246 @@ footer {
         overflow-x: auto; /* Permet de glisser de gauche à droite sur mobile */
         white-space: nowrap; 
     }
+/* =========================================================================
+   EXTENSIONS ET COMPOSANTS POUR LE FORMULAIRE D'INSCRIPTION VENDEUR LEY PAY
+   ========================================================================= */
+
+/* Alignement des icônes dans les champs de saisie */
+.input-avec-icone, .input-avec-pass {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.input-avec-icone i, .input-avec-pass i {
+    position: absolute;
+    left: 12px;
+    color: #D4AF37; /* Or Ley Pay */
+}
+.input-avec-icone input, .input-avec-icone select, .input-avec-pass input {
+    padding-left: 38px !important;
+}
+
+/* Gestion du préfixe téléphonique stylisé */
+.select-prefixe {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #222;
+    border-radius: 6px 0 0 6px;
+    border: 1px solid #444;
+    padding: 0 10px;
+}
+.select-prefixe i { color: #D4AF37; margin-right: 5px; }
+.select-prefixe select { border: none !important; background: transparent !important; color: white; padding: 11px 5px !important; width: auto !important;}
+
+/* Étape 2 : Zones d'upload pour les documents (KYC) */
+.bloc-telechargement-kyc {
+    display: flex;
+    gap: 20px;
+}
+.box-upload {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.box-upload span { font-size: 13px; font-weight: 600; color: #ccc; }
+.upload-zone-interne {
+    border: 2px dashed #444;
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.size-upload-icon { font-size: 32px; color: #D4AF37; }
+.btn-upload-label {
+    background: #222;
+    border: 1px solid #D4AF37;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.upload-zone-interne input[type="file"], .upload-logo-zone input[type="file"] { display: none; }
+
+/* Étape 3 & 4 : Boutons de sélection (Catégories & Moyens de paiement) */
+.boutons-selection-categories, .onglets-paiement {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+.btn-cat-select, .btn-pay-methode, .btn-2fa {
+    background: #222;
+    border: 1px solid #444;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+.btn-cat-select.active, .btn-pay-methode.active, .btn-2fa.active {
+    border-color: #D4AF37;
+    background: rgba(212, 175, 55, 0.1);
+    color: #D4AF37;
+}
+
+/* Zone Upload Logo Simple */
+.upload-logo-zone {
+    border: 1px dashed #444;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #1a1a1a;
+    border-radius: 6px;
+}
+.upload-logo-zone i { font-size: 24px; color: #666; }
+
+/* Conteneur des détails du mode de paiement dynamique */
+.details-paiement-box {
+    background: #151515;
+    border: 1px solid #222;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+.details-paiement-box h4 { margin: 0 0 12px 0; font-size: 14px; color: #D4AF37; }
+.checkbox-simple { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.checkbox-simple label { font-size: 12px; color: #aaa; margin: 0; }
+
+/* Étape 5 : Grille pour le Code PIN de Sécurité (6 Chiffres) */
+.pin-container-6 {
+    display: flex;
+    gap: 10px;
+}
+.pin-digit {
+    width: 45px !important;
+    height: 45px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    background: #222 !important;
+    border: 1px solid #444 !important;
+    color: white;
+    border-radius: 6px;
+}
+.pin-digit:focus { border-color: #D4AF37 !important; outline: none; }
+
+/* Étape 6 : Liste des cases de validation */
+.liste-conditions-cases {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.condition-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.condition-item input { width: 16px; height: 16px; accent-color: #D4AF37; cursor: pointer; }
+.condition-item label { font-size: 13px; color: #ddd; cursor: pointer; }
+
+/* Bouton Vert Final de Soumission d'Inscription */
+.btn-creer-boutique-final {
+    width: 100%;
+    background: #2e7d32; /* Vert sérieux de succès */
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+.btn-creer-boutique-final:hover { background: #1b5e20; }
+
+/* Ajustements Responsives pour Écrans Mobiles */
+@media(max-width: 600px) {
+    .bloc-telechargement-kyc { flex-direction: column; gap: 15px; }
+    .pin-digit { width: 35px !important; height: 35px; font-size: 16px; }
+    .pin-container-6 { gap: 6px; }
+}
+.inscription-vendeur-container {
+    max-width: 750px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #111111;
+    border: 1px solid #D4AF37;
+    border-radius: 12px;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+}
+.logo-espace-vendeur { text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+.logo-espace-vendeur .logo-ley { color: #D4AF37; }
+.logo-espace-vendeur .logo-pay { color: #ffffff; }
+.inscription-vendeur-container h2 { text-align: center; margin: 5px 0 8px 0; font-size: 22px; color: white; }
+.inscription-vendeur-container .subtitle { text-align: center; font-size: 14px; color: #ccc; margin-bottom: 30px; }
+.section-inscription { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.section-inscription h3 { font-size: 16px; color: #D4AF37; margin: 0 0 18px 0; display: flex; align-items: center; gap: 10px; }
+.badge-num { background: #D4AF37; color: #111; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
+.champ-groupe { margin-bottom: 15px; }
+.champ-groupe label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #ddd; }
+.champ-groupe input, .champ-groupe select, .champ-groupe textarea { width: 100%; padding: 11px; background: #222; border: 1px solid #444; border-radius: 6px; color: white; font-size: 14px; box-sizing: border-box; }
+.champ-groupe input:focus, .champ-groupe select:focus, .champ-groupe textarea:focus { border-color: #D4AF37; outline: none; }
+.input-avec-icone, .input-avec-pass { position: relative; display: flex; align-items: center; }
+.input-avec-icone i, .input-avec-pass i { position: absolute; left: 12px; color: #D4AF37; }
+.input-avec-icone input, .input-avec-icone select, .input-avec-pass input { padding-left: 38px !important; }
+.phone-input-container { display: flex; gap: 10px; }
+.select-prefixe { position: relative; display: flex; align-items: center; background: #222; border-radius: 6px 0 0 6px; border: 1px solid #444; padding: 0 10px; }
+.select-prefixe i { color: #D4AF37; margin-right: 5px; }
+.select-prefixe select { border: none !important; background: transparent !important; color: white; padding: 11px 5px !important; width: auto !important;}
+.champs-alignes { display: flex; gap: 15px; }
+.champs-alignes .champ-groupe { flex: 1; }
+.bloc-telechargement-kyc { display: flex; gap: 20px; }
+.box-upload { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.box-upload span { font-size: 13px; font-weight: 600; color: #ccc; }
+.upload-zone-interne { border: 2px dashed #444; background: #1a1a1a; border-radius: 8px; padding: 25px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.size-upload-icon { font-size: 32px; color: #D4AF37; }
+.btn-upload-label { background: #222; border: 1px solid #D4AF37; color: white; padding: 6px 15px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+.upload-zone-interne input[type="file"], .upload-logo-zone input[type="file"] { display: none; }
+.boutons-selection-categories, .onglets-paiement { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+.btn-cat-select, .btn-pay-methode, .btn-2fa { background: #222; border: 1px solid #444; color: white; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+.btn-cat-select.active, .btn-pay-methode.active, .btn-2fa.active { border-color: #D4AF37; background: rgba(212, 175, 55, 0.1); color: #D4AF37; }
+.upload-logo-zone { border: 1px dashed #444; padding: 15px; display: flex; align-items: center; gap: 15px; background: #1a1a1a; border-radius: 6px; }
+.upload-logo-zone i { font-size: 24px; color: #666; }
+.details-paiement-box { background: #151515; border: 1px solid #222; padding: 15px; border-radius: 6px; margin-top: 15px; }
+.details-paiement-box h4 { margin: 0 0 12px 0; font-size: 14px; color: #D4AF37; }
+.checkbox-simple { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.checkbox-simple label { font-size: 12px; color: #aaa; margin: 0; }
+.pin-container-6 { display: flex; gap: 10px; }
+.pin-digit { width: 45px !important; height: 45px; text-align: center; font-size: 18px; font-weight: bold; background: #222 !important; border: 1px solid #444 !important; color: white; border-radius: 6px; }
+.pin-digit:focus { border-color: #D4AF37 !important; outline: none; }
+.liste-conditions-cases { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.condition-item { display: flex; align-items: center; gap: 10px; }
+.condition-item input { width: 16px; height: 16px; accent-color: #D4AF37; cursor: pointer; }
+.condition-item label { font-size: 13px; color: #ddd; cursor: pointer; }
+.clause-securite-police { background-color: #2a0808; border: 2px solid #ff3333; padding: 20px; border-radius: 8px; margin: 25px 0; }
+.entete-alerte { color: #ff3333; font-size: 16px; font-weight: bold; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.texte-alerte { color: #ffcccc; font-size: 13.5px; line-height: 1.5; margin: 0 0 15px 0; }
+.checkbox-validation-obligatoire { background: rgba(255, 51, 51, 0.1); padding: 12px; border-radius: 6px; border: 1px dashed #ff3333; display: flex; align-items: flex-start; gap: 10px; }
+.checkbox-validation-obligatoire input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; cursor: pointer; accent-color: #ff3333; }
+.checkbox-validation-obligatoire label { color: #ffffff; font-size: 13px; line-height: 1.4; cursor: pointer; font-weight: 500; }
+.btn-creer-boutique-final { width: 100%; background: #2e7d32; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s; }
+.btn-creer-boutique-final:hover { background: #1b5e20; }
+@media(max-width: 600px) {
+    .bloc-telechargement-kyc { flex-direction: column; gap: 15px; }
+    .pin-digit { width: 35px !important; height: 35px; font-size: 16px; }
+    .pin-container-6 { gap: 6px; }
+    .champs-alignes { flex-direction: column; gap: 0; }
+}
