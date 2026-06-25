@@ -154,8 +154,8 @@ app.post('/api/commande/valider', async (req, res) => {
         return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour de certains stocks." });
     }
 });
-// Remplace app.get('*', ...) par ceci :
-app.get('/:splat*', (req, res) => {
+// La méthode officielle et ultra-compatible pour Express récent
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 // 5. Lancement du serveur
