@@ -155,7 +155,7 @@ app.post('/api/commande/valider', async (req, res) => {
     }
 });
 // Remplace app.get('*', ...) par ceci :
-app.get('(.*)', (req, res) => {
+app.get('/:splat*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 // 5. Lancement du serveur
