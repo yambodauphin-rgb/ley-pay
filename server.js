@@ -51,9 +51,8 @@ const app = express();
 const PORT = 3000;
 
 // 3. Les middlewares
-app.use(express.json());
-app.use(express.static(__dirname));
-
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // 4.1 La route d'inscription (Note : utilise MySQL d'après ton code actuel)
 app.post('/api/inscription', (req, res) => {
     const { nom, email, mdp } = req.body; 
