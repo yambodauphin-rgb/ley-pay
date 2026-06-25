@@ -679,7 +679,7 @@ async function vendeurAjouterProduit(e) {
         e.preventDefault();
     }
 
-    // SÉCURITÉ COMPLEMENTAIRE : Vérification de l'existence des éléments HTML de base
+    // 1. Récupération des éléments HTML du formulaire
     const elLogistique = document.getElementById('p-logistique');
     const elNom = document.getElementById('p-nom');
     const elPrix = document.getElementById('p-prix');
@@ -690,27 +690,33 @@ async function vendeurAjouterProduit(e) {
     const elImg3 = document.getElementById('p-image3');
     const elImg4 = document.getElementById('p-image4');
 
+    // 2. Sécurité : Vérification que tous les champs existent dans la page HTML
     if (!elLogistique || !elNom || !elPrix || !elStock || !elCat || !elImg1 || !elImg2 || !elImg3 || !elImg4) {
-        alert("⚠️ Erreur technique : Un ou plusieurs identifiants (IDs) du formulaire sont introuvables.");
+        alert("⚠️ Erreur technique : Un ou plusieurs champs du formulaire sont introuvables.");
         return;
     }
 
+    // 3. Calcul des variables de logistique
     let modeLog = elLogistique.value;
     let taux = modeLog === 'FBA' ? 0.10 : 0.05;
 
-    // Récupération des 4 fichiers sélectionnés sur le téléphone/PC
+    // 4. Récupération des fichiers images
     const file1 = elImg1.files[0];
     const file2 = elImg2.files[0];
     const file3 = elImg3.files[0];
     const file4 = elImg4.files[0];
 
+    // 5. Sécurité : Vérification des 4 photos
     if (!file1 || !file2 || !file3 || !file4) {
         alert("Veuillez sélectionner les 4 photos obligatoires avant de valider.");
         return;
     }
 
+    // Déclaration globale de la variable produit pour qu'elle fonctionne aussi dans le bloc catch (secours)
+    let nouveauProduit = null;
+
     try {
-        // Conversion et compression simultanée des 4 images en base64
+        // 6. Conversion des images en Base64 simultanément
         const [base64Img1, base64Img2, base64Img3, base64Img4] = await Promise.all([
             convertirFichierEnBase64(file1),
             convertirFichierEnBase64(file2),
@@ -718,8 +724,8 @@ async function vendeurAjouterProduit(e) {
             convertirFichierEnBase64(file4)
         ]);
 
-        // Création de l'objet produit
-        let nouveauProduit = {
+        // 7. Création de l'objet produit complet
+        nouveauProduit = {
             id: Date.now(),
             nom: elNom.value,
             prix: parseFloat(elPrix.value),
@@ -727,20 +733,18 @@ async function vendeurAjouterProduit(e) {
             cat: elCat.value,
             logistique: modeLog,
             commission_taux: taux,
-            img: base64Img1,          // Photo principale
-            img_detail1: base64Img2,  // Photo détail 1
-            img_detail2: base64Img3,  // Photo détail 2
-            img_detail3: base64Img4,  // Photo détail 3
+            img: base64Img1,
+            img_detail1: base64Img2,
+            img_detail2: base64Img3,
+            img_detail3: base64Img4,
             vendeur: (typeof sessionUser !== "undefined" && sessionUser) ? sessionUser.email : "vendeur@test.com",
-            valide: true              // S'assure que le produit est actif dès le départ
+            valide: true
         };
 
-        // --- ENVOI EN LIGNE VERS TON SERVEUR RENDER ---
+        // 8. Envoi en ligne vers ton serveur Render
         const reponse = await fetch('/api/produits', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(nouveauProduit)
         });
 
@@ -748,39 +752,37 @@ async function vendeurAjouterProduit(e) {
             throw new Error("Le serveur en ligne n'a pas pu valider l'enregistrement.");
         }
 
-        // Si le serveur accepte le produit, on recharge la liste propre depuis la BDD
+        // Si le serveur accepte le produit, on recharge la liste depuis la BDD
         if (typeof chargerProduitsDepuisBDD === "function") {
             await chargerProduitsDepuisBDD();
         } else {
-            // Plan de secours local au cas où
-            if (typeof produits === "undefined" || !Array.isArray(produits)) {
-                produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
-            }
-            produits.push(nouveauProduit);
-            localStorage.setItem('lp_prods', JSON.stringify(produits));
+            let produitsLocaux = JSON.parse(localStorage.getItem('lp_prods')) || [];
+            produitsLocaux.push(nouveauProduit);
+            localStorage.setItem('lp_prods', JSON.stringify(produitsLocaux));
             if (typeof afficherCatalogue === "function") afficherCatalogue();
         }
         
-        // Vider le formulaire complet
-        e.target.reset();
-
-        // Actualisation instantanée du tableau des stocks
+        if (e.target && typeof e.target.reset === "function") {
+            e.target.reset();
+        }
         if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
         
         alert("🎉 Succès ! Votre produit est officiellement publié sur la base de données globale de Ley Pay !");
 
     } catch (erreur) {
         console.error("Détail de l'erreur détectée :", erreur);
-        
-        // REPLI HORS-LIGNE : Si ton serveur rencontre une erreur réseau
         console.warn("Enregistrement en mode local (Secours informatique).");
-        if (typeof produits === "undefined" || !Array.isArray(produits)) {
-            produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
-        }
-        produits.push(nouveauProduit);
-        localStorage.setItem('lp_prods', JSON.stringify(produits));
         
-        e.target.reset();
+        // Mode secours sans plantage
+        let produitsLocaux = JSON.parse(localStorage.getItem('lp_prods')) || [];
+        if (nouveauProduit) {
+            produitsLocaux.push(nouveauProduit);
+            localStorage.setItem('lp_prods', JSON.stringify(produitsLocaux));
+        }
+        
+        if (e.target && typeof e.target.reset === "function") {
+            e.target.reset();
+        }
         if (typeof afficherCatalogue === "function") afficherCatalogue();
         if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
         
