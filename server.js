@@ -154,7 +154,11 @@ app.post('/api/commande/valider', async (req, res) => {
         return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour de certains stocks." });
     }
 });
-
+// Route par défaut pour servir la page d'accueil index.html
+const path = require('path');
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+})
 // 5. Lancement du serveur
 app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur le port : ${PORT}`);
