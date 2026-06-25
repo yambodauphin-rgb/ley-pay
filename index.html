@@ -674,10 +674,11 @@ function convertirFichierEnBase64(fichier) {
         reader.readAsDataURL(fichier);
     });
 }
-
 async function vendeurAjouterProduit(e) {
-    e.preventDefault();
-    
+    if (e && typeof e.preventDefault === "function") {
+        e.preventDefault();
+    }
+
     // SÉCURITÉ COMPLEMENTAIRE : Vérification de l'existence des éléments HTML de base
     const elLogistique = document.getElementById('p-logistique');
     const elNom = document.getElementById('p-nom');
