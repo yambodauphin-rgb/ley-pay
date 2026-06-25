@@ -156,19 +156,17 @@ app.post('/api/commande/valider', async (req, res) => {
         return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour de certains stocks." });
     }
 });
-// La méthode officielle et ultra-compatible pour Express récent
 // Route pour supprimer un produit de partout (MongoDB)
 app.delete('/api/produits/:id', async (req, res) => {
     try {
         const produitId = req.params.id;
         
-        // On récupère le modèle de manière propre
-        const ProduitModel = mongoose.model('Produit');
+        // CORRECTION : Récupération sécurisée du modèle déjà enregistré sur mongoose
+        const MonModeleProduit = mongoose.models.Produit || mongoose.model('Produit');
         
-        // On supprime le produit en ciblant son identifiant unique _id
-        const resultat = await ProduitModel.deleteOne({ _id: produitId });
+        // Suppression du produit via son identifiant unique
+        const resultat = await MonModeleProduit.deleteOne({ _id: produitId });
         
-        // Si aucun produit n'a été affecté (resultat.deletedCount === 0)
         if (resultat.deletedCount === 0) {
             return res.status(404).json({ success: false, message: "Produit introuvable ou déjà supprimé." });
         }
