@@ -704,14 +704,13 @@ async function vendeurAjouterProduit(e) {
     const file3 = elImg3.files[0];
     const file4 = elImg4.files[0];
 
-    // Sécurité : on vérifie que le vendeur a bien mis les 4 photos
     if (!file1 || !file2 || !file3 || !file4) {
         alert("Veuillez sélectionner les 4 photos obligatoires avant de valider.");
         return;
     }
 
     try {
-        // Conversion et compression simultanée des 4 images
+        // Conversion et compression simultanée des 4 images en base64
         const [base64Img1, base64Img2, base64Img3, base64Img4] = await Promise.all([
             convertirFichierEnBase64(file1),
             convertirFichierEnBase64(file2),
@@ -720,7 +719,7 @@ async function vendeurAjouterProduit(e) {
         ]);
 
         // Création de l'objet produit
-        const nouveauProduit = {
+        let nouveauProduit = {
             id: Date.now(),
             nom: elNom.value,
             prix: parseFloat(elPrix.value),
