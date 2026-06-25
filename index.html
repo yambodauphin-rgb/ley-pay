@@ -811,10 +811,37 @@ function afficherCatalogue(items = produits) {
 
        function rafraichirEspaceVendeur() {
     const req = document.getElementById('vendeur-auth-requis');
+    const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
-    if(!sessionUser) { req.classList.remove('cache'); corp.classList.add('cache'); return; }
-    req.classList.add('cache'); corp.classList.remove('cache');
 
+    // 1. Si l'utilisateur n'est pas connecté du tout
+    if(!sessionUser) { 
+        if(req) req.classList.remove('cache'); 
+        if(formInsc) formInsc.classList.add('cache');
+        if(corp) corp.classList.add('cache'); 
+        return; 
+    }
+    
+    // L'utilisateur est connecté, on cache le bloc d'authentification requise
+    if(req) req.classList.add('cache'); 
+
+    // 2. VÉRIFICATION : L'utilisateur a-t-il déjà créé une boutique ?
+    // (On vérifie si sessionUser possède une propriété 'boutiqueCreee' ou similaire. 
+    // Si tu n'as pas encore cette variable dans ta base, on peut vérifier s'il a déjà des offres existantes)
+    const aDejaUneBoutique = sessionUser.boutiqueCreee || produits.some(p => p.vendeur === sessionUser.email);
+
+    if (aDejaUneBoutique) {
+        // Il a une boutique : on cache le formulaire d'inscription et on montre le tableau de bord
+        if(formInsc) formInsc.style.setProperty('display', 'none', 'important');
+        if(corp) corp.classList.remove('cache');
+    } else {
+        // Il n'a pas de boutique : on montre le formulaire et on cache le tableau de bord
+        if(formInsc) formInsc.style.setProperty('display', 'block', 'important');
+        if(corp) corp.classList.add('cache');
+        return; // On arrête la fonction ici puisqu'il n'a pas encore de données à charger
+    }
+
+    // 3. Chargement des données du tableau de bord (uniquement s'il a sa boutique)
     let mesOffres = produits.filter(p => p.vendeur === sessionUser.email);
     let mesVentes = commandes.filter(c => c.vendeur === sessionUser.email);
     
@@ -826,14 +853,11 @@ function afficherCatalogue(items = produits) {
     document.getElementById('v-kpi-brut').textContent = totalBrut.toFixed(2) + " $";
     document.getElementById('v-kpi-solde').textContent = soldeNet.toFixed(2) + " $";
 
-    // 1. Récupération sécurisée du tableau des stocks (on cible le tbody de table-custom)
+    // Récupération du tableau des stocks
     const tStocks = document.querySelector('.table-custom tbody') || document.getElementById('t-stocks');
     
     if (tStocks) {
-        // 2. IMPORTANT : On vide le tableau pour éviter les doublons d'affichage
         tStocks.innerHTML = ""; 
-        
-        // 3. Remplissage du tableau avec les offres du vendeur (ID MongoDB connecté)
         mesOffres.forEach(p => {
             tStocks.innerHTML += `<tr>
                 <td>${p.nom}</td>
@@ -848,10 +872,9 @@ function afficherCatalogue(items = produits) {
                 </td>
             </tr>`;
         });
-    } else {
-        console.warn("Le conteneur du tableau des stocks n'a pas été trouvé dans le HTML.");
     }
 
+    // Récupération du tableau des retraits
     const tRetraits = document.getElementById('vendeur-table-retraits');
     if (tRetraits) {
         tRetraits.innerHTML = "";
