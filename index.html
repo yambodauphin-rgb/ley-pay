@@ -132,8 +132,8 @@
             </div>
         </section>
 
-       <section id="section-vendeur" class="cache">
-    <div id="vendeur-auth-requis" class="auth-box text-center cache"></div>
+      <section id="section-vendeur" class="cache">
+    <div id="vendeur-auth-requis" class="auth-box text-center cache">
         <h3>Veuillez d'Abord vous connecter ou créer un compte client pour ouvrir une boutique vendeur.</h3>
     </div>
     
@@ -310,7 +310,7 @@
             </div>
 
             <div class="section-inscription" id="etape-5-securite">
-                <h3><span class="badge-num">5</span> Sécurité du compte</h3>
+                <h3><span class="badge-num">5</span> Siège de sécurité</h3>
                 
                 <div class="champ-groupe">
                     <label>Créer un mot de passe</label>
@@ -388,10 +388,24 @@
             </div>
 
             <button type="submit" class="btn-creer-ma-boutique">
-    <i class="fas fa-lock"></i> Créer ma boutique
-</button>
+                <i class="fas fa-lock"></i> Créer ma boutique
+            </button>
         </form>
     </div>
+
+    <div id="vendeur-verrouille-pin" class="auth-box text-center cache" style="max-width: 450px; margin: 40px auto; padding: 30px; background: #111; border: 1px solid #D4AF37; border-radius: 12px; color: white;">
+        <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Sécurisé</h3>
+        <p style="font-size: 14px; color: #ccc; margin-bottom: 20px;">Veuillez saisir votre Code PIN à 6 chiffres pour accéder à votre Central Vendeur.</p>
+        
+        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
+            <input type="password" maxlength="6" id="input-pin-connexion" placeholder="******" style="width: 150px; height: 45px; text-align: center; font-size: 22px; letter-spacing: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 6px;">
+        </div>
+        
+        <button onclick="verifierPinVendeur()" style="width: 100%; background: #D4AF37; color: #111; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+            Déverrouiller l'Espace Vendeur
+        </button>
+    </div>
+    </section>
 
     <div id="corps-espace-vendeur" class="cache">
         <div class="hero-banner-vendeur">
