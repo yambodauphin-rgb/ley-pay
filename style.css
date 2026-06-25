@@ -782,23 +782,34 @@ footer {
         width: 100%;
     }
 
-    /* 4. Gestion de la grille de produits principale */
-    .zone-produits, #grille-produits {
-        display: grid;
-        grid-template-columns: 1fr !important; /* Une seule colonne sur mobile */
-        gap: 20px;
-        padding: 10px !important;
+    /* 4. Gestion de la grille de produits principale (Passage à 2 colonnes comme Alibaba) */
+    .zone-produits, #grille-produits, .catalogue-conteneur {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* 2 produits par ligne */
+        gap: 10px !important; /* Espace réduit entre les cartes */
+        padding: 8px !important;
     }
 
-    /* 5. Empêche les images de déborder */
-    img {
-        max-width: 100%;
-        height: auto;
+    /* Ajustement de la carte de l'article pour téléphone */
+    .produit-carte, .product-card, .carte {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 8px !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
     }
 
-    /* ==========================================
-       CORRECTION COMPLÈTE ESPACE VENDEUR (HTML)
-       ========================================== */
+    /* 5. Réduction et étalonnage de la taille de l'icône/image du produit */
+    .zone-produits img, #grille-produits img, .produit-carte img, .carte img {
+        width: 100% !important;
+        height: 130px !important; /* Taille de l'icône réduite pour mobile */
+        object-fit: cover !important; /* L'image ne sera pas déformée */
+        border-radius: 6px !important;
+    }
+}
+    /* =======================================
+   CORRECTION COMPLÈTE ESPACE VENDEUR (HTML)
+   ======================================= */
 
     /* Blocs de statistiques (KPI) sur une seule colonne */
     .vendeur-kpi-container {
@@ -848,4 +859,3 @@ footer {
         overflow-x: auto; /* Permet de glisser de gauche à droite sur mobile */
         white-space: nowrap; 
     }
-}
