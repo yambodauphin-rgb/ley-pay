@@ -631,14 +631,17 @@ function basculerOnglet(nomOnglet) {
         // =========================================================================
 // 1. LA FONCTION DE ROUTAGE ET D'AFFICHAGE DU DASHBOARD
 // =========================================================================
+// =========================================================================
+// 1. LA FONCTION DE ROUTAGE ET DE RAFRAÎCHISSEMENT DE L'ESPACE VENDEUR
+// =========================================================================
 function rafraichirEspaceVendeur() {
     const req = document.getElementById('vendeur-auth-requis');
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
 
-    // Si l'utilisateur n'est pas connecté du tout
-    if(!sessionUser) {
+    // Cas 1 : Si l'utilisateur n'est pas connecté du tout au site
+    if (!sessionUser) {
         if(req) req.classList.remove('cache');
         if(formInsc) formInsc.classList.add('cache');
         if(corp) corp.classList.add('cache');
@@ -650,35 +653,41 @@ function rafraichirEspaceVendeur() {
     if(req) req.classList.add('cache');
 
     // VÉRIFICATION : L'utilisateur a-t-il déjà créé une boutique ?
-    const aDejaUneBoutique = sessionUser.boutiqueCreee || (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email));
+    const aDejaUneBoutique = sessionUser.boutiqueCreee === true || 
+                             (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email));
 
-    if (aDejaUneBoutique) {
-        if(formInsc) formInsc.classList.add('cache');
-
-        // On vérifie s'il a déjà tapé son bon code PIN pour cette session
-        if (vendeurDeverrouille) {
-            if(blocPin) blocPin.classList.add('cache'); 
-            if(corp) corp.classList.remove('cache');    
-        } else {
-            if(blocPin) blocPin.classList.remove('cache'); 
-            if(corp) corp.classList.add('cache');          
-            return; 
-        }
-    } else {
-        // Il n'a pas de boutique : on lui montre le formulaire d'inscription
+    if (!aDejaUneBoutique) {
+        // ÉTAPE 1 : Il n'a pas de boutique -> On montre UNIQUEMENT le formulaire d'inscription
         if(formInsc) formInsc.classList.remove('cache');
         if(corp) corp.classList.add('cache');
         if(blocPin) blocPin.classList.add('cache');
-        return;
+        return; 
     }
 
-    // CHARGEMENT DES DONNÉES DU TABLEAU DE BORD (Uniquement si PIN validé)
-    let mesOffres = produits.filter(p => p.vendeur === sessionUser.email);
-    let mesVentes = commandes.filter(c => c.vendeur === sessionUser.email);
+    // Si on arrive ici, c'est qu'il A une boutique. On cache définitivement le formulaire d'inscription.
+    if(formInsc) formInsc.classList.add('cache');
+
+    if (!vendeurDeverrouille) {
+        // ÉTAPE 2 : La boutique existe mais le PIN n'est pas encore validé -> On montre le cadenas PIN
+        if(blocPin) blocPin.classList.remove('cache'); 
+        if(corp) corp.classList.add('cache');          
+        return; 
+    }
+
+    // ÉTAPE 3 : Boutique existante ET Code PIN validé -> On montre le Central Vendeur
+    if(blocPin) blocPin.classList.add('cache'); 
+    if(corp) corp.classList.remove('cache');    
+
+    // =========================================================================
+    // CHARGEMENT DES DONNÉES DU TABLEAU DE BORD (Sécurisé après validation du PIN)
+    // =========================================================================
+    let mesOffres = (typeof produits !== "undefined") ? produits.filter(p => p.vendeur === sessionUser.email) : [];
+    let mesVentes = (typeof commandes !== "undefined") ? commandes.filter(c => c.vendeur === sessionUser.email) : [];
+    let mesRetraits = (typeof retraits !== "undefined") ? retraits.filter(r => r.vendeur === sessionUser.email) : [];
     
     let totalBrut = mesVentes.reduce((sum, c) => sum + c.montant, 0);
     let totalCommissions = mesVentes.reduce((sum, c) => sum + c.commission, 0);
-    let sommeRetraite = retraits.filter(r => r.vendeur === sessionUser.email && r.statut === "Validé").reduce((sum, r) => sum + r.montant, 0);
+    let sommeRetraite = mesRetraits.filter(r => r.statut === "Validé").reduce((sum, r) => sum + r.montant, 0);
     let soldeNet = (totalBrut - totalCommissions) - sommeRetraite;
 
     const kpiBrut = document.getElementById('v-kpi-brut');
@@ -708,7 +717,7 @@ function rafraichirEspaceVendeur() {
     const tRetraits = document.getElementById('vendeur-table-retraits');
     if (tRetraits) {
         tRetraits.innerHTML = "";
-        retraits.filter(r => r.vendeur === sessionUser.email).forEach(r => {
+        mesRetraits.forEach(r => {
             tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
         });
     }
@@ -724,7 +733,7 @@ function verifierPinVendeur() {
     const pinSaisi = inputPin.value;
     const pinAttendu = sessionUser.vendeurPin || sessionUser.pin; 
 
-    if (pinSaisi === pinAttendu) {
+    if (pinSaisi && pinSaisi === pinAttendu) {
         alert("🔓 Accès accordé. Bienvenue dans votre Central Vendeur.");
         vendeurDeverrouille = true; 
         inputPin.value = ""; 
@@ -736,7 +745,7 @@ function verifierPinVendeur() {
 }
 
 // =========================================================================
-// 3. INSCRIPTION RAPIDE + VÉRIFICATION DU NUMÉRO MOBILE (NOUVEAU)
+// 3. INSCRIPTION RAPIDE + VÉRIFICATION DU NUMÉRO MOBILE
 // =========================================================================
 async function creerBoutiqueRapide(event) {
     event.preventDefault();
@@ -765,7 +774,6 @@ async function creerBoutiqueRapide(event) {
     };
 
     try {
-        // Envoi au serveur pour initier l'inscription et déclencher le SMS
         const response = await fetch('/api/vendeurs/inscription', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -775,7 +783,6 @@ async function creerBoutiqueRapide(event) {
         const resultat = await response.json();
 
         if (resultat.success) {
-            // Demande du code envoyé sur son numéro mobile
             const codeVerification = prompt(`📱 Un code de validation a été envoyé au ${numeroComplet}.\nVeuillez saisir le code reçu :`);
 
             if (!codeVerification) {
@@ -783,7 +790,6 @@ async function creerBoutiqueRapide(event) {
                 return;
             }
 
-            // Validation du jeton OTP sur le serveur backend
             const verifResponse = await fetch('/api/vendeurs/verifier-sms', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -798,11 +804,15 @@ async function creerBoutiqueRapide(event) {
             if (verifResultat.success) {
                 alert("🎉 Numéro vérifié avec succès ! Votre boutique Ley Pay Business est active.");
                 
+                // MAV : Mise à jour immédiate et forcée de la session locale
                 sessionUser.boutiqueCreee = true;
                 sessionUser.vendeurPin = pinChoisi;
                 localStorage.setItem('lp_session', JSON.stringify(sessionUser));
 
-                vendeurDeverrouille = true; 
+                // On force le verrouillage initial pour exiger la saisie du PIN créé à l'instant
+                vendeurDeverrouille = false; 
+                
+                // Redirection propre vers l'écran PIN
                 rafraichirEspaceVendeur();
             } else {
                 alert("❌ Code de vérification incorrect. Inscription rejetée.");
