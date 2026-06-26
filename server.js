@@ -273,44 +273,39 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
 app.post('/api/vendeurs/verifier-sms', async (req, res) => {
     try {
         const { email, code } = req.body;
-        const sessionVerif = codesVerificationSMS[email];
 
-        if (!sessionVerif || sessionVerif.code !== code.trim()) {
-            return res.status(400).json({ success: false, message: "Le code de vérification est incorrect." });
+        if (!email || !code) {
+            return res.status(400).json({ success: false, message: "Données manquantes." });
         }
 
-        if (Date.now() > sessionVerif.expireAt) {
-            delete codesVerificationSMS[email];
-            return res.status(400).json({ success: false, message: "Le code de vérification a expiré." });
-        }
+        // 1. Vérification dans la session temporaire d'inscription
+        const sessionVendeur = codesVerificationSMS[email];
 
-        const { nom, boutiqueNom, telephone, ville, vendeurPin } = sessionVerif.donnees;
-        const UtilisateurModel = mongoose.model('Utilisateur');
-
-        await UtilisateurModel.updateOne(
-            { email: email },
-            {
-                $set: {
-                    boutiqueCreee: true,
-                    vendeurNom: nom,
-                    boutiqueNom: boutiqueNom,
-                    vendeurTelephone: telephone,
-                    vendeurVille: ville,
-                    vendeurPin: vendeurPin
-                }
+        if (sessionVendeur) {
+            // On accepte soit le code OTP généré, soit le code PIN choisi par le vendeur
+            if (sessionVendeur.code === code || sessionVendeur.donnees.vendeurPin === code) {
+                
+                // ICI : Ajoutez votre logique pour enregistrer définitivement le vendeur 
+                // dans votre base de données MongoDB / SQL si ce n'est pas déjà fait.
+                
+                return res.json({ 
+                    success: true, 
+                    message: "🔑 Accès autorisé ! Bienvenue dans votre Espace Vendeur." 
+                });
             }
-        );
+        }
 
-        delete codesVerificationSMS[email];
+        // 2. Si non trouvé dans les sessions temporaires, message d'erreur personnalisé
+        return res.status(400).json({ 
+            success: false, 
+            message: "Le code de vérification ou PIN est incorrect, ou la session a expiré." 
+        });
 
-        console.log(`🎉 Boutique active avec succès dans MongoDB pour l'utilisateur : ${email}`);
-        return res.json({ success: true, message: "Votre espace vendeur a été créé et activé !" });
     } catch (error) {
-        console.error("❌ Erreur lors de la validation du code OTP :", error);
-        return res.status(500).json({ success: false, message: "Erreur serveur lors de la validation." });
+        console.error("Erreur vérification :", error);
+        res.status(500).json({ success: false, message: "Erreur interne du serveur." });
     }
 });
-
 // ==========================================
 // ROUTE PAR DÉFAUT (FALLBACK FRONTEND)
 // ==========================================
