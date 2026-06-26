@@ -552,6 +552,7 @@
     </footer>
 
     <script>
+        let vendeurDeverrouille = false;
         let sessionUser = JSON.parse(localStorage.getItem('lp_session')) || null;
         let produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
         let commandes = JSON.parse(localStorage.getItem('lp_cmds')) || [];
@@ -841,40 +842,51 @@ function afficherCatalogue(items = produits) {
                 explication.textContent = "FBM : Vous gérez vous-même l'expédition et le colis. Commission réduite à 5%.";
             }
         }
-
-       function rafraichirEspaceVendeur() {
+        function rafraichirEspaceVendeur() {
     const req = document.getElementById('vendeur-auth-requis');
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
+    const blocPin = document.getElementById('vendeur-verrouille-pin');
 
     // 1. Si l'utilisateur n'est pas connecté du tout
-    if(!sessionUser) { 
-        if(req) req.classList.remove('cache'); 
+    if(!sessionUser) {
+        if(req) req.classList.remove('cache');
         if(formInsc) formInsc.classList.add('cache');
-        if(corp) corp.classList.add('cache'); 
-        return; 
+        if(corp) corp.classList.add('cache');
+        if(blocPin) blocPin.classList.add('cache'); 
+        return;
     }
-    
+
     // L'utilisateur est connecté, on cache le bloc d'authentification requise
-    if(req) req.classList.add('cache'); 
+    if(req) req.classList.add('cache');
 
     // 2. VÉRIFICATION : L'utilisateur a-t-il déjà créé une boutique ?
-    // (On vérifie si sessionUser possède une propriété 'boutiqueCreee' ou similaire. 
-    // Si tu n'as pas encore cette variable dans ta base, on peut vérifier s'il a déjà des offres existantes)
-    const aDejaUneBoutique = sessionUser.boutiqueCreee || produits.some(p => p.vendeur === sessionUser.email);
+    const aDejaUneBoutique = sessionUser.boutiqueCreee || (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email));
 
     if (aDejaUneBoutique) {
-        // Il a une boutique : on cache le formulaire d'inscription et on montre le tableau de bord
-        if(formInsc) formInsc.style.setProperty('display', 'none', 'important');
-        if(corp) corp.classList.remove('cache');
+        // Il a une boutique : on cache obligatoirement le formulaire d'inscription
+        if(formInsc) formInsc.classList.add('cache');
+
+        // On vérifie s'il a déjà tapé son bon code PIN pour cette session
+        if (vendeurDeverrouille) {
+            if(blocPin) blocPin.classList.add('cache'); // Le PIN est bon, on cache le verrou
+            if(corp) corp.classList.remove('cache');    // On affiche le Central Vendeur
+        } else {
+            if(blocPin) blocPin.classList.remove('cache'); // 🔓 ICI : On affiche ton bloc PIN !
+            if(corp) corp.classList.add('cache');          // 🔒 Et on cache le Central Vendeur
+            return; // ⛔ Bloque la suite tant que le PIN n'est pas validé !
+        }
     } else {
-        // Il n'a pas de boutique : on montre le formulaire et on cache le tableau de bord
-        if(formInsc) formInsc.style.setProperty('display', 'block', 'important');
+        // Il n'a pas de boutique : on lui montre le formulaire d'inscription
+        if(formInsc) formInsc.classList.remove('cache');
         if(corp) corp.classList.add('cache');
-        return; // On arrête la fonction ici puisqu'il n'a pas encore de données à charger
+        if(blocPin) blocPin.classList.add('cache');
+        return;
     }
 
-    // 3. Chargement des données du tableau de bord (uniquement s'il a sa boutique)
+    // =========================================================================
+    // 📊 3. CHARGEMENT DES DONNÉES DU TABLEAU DE BORD (Uniquement si PIN validé)
+    // =========================================================================
     let mesOffres = produits.filter(p => p.vendeur === sessionUser.email);
     let mesVentes = commandes.filter(c => c.vendeur === sessionUser.email);
     
@@ -883,12 +895,13 @@ function afficherCatalogue(items = produits) {
     let sommeRetraite = retraits.filter(r => r.vendeur === sessionUser.email && r.statut === "Validé").reduce((sum, r) => sum + r.montant, 0);
     let soldeNet = (totalBrut - totalCommissions) - sommeRetraite;
 
-    document.getElementById('v-kpi-brut').textContent = totalBrut.toFixed(2) + " $";
-    document.getElementById('v-kpi-solde').textContent = soldeNet.toFixed(2) + " $";
+    const kpiBrut = document.getElementById('v-kpi-brut');
+    const kpiSolde = document.getElementById('v-kpi-solde');
+    if (kpiBrut) kpiBrut.textContent = totalBrut.toFixed(2) + " $";
+    if (kpiSolde) kpiSolde.textContent = soldeNet.toFixed(2) + " $";
 
     // Récupération du tableau des stocks
     const tStocks = document.querySelector('.table-custom tbody') || document.getElementById('t-stocks');
-    
     if (tStocks) {
         tStocks.innerHTML = ""; 
         mesOffres.forEach(p => {
@@ -907,7 +920,7 @@ function afficherCatalogue(items = produits) {
         });
     }
 
-    // Récupération du tableau des retraits
+    // Récupération du tableau des retraits (Unique et bien placé)
     const tRetraits = document.getElementById('vendeur-table-retraits');
     if (tRetraits) {
         tRetraits.innerHTML = "";
@@ -916,11 +929,45 @@ function afficherCatalogue(items = produits) {
         });
     }
 }
+// =========================================================================
+// 1. LA FONCTION DE ROUTAGE ET D'AFFICHAGE DU DASHBOARD
+// =========================================================================
+function rafraichirEspaceVendeur() {
+    // ... tout le code propre qu'on a corrigé juste avant ...
+    if (tRetraits) {
+        tRetraits.innerHTML = "";
+        retraits.filter(r => r.vendeur === sessionUser.email).forEach(r => {
+            tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
+        });
+    }
+} // 🔓 Fin de la fonction rafraichirEspaceVendeur
+
+// =========================================================================
+// 2. LA FONCTION DE VÉRIFICATION DU PIN (À METTRE EXACTEMENT ICI)
+// =========================================================================
+function verifierPinVendeur() {
+    const inputPin = document.getElementById('input-pin-connexion');
+    if (!inputPin) return;
+
+    const pinSaisi = inputPin.value;
+    const pinAttendu = sessionUser.vendeurPin || sessionUser.pin; 
+
+    if (pinSaisi === pinAttendu) {
+        alert("🔓 Accès accordé. Bienvenue dans votre Central Vendeur.");
+        vendeurDeverrouille = true; 
+        inputPin.value = ""; 
+        rafraichirEspaceVendeur(); // On relance la fonction du haut pour enlever le verrou
+    } else {
+        alert("❌ Code PIN incorrect. Veuillez réessayer.");
+        inputPin.value = ""; 
+    }
+} // 🔐 Fin de la fonction verifierPinVendeur
+
+
 
 async function supprimerPropreProduit(id) {
     if (confirm("Voulez-vous vraiment supprimer définitivement cet article de la plateforme Ley Pay ?")) {
         try {
-            // 1. Envoi de la demande de suppression réelle à la base de données MongoDB sur Render
             const response = await fetch(`/api/produits/${id}`, {
                 method: 'DELETE'
             });
@@ -929,12 +976,9 @@ async function supprimerPropreProduit(id) {
             
             if (resultat.success) {
                 alert(resultat.message);
-                
-                // 2. Supprime aussi du tableau local pour l'affichage immédiat
                 produits = produits.filter(p => p._id !== id);
                 localStorage.setItem('lp_prods', JSON.stringify(produits));
                 
-                // 3. Rafraîchit l'écran
                 if (typeof afficherCatalogue === "function") afficherCatalogue();
                 rafraichirEspaceVendeur();
             } else {
@@ -946,6 +990,7 @@ async function supprimerPropreProduit(id) {
         }
     }
 }
+
 function convertirFichierEnBase64(fichier) {
     return new Promise((resolve) => {
         const reader = new FileReader();
@@ -969,24 +1014,22 @@ function convertirFichierEnBase64(fichier) {
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Tente de récupérer la version compressée
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
                     resolve(dataUrl);
                 } catch (err) {
-                    // En cas d'échec du Canvas, on renvoie l'image d'origine sans compression
                     resolve(event.target.result);
                 }
             };
             img.onerror = () => {
-                // Si l'objet Image plante, on utilise directement le résultat brut du reader
                 resolve(event.target.result);
             };
             img.src = event.target.result;
         };
-        reader.onerror = () => resolve(""); // Évite de faire planter le Promise.all si un fichier est corrompu
+        reader.onerror = () => resolve(""); 
         reader.readAsDataURL(fichier);
     });
 }
+    
 async function vendeurAjouterProduit(e) {
     if (e && typeof e.preventDefault === "function") {
         e.preventDefault();
