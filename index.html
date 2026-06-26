@@ -131,7 +131,6 @@
                 </div>
             </div>
         </section>
-
         <section id="section-vendeur" class="cache">
 
     <div id="vendeur-auth-requis" class="auth-box text-center cache" style="max-width: 500px; margin: 40px auto; padding: 30px;">
@@ -153,30 +152,170 @@
         </form>
     </div>
 
-    <div id="formulaire-inscription-boutique" class="cache">
-        <form onsubmit="creerBoutiqueRapide(event)">
-            <div class="class-section-inscription">
-                <h3><span>3</span> Conditions d'utilisation</h3>
-                <div class="liste-conditions-cases">
-                    <div class="condition-item">
-                        <input type="checkbox" id="cond-legaux" required>
-                        <label for="cond-legaux">Je confirme que mes produits sont légaux.</label>
+    <div id="formulaire-inscription-boutique" class="cache" style="max-width: 650px; margin: 30px auto; font-family: 'Segoe UI', system-ui, sans-serif;">
+        
+        <form onsubmit="creerBoutiqueRapide(event)" style="background: #111111; color: #ffffff; padding: 30px; border: 1px solid #333; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: left;">
+            
+            <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 25px; color: var(--lp-gold, #D4AF37); text-align: center;">Configuration de votre Espace Vendeur</h2>
+
+            <div style="margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <span style="background: var(--lp-gold, #D4AF37); color: #111; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">1</span>
+                    <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #fff;">Informations personnelles</h3>
+                </div>
+                
+                <div style="margin-bottom: 12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Nom complet</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-user" style="position: absolute; left: 12px; top: 13px; color: #666;"></i>
+                        <input type="text" id="vendeur-nom" required placeholder="Entrez votre nom complet" style="width:100%; padding: 10px 10px 10px 38px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Nom de la boutique</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-store" style="position: absolute; left: 12px; top: 13px; color: #666;"></i>
+                        <input type="text" id="vendeur-boutique-nom" required placeholder="Entrez le nom de votre boutique" style="width:100%; padding: 10px 10px 10px 38px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Email</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-envelope" style="position: absolute; left: 12px; top: 13px; color: #666;"></i>
+                        <input type="email" id="vendeur-email" required placeholder="exemple@email.com" style="width:100%; padding: 10px 10px 10px 38px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Numéro de téléphone</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="vendeur-prefixe" style="width: 90px; padding: 10px; border: 1px solid #444; border-radius: 8px; font-size: 14px; background: #222; color: #fff;">
+                            <option value="+243">+243 🇨🇩</option>
+                        </select>
+                        <input type="tel" id="vendeur-telephone" required placeholder="Numéro de téléphone" style="flex: 1; padding: 10px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <div style="flex: 1;">
+                        <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Pays</label>
+                        <select id="vendeur-pays" style="width:100%; padding: 10px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222;">
+                            <option value="RDC">République Démocratique du Congo</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Ville</label>
+                        <input type="text" id="vendeur-ville" required placeholder="Votre ville" style="width:100%; padding: 10px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222;">
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn-creer-ma-boutique" style="background: #10b981; color: white; font-weight: bold; width: 100%;">
+
+            <div style="margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <span style="background: var(--lp-gold, #D4AF37); color: #111; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">4</span>
+                    <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #fff;">Informations de paiement</h3>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Nom du titulaire du compte</label>
+                    <input type="text" id="vendeur-titulaire-compte" required placeholder="Entrez le nom du titulaire" style="width:100%; padding: 10px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222;">
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Moyen de paiement</label>
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                        <button type="button" style="flex: 1; padding: 10px; background: #222; border: 2px solid var(--lp-gold, #D4AF37); border-radius: 8px; color: var(--lp-gold, #D4AF37); font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fas fa-mobile-alt"></i> Mobile Money
+                        </button>
+                        <button type="button" disabled style="flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; color: #555; font-size: 13px; cursor: not-allowed;">
+                            <i class="fas fa-university"></i> Banque
+                        </button>
+                    </div>
+                </div>
+
+                <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 15px;">
+                    <h4 style="font-size: 13px; font-weight: 600; color: var(--lp-gold, #D4AF37); margin: 0 0 10px 0;">Détails Mobile Money</h4>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <label style="display:block; font-size:12px; color:#aaa; margin-bottom:4px;">Nom du réseau utilisé</label>
+                        <select id="vendeur-reseau-money" style="width: 100%; padding: 8px; border: 1px solid #444; border-radius: 6px; background: #222; font-size: 13px; color: #fff;">
+                            <option value="M-Pesa">M-Pesa (Vodacom)</option>
+                            <option value="Orange Money">Orange Money</option>
+                            <option value="Airtel Money">Airtel Money</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <label style="display:block; font-size:12px; color:#aaa; margin-bottom:4px;">Numéro Mobile Money</label>
+                        <div style="display: flex; gap: 6px;">
+                            <span style="padding: 8px 12px; background: #333; border-radius: 6px; font-size: 13px; color: #fff; font-weight: 600;">+243</span>
+                            <input type="tel" id="vendeur-numero-money" required placeholder="Entrez votre numéro" style="flex: 1; padding: 8px; border: 1px solid #444; border-radius: 6px; font-size: 13px; color: #fff; background: #222;">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display:block; font-size:12px; color:#aaa; margin-bottom:4px;">Nom enregistré sur le compte</label>
+                        <input type="text" id="vendeur-nom-compte-money" required placeholder="Nom tel qu'enregistré sur le compte" style="width: 100%; padding: 8px; border: 1px solid #444; border-radius: 6px; font-size: 13px; color: #fff; background: #222;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <span style="background: var(--lp-gold, #D4AF37); color: #111; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">5</span>
+                    <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #fff;">Sécurité du compte</h3>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#aaa; margin-bottom:6px;">Créer un code PIN d'accès (6 chiffres)</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-lock" style="position: absolute; left: 12px; top: 13px; color: #666;"></i>
+                        <input type="password" id="vendeur-pin" required maxlength="6" placeholder="Entrez un code secret à 6 chiffres" style="width:100%; padding: 10px 10px 10px 38px; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 14px; background: #222; letter-spacing: 5px; text-align: center;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <span style="background: var(--lp-gold, #D4AF37); color: #111; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">3</span>
+                    <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #fff;">Conditions d'utilisation</h3>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <input type="checkbox" id="cond-legaux" required style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
+                        <label for="cond-legaux" style="font-size: 13px; color: #ccc; cursor: pointer;">Je confirme que mes produits sont légaux et ne violent aucune loi.</label>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <input type="checkbox" id="cond-ventes" required style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
+                        <label for="cond-ventes" style="font-size: 13px; color: #ccc; cursor: pointer;">J'accepte les conditions de vente de la plateforme.</label>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <input type="checkbox" id="cond-confidentialite" required style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
+                        <label for="cond-confidentialite" style="font-size: 13px; color: #ccc; cursor: pointer;">J'accepte la politique de confidentialité et l'utilisation de mes données.</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-creer-ma-boutique" style="background: var(--lp-gold, #D4AF37); color: #111; border: none; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 8px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.2);">
                 <i class="fas fa-lock"></i> Créer ma boutique
             </button>
+            
+            <p style="text-align: center; font-size: 12px; color: #aaa; margin: 12px 0 0 0;">
+                <i class="fas fa-shield-alt" style="color: var(--lp-gold, #D4AF37);"></i> Inscription 100% sécurisée
+            </p>
         </form>
     </div>
 
     <div id="vendeur-verrouille-pin" class="auth-box text-center cache" style="max-width: 450px; margin: 40px auto; padding: 30px;">
-        <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Sécurisé</h3>
+        <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Securisé</h3>
         <p style="font-size: 14px; color: #ccc;">Veuillez saisir votre Code PIN à 6 chiffres pour accéder à votre Central Vendeur.</p>
         <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
             <input type="password" maxlength="6" id="input-pin-connexion" placeholder="******" style="width: 150px; height: 45px; text-align: center;">
         </div>
-        <button onclick="verifierPinVendeur()" style="width: 100%; background: #D4AF37; color: #111; border: none; padding: 12px; font-weight: bold;">
+        <button onclick="verifierPinVendeur()" style="width: 100%; background: #D4AF37; color: #111; border: none; padding: 12px; font-weight: bold; cursor: pointer;">
             Déverrouiller l'Espace Vendeur
         </button>
     </div>
@@ -185,6 +324,7 @@
         </div>
 
 </section>
+
             <div id="corps-espace-vendeur" class="cache">
                 <div class="hero-banner-vendeur">
                     <h2>Central Vendeur Ley Pay</h2>
@@ -1282,6 +1422,80 @@ function gererInscriptionVendeur(event) {
     if(formulaireSection && espaceVendeurSection) {
         formulaireSection.style.display = 'none';
         espaceVendeurSection.style.display = 'block'; // Affiche votre tableau de bord
+    }
+}
+async function creerBoutiqueRapide(event) {
+    event.preventDefault();
+
+    // 1. Récupération des données du formulaire d'après les nouveaux ID
+    const nomComplet = document.getElementById('vendeur-nom').value;
+    const nomBoutique = document.getElementById('vendeur-boutique-nom').value;
+    const emailBoutique = document.getElementById('vendeur-email').value;
+    const prefixe = document.getElementById('vendeur-prefixe').value;
+    const telephoneSaisi = document.getElementById('vendeur-telephone').value;
+    const pays = document.getElementById('vendeur-pays').value;
+    const ville = document.getElementById('vendeur-ville').value;
+    
+    // Paiement
+    const titulaireCompte = document.getElementById('vendeur-titulaire-compte').value;
+    const reseauMoney = document.getElementById('vendeur-reseau-money').value;
+    const numeroMoney = document.getElementById('vendeur-numero-money').value;
+    const nomCompteMoney = document.getElementById('vendeur-nom-compte-money').value;
+    
+    // Sécurité
+    const codePin = document.getElementById('vendeur-pin').value;
+
+    // Combinaison du préfixe et du téléphone pour le format international
+    const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
+
+    // 2. Vérification rapide de la session locale de l'utilisateur connecté
+    const localUser = JSON.parse(localStorage.getItem('lp_session'));
+    if (!localUser || !localUser.email) {
+        alert("Erreur : Vous devez être connecté à votre compte client pour créer une boutique.");
+        return;
+    }
+
+    // Preparation de l'objet à envoyer au serveur
+    const payload = {
+        emailCompteClient: localUser.email, // Lié au compte connecté
+        nomComplet,
+        nomBoutique,
+        emailBoutique,
+        telephone: telephoneComplet,
+        pays,
+        ville,
+        titulaireCompte,
+        reseauMoney,
+        numeroMoney,
+        nomCompteMoney,
+        codePin
+    };
+
+    try {
+        // 3. Envoi des données vers votre API backend
+        const response = await fetch('/api/vendeurs/inscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("🎉 Inscription réussie ! Votre boutique Ley Pay a été créée avec succès.");
+            
+            // Mise à jour de la session locale pour refléter instantanément le statut
+            localUser.boutiqueCreee = true;
+            localStorage.setItem('lp_session', JSON.stringify(localUser));
+            
+            // Rafraîchir l'affichage pour masquer le formulaire et demander le PIN ou ouvrir le Dashboard
+            rafraichirEspaceVendeur();
+        } else {
+            alert(data.message || "Une erreur est survenue lors de la création de la boutique.");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la communication avec le serveur :", error);
+        alert("Impossible de joindre le serveur. Veuillez vérifier votre connexion.");
     }
 }
     </script>
