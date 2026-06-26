@@ -1424,84 +1424,109 @@ function gererInscriptionVendeur(event) {
         espaceVendeurSection.style.display = 'block'; // Affiche votre tableau de bord
     }
 }
+// ==========================================
+// 1. FONCTION : CRÉATION DE LA BOUTIQUE
+// ==========================================
 async function creerBoutiqueRapide(event) {
     event.preventDefault();
-
     try {
-        // 1. Récupération des données du formulaire d'après les IDs HTML
         const nom = document.getElementById('vendeur-nom')?.value.trim() || "";
         const boutiqueNom = document.getElementById('vendeur-boutique-nom')?.value.trim() || "";
         const emailBoutique = document.getElementById('vendeur-email')?.value.trim() || "";
         const prefixe = document.getElementById('vendeur-prefixe')?.value || "+243";
         const telephoneSaisi = document.getElementById('vendeur-telephone')?.value.trim() || "";
         const ville = document.getElementById('vendeur-ville')?.value.trim() || "";
-        
-        // Sécurité (Code PIN)
         const vendeurPin = document.getElementById('vendeur-pin')?.value.trim() || "";
 
-        // Formatage du numéro de téléphone propre
         const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
 
-        // 2. Récupération de la session client connectée
         const localUser = JSON.parse(localStorage.getItem('lp_session'));
         if (!localUser || !localUser.email) {
-            alert("Erreur : Vous devez être connecté à votre compte client pour créer une boutique.");
+            alert("Erreur : Vous devez être connecté à votre compte client.");
             return;
         }
 
-        // 3. Construction du Payload STRICTEMENT identique aux attentes de la ligne 250 de server.js
         const payload = {
-            nom: nom,
-            boutiqueNom: boutiqueNom,
+            nom,
+            boutiqueNom,
             telephone: telephoneComplet,
-            ville: ville,
-            vendeurPin: vendeurPin,
-            email: localUser.email // Le serveur utilise 'email' pour identifier le compte et stocker le SMS
+            ville,
+            vendeurPin,
+            email: localUser.email
         };
 
-        // Optionnel : Si ton backend a besoin des infos de paiement dès cette étape, on peut les ajouter, 
-        // mais d'après la ligne 250, elles ne bloquent pas la validation initiale.
-        payload.emailBoutique = emailBoutique;
-        payload.titulaireCompte = document.getElementById('vendeur-titulaire-compte')?.value.trim() || "";
-        payload.reseauMoney = document.getElementById('vendeur-reseau-money')?.value || "";
-        payload.numeroMoney = document.getElementById('vendeur-numero-money')?.value.trim() || "";
-        payload.nomCompteMoney = document.getElementById('vendeur-nom-compte-money')?.value.trim() || "";
-
-        // 4. Envoi de la requête au serveur backend
         const response = await fetch('/api/vendeurs/inscription', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            const txt = await response.text();
-            console.error("Réponse brute du serveur :", txt);
-            alert("Erreur technique : Le serveur n'a pas renvoyé de JSON.");
-            return;
+        const data = await response.json();
+
+        if (data.success) {
+            alert("🎉 Inscription réussie ! Saisissez votre PIN pour ouvrir votre espace.");
+            localUser.boutiqueCreee = true;
+            localStorage.setItem('lp_session', JSON.stringify(localUser));
+            
+            // Masquer le formulaire et afficher la boîte de verrouillage PIN
+            document.getElementById('formulaire-inscription-boutique')?.classList.add('cache');
+            document.getElementById('vendeur-verrouille-pin')?.classList.remove('cache');
+        } else {
+            alert(data.message || "Erreur lors de la validation.");
         }
+    } catch (error) {
+        console.error(error);
+        alert("Erreur de connexion avec le serveur.");
+    }
+}
+
+// ==========================================
+// 2. FONCTION : DÉVERROUILLAGE PAR PIN (Ton bouton bloqué)
+// ==========================================
+async function verifierPinVendeur() {
+    const pinInput = document.getElementById('input-pin-connexion');
+    if (!pinInput) {
+        alert("Champ PIN introuvable.");
+        return;
+    }
+
+    const vendeurPin = pinInput.value.trim();
+    if (!vendeurPin) {
+        alert("Veuillez entrer votre code PIN.");
+        return;
+    }
+
+    const localUser = JSON.parse(localStorage.getItem('lp_session'));
+    if (!localUser || !localUser.email) {
+        alert("Erreur : Session expirée. Reconnectez-vous.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/vendeurs/verifier-pin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: localUser.email,
+                vendeurPin: vendeurPin
+            })
+        });
 
         const data = await response.json();
 
         if (data.success) {
-            // Puisque ton serveur génère un code OTP (ligne 256), il y aura probablement une étape de vérification SMS
-            alert("📩 Un code de vérification a été généré ! " + (data.message || "Veuillez vérifier vos messages."));
+            alert("🔑 Accès autorisé ! Bienvenue dans votre Central Vendeur.");
             
-            // Si tu as une fonction ou une boîte modale pour saisir le code SMS/OTP, affiche-la ici :
-            // ex: afficherBoiteOTP();
-            
-            // Si le serveur valide directement sans bloquer (mode test) :
-            localUser.boutiqueCreee = true;
-            localStorage.setItem('lp_session', JSON.stringify(localUser));
-            window.location.reload();
+            // Gestion de l'affichage des sections
+            document.getElementById('vendeur-verrouille-pin').classList.add('cache');
+            document.getElementById('corps-espace-vendeur').classList.remove('cache');
         } else {
-            alert(data.message || "Une erreur est survenue lors de la validation.");
+            alert(data.message || "Code PIN incorrect.");
+            pinInput.value = "";
         }
-
     } catch (error) {
-        console.error("Erreur Inscription :", error);
-        alert("Impossible de joindre le serveur. Vérifie ta connexion réseau.");
+        console.error("Erreur PIN:", error);
+        alert("Erreur réseau lors de la vérification.");
     }
 }
     </script>
