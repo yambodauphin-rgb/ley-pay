@@ -1427,75 +1427,170 @@ function gererInscriptionVendeur(event) {
 async function creerBoutiqueRapide(event) {
     event.preventDefault();
 
-    // 1. Récupération des données du formulaire d'après les nouveaux ID
-    const nomComplet = document.getElementById('vendeur-nom').value;
-    const nomBoutique = document.getElementById('vendeur-boutique-nom').value;
-    const emailBoutique = document.getElementById('vendeur-email').value;
-    const prefixe = document.getElementById('vendeur-prefixe').value;
-    const telephoneSaisi = document.getElementById('vendeur-telephone').value;
-    const pays = document.getElementById('vendeur-pays').value;
-    const ville = document.getElementById('vendeur-ville').value;
-    
-    // Paiement
-    const titulaireCompte = document.getElementById('vendeur-titulaire-compte').value;
-    const reseauMoney = document.getElementById('vendeur-reseau-money').value;
-    const numeroMoney = document.getElementById('vendeur-numero-money').value;
-    const nomCompteMoney = document.getElementById('vendeur-nom-compte-money').value;
-    
-    // Sécurité
-    const codePin = document.getElementById('vendeur-pin').value;
-
-    // Combinaison du préfixe et du téléphone pour le format international
-    const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
-
-    // 2. Vérification rapide de la session locale de l'utilisateur connecté
-    const localUser = JSON.parse(localStorage.getItem('lp_session'));
-    if (!localUser || !localUser.email) {
-        alert("Erreur : Vous devez être connecté à votre compte client pour créer une boutique.");
-        return;
-    }
-
-    // Preparation de l'objet à envoyer au serveur
-    const payload = {
-        emailCompteClient: localUser.email, // Lié au compte connecté
-        nomComplet,
-        nomBoutique,
-        emailBoutique,
-        telephone: telephoneComplet,
-        pays,
-        ville,
-        titulaireCompte,
-        reseauMoney,
-        numeroMoney,
-        nomCompteMoney,
-        codePin
-    };
-
     try {
-        // 3. Envoi des données vers votre API backend
+        // 1. Récupération des données du formulaire
+        const nomComplet = document.getElementById('vendeur-nom')?.value || "";
+        const nomBoutique = document.getElementById('vendeur-boutique-nom')?.value || "";
+        const emailBoutique = document.getElementById('vendeur-email')?.value || "";
+        const prefixe = document.getElementById('vendeur-prefixe')?.value || "+243";
+        const telephoneSaisi = document.getElementById('vendeur-telephone')?.value || "";
+        const pays = document.getElementById('vendeur-pays')?.value || "RDC";
+        const ville = document.getElementById('vendeur-ville')?.value || "";
+        
+        // Paiement
+        const titulaireCompte = document.getElementById('vendeur-titulaire-compte')?.value || "";
+        const reseauMoney = document.getElementById('vendeur-reseau-money')?.value || "";
+        const numeroMoney = document.getElementById('vendeur-numero-money')?.value || "";
+        const nomCompteMoney = document.getElementById('vendeur-nom-compte-money')?.value || "";
+        
+        // Sécurité
+        const codePin = document.getElementById('vendeur-pin')?.value || "";
+
+        // Nettoyage et formatage du téléphone
+        const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
+
+        // 2. Vérification de la session locale de l'utilisateur connecté
+        const localUser = JSON.parse(localStorage.getItem('lp_session'));
+        if (!localUser || !localUser.email) {
+            alert("Erreur : Vous devez être connecté à votre compte client pour créer une boutique.");
+            return;
+        }
+
+        // Préparation de l'objet (Payload) avec toutes les variables requises
+        const payload = {
+            emailCompteClient: localUser.email,
+            nomComplet,
+            nomBoutique,
+            emailBoutique,
+            telephone: telephoneComplet,
+            pays,
+            ville,
+            moyenPaiement: "Mobile Money", // Forcé ici pour éviter l'absence de données requises
+            titulaireCompte,
+            reseauMoney,
+            numeroMoney,
+            nomCompteMoney,
+            codePin
+        };
+
+        // 3. Envoi au serveur backend
         const response = await fetch('/api/vendeurs/inscription', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
+        // Vérification si la réponse est bien du JSON pour éviter le crash du JSON.parse
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const texteErreur = await response.text();
+            console.error("Réponse brute du serveur (Non-JSON) :", texteErreur);
+            alert("Le serveur a renvoyé une erreur interne. Regardez les logs de Render.");
+            return;
+        }
+
         const data = await response.json();
 
         if (data.success) {
             alert("🎉 Inscription réussie ! Votre boutique Ley Pay a été créée avec succès.");
-            
-            // Mise à jour de la session locale pour refléter instantanément le statut
             localUser.boutiqueCreee = true;
             localStorage.setItem('lp_session', JSON.stringify(localUser));
-            
-            // Rafraîchir l'affichage pour masquer le formulaire et demander le PIN ou ouvrir le Dashboard
-            rafraichirEspaceVendeur();
+            if (typeof rafraichirEspaceVendeur === "function") {
+                rafraichirEspaceVendeur();
+            } else {
+                window.location.reload();
+            }
         } else {
-            alert(data.message || "Une erreur est survenue lors de la création de la boutique.");
+            alert(data.message || "Certaines données requises sont manquantes ou incorrectes.");
         }
+
     } catch (error) {
-        console.error("Erreur lors de la communication avec le serveur :", error);
-        alert("Impossible de joindre le serveur. Veuillez vérifier votre connexion.");
+        console.error("Erreur lors de l'inscription :", error);
+        alert("Impossible de communiquer avec le serveur.");
+    }
+}async function creerBoutiqueRapide(event) {
+    event.preventDefault();
+
+    try {
+        // 1. Récupération des données du formulaire
+        const nomComplet = document.getElementById('vendeur-nom')?.value || "";
+        const nomBoutique = document.getElementById('vendeur-boutique-nom')?.value || "";
+        const emailBoutique = document.getElementById('vendeur-email')?.value || "";
+        const prefixe = document.getElementById('vendeur-prefixe')?.value || "+243";
+        const telephoneSaisi = document.getElementById('vendeur-telephone')?.value || "";
+        const pays = document.getElementById('vendeur-pays')?.value || "RDC";
+        const ville = document.getElementById('vendeur-ville')?.value || "";
+        
+        // Paiement
+        const titulaireCompte = document.getElementById('vendeur-titulaire-compte')?.value || "";
+        const reseauMoney = document.getElementById('vendeur-reseau-money')?.value || "";
+        const numeroMoney = document.getElementById('vendeur-numero-money')?.value || "";
+        const nomCompteMoney = document.getElementById('vendeur-nom-compte-money')?.value || "";
+        
+        // Sécurité
+        const codePin = document.getElementById('vendeur-pin')?.value || "";
+
+        // Nettoyage et formatage du téléphone
+        const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
+
+        // 2. Vérification de la session locale de l'utilisateur connecté
+        const localUser = JSON.parse(localStorage.getItem('lp_session'));
+        if (!localUser || !localUser.email) {
+            alert("Erreur : Vous devez être connecté à votre compte client pour créer une boutique.");
+            return;
+        }
+
+        // Préparation de l'objet (Payload) avec toutes les variables requises
+        const payload = {
+            emailCompteClient: localUser.email,
+            nomComplet,
+            nomBoutique,
+            emailBoutique,
+            telephone: telephoneComplet,
+            pays,
+            ville,
+            moyenPaiement: "Mobile Money", // Forcé ici pour éviter l'absence de données requises
+            titulaireCompte,
+            reseauMoney,
+            numeroMoney,
+            nomCompteMoney,
+            codePin
+        };
+
+        // 3. Envoi au serveur backend
+        const response = await fetch('/api/vendeurs/inscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        // Vérification si la réponse est bien du JSON pour éviter le crash du JSON.parse
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const texteErreur = await response.text();
+            console.error("Réponse brute du serveur (Non-JSON) :", texteErreur);
+            alert("Le serveur a renvoyé une erreur interne. Regardez les logs de Render.");
+            return;
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("🎉 Inscription réussie ! Votre boutique Ley Pay a été créée avec succès.");
+            localUser.boutiqueCreee = true;
+            localStorage.setItem('lp_session', JSON.stringify(localUser));
+            if (typeof rafraichirEspaceVendeur === "function") {
+                rafraichirEspaceVendeur();
+            } else {
+                window.location.reload();
+            }
+        } else {
+            alert(data.message || "Certaines données requises sont manquantes ou incorrectes.");
+        }
+
+    } catch (error) {
+        console.error("Erreur lors de l'inscription :", error);
+        alert("Impossible de communiquer avec le serveur.");
     }
 }
     </script>
