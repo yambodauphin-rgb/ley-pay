@@ -136,36 +136,44 @@
 
     <div id="vendeur-auth-requis" class="auth-box text-center cache" style="max-width: 500px; margin: 40px auto; padding: 30px;">
         <h3>👋 Bienvenue sur Ley Pay Business</h3>
-        <p style="margin: 15px 0; color: #ccc;">Vous devez posséder un compte client et être connecté pour pouvoir créer une boutique ou accéder à votre espace vendeur.</p>
-        <button onclick="basculerOnglet('compte')" class="btn-auth-soumettre" style="background: var(--lp-gold); color: #111; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px;">
+        <p style="margin: 15px 0; color: #ccc;">Vous devez posséder un compte client et être connecté pour pouvoir créer une boutique ou accéder à votre espace.</p>
+        <button onclick="basculerOnglet('compte')" class="btn-auth-soumettre" style="background: var(--lp-gold); color: #111; border: none; padding: 12px; font-weight: bold; width: 100%;">
             Se connecter ou s'inscrire d'abord
         </button>
     </div>
-<div id="formulaire-inscription-boutique" class="cache">
+
+    <div id="formulaire-inscription-boutique" class="cache">
         <form onsubmit="creerBoutiqueRapide(event)">
-            <div class="condition-item">
-                <input type="checkbox" id="cond-legaux" required>
-                <label for="cond-legaux">Je confirme que mes produits sont légaux.</label>
-            </div>                     </div>
-                        </div>
+            <div class="class-section-inscription">
+                <h3><span>3</span> Conditions d'utilisation</h3>
+                <div class="liste-conditions-cases">
+                    <div class="condition-item">
+                        <input type="checkbox" id="cond-legaux" required>
+                        <label for="cond-legaux">Je confirme que mes produits sont légaux.</label>
                     </div>
-                    <button type="submit" class="btn-creer-ma-boutique" style="background: #10b981; color: white; font-weight: bold; width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;">
-                        <i class="fas fa-lock"></i> Créer ma boutique
-                    </button>
-                </form>
-            </div>
-
-            <div id="vendeur-verrouille-pin" class="auth-box text-center cache" style="max-width: 450px; margin: 40px auto; padding: 30px; background: #111; border: 1px solid #D4AF37; border-radius: 12px; color: white;">
-                <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Sécurisé</h3>
-                <p style="font-size: 14px; color: #ccc; margin-bottom: 20px;">Veuillez saisir votre Code PIN à 6 chiffres pour accéder à votre Central Vendeur.</p>
-                <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
-                    <input type="password" maxlength="6" id="input-pin-connexion" placeholder="******" style="width: 150px; height: 45px; text-align: center; font-size: 22px; letter-spacing: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 6px;">
                 </div>
-                <button onclick="verifierPinVendeur()" style="width: 100%; background: #D4AF37; color: #111; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer;">
-                    Déverrouiller l'Espace Vendeur
-                </button>
             </div>
+            <button type="submit" class="btn-creer-ma-boutique" style="background: #10b981; color: white; font-weight: bold; width: 100%;">
+                <i class="fas fa-lock"></i> Créer ma boutique
+            </button>
+        </form>
+    </div>
 
+    <div id="vendeur-verrouille-pin" class="auth-box text-center cache" style="max-width: 450px; margin: 40px auto; padding: 30px;">
+        <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Sécurisé</h3>
+        <p style="font-size: 14px; color: #ccc;">Veuillez saisir votre Code PIN à 6 chiffres pour accéder à votre Central Vendeur.</p>
+        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
+            <input type="password" maxlength="6" id="input-pin-connexion" placeholder="******" style="width: 150px; height: 45px; text-align: center;">
+        </div>
+        <button onclick="verifierPinVendeur()" style="width: 100%; background: #D4AF37; color: #111; border: none; padding: 12px; font-weight: bold;">
+            Déverrouiller l'Espace Vendeur
+        </button>
+    </div>
+
+    <div id="corps-espace-vendeur" class="cache">
+        </div>
+
+</section>
             <div id="corps-espace-vendeur" class="cache">
                 <div class="hero-banner-vendeur">
                     <h2>Central Vendeur Ley Pay</h2>
@@ -642,170 +650,32 @@ function rafraichirEspaceVendeur() {
     const blocPin = document.getElementById('vendeur-verrouille-pin');
     const req = document.getElementById('vendeur-auth-requis');
 
+    // On cache l'ancien message d'authentification obligatoire
     if (req) req.classList.add('cache');
 
-    // Détection de la boutique via le localStorage autonome
-    const aDejaUneBoutique = localStorage.getItem('lp_vendeur_active') === 'true';
+    // Détection autonome de la boutique
+    let sessionActive = JSON.parse(localStorage.getItem('lp_session')) || null;
+    const aDejaUneBoutique = (sessionActive && sessionActive.boutiqueCreee === true) || 
+                             (localStorage.getItem('lp_vendeur_active') === 'true');
 
+    // ÉTAPE 1 : Si aucune boutique n'est active, on FORCE l'affichage du formulaire
     if (!aDejaUneBoutique) {
-        // ÉTAPE 1 : Pas de boutique créée -> Affiche TOUJOURS le formulaire complet
         if (formInsc) formInsc.classList.remove('cache');
         if (corp) corp.classList.add('cache');
         if (blocPin) blocPin.classList.add('cache');
         return;
     }
 
-    // Si la boutique est créée, on masque le formulaire de création
+    // ÉTAPE 2 : Si une boutique existe, on masque le formulaire d'inscription
     if (formInsc) formInsc.classList.add('cache');
 
+    // ÉTAPE 3 : Gestion du verrouillage par code PIN
     if (!vendeurDeverrouille) {
-        // ÉTAPE 2 : Boutique créée mais verrouillée -> Demande du code PIN
         if (blocPin) blocPin.classList.remove('cache');
         if (corp) corp.classList.add('cache');
-        return;
-    }
-
-    // ÉTAPE 3 : Déverrouillé -> Tableau de bord final !
-    if (blocPin) blocPin.classList.add('cache');
-    if (corp) corp.classList.remove('cache');
-
-    // Chargement des données du tableau de bord
-    let emailVendeur = localStorage.getItem('lp_vendeur_email') || "vendeur_independant@leypay.com";
-    
-    let mesOffres = (typeof produits !== "undefined") ? produits.filter(p => p.vendeur === emailVendeur) : [];
-    let mesVentes = (typeof commandes !== "undefined") ? commandes.filter(c => c.vendeur === emailVendeur) : [];
-    let mesRetraits = (typeof retraits !== "undefined") ? retraits.filter(r => r.vendeur === emailVendeur) : [];
-    
-    let totalBrut = mesVentes.reduce((sum, c) => sum + c.montant, 0);
-    let totalCommissions = mesVentes.reduce((sum, c) => sum + c.commission, 0);
-    let sommeRetraite = mesRetraits.filter(r => r.statut === "Validé").reduce((sum, r) => sum + r.montant, 0);
-    let soldeNet = (totalBrut - totalCommissions) - sommeRetraite;
-
-    const kpiBrut = document.getElementById('v-kpi-brut');
-    const kpiSolde = document.getElementById('v-kpi-solde');
-    if (kpiBrut) kpiBrut.textContent = totalBrut.toFixed(2) + " $";
-    if (kpiSolde) kpiSolde.textContent = soldeNet.toFixed(2) + " $";
-
-    const tStocks = document.querySelector('.table-custom tbody') || document.getElementById('t-stocks');
-    if (tStocks) {
-        tStocks.innerHTML = ""; 
-        mesOffres.forEach(p => {
-            tStocks.innerHTML += `<tr>
-                <td>${p.nom}</td>
-                <td><strong>${p.logistique || p.cat}</strong></td>
-                <td>${p.prix} $</td>
-                <td>${p.stock} u</td>
-                <td><span style="color:#10b981; font-weight:bold;">En vente</span></td>
-                <td>
-                    <button onclick="supprimerPropreProduit('${p._id}')" style="background:#ef4444; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">
-                        Supprimer 🗑️
-                    </button>
-                </td>
-            </tr>`;
-        });
-    }
-}
-
-// =========================================================================
-// 2. LA FONCTION DE VÉRIFICATION DU PIN INDÉPENDANT
-// =========================================================================
-function verifierPinVendeur() {
-    const inputPin = document.getElementById('input-pin-connexion');
-    if (!inputPin) return;
-
-    const pinSaisi = inputPin.value;
-    const pinAttendu = localStorage.getItem('lp_vendeur_pin'); 
-
-    if (pinSaisi && pinSaisi === pinAttendu) {
-        alert("🔓 Accès accordé. Bienvenue dans votre Central Vendeur.");
-        vendeurDeverrouille = true; 
-        inputPin.value = ""; 
-        rafraichirEspaceVendeur(); 
     } else {
-        alert("❌ Code PIN incorrect. Veuillez réessayer.");
-        inputPin.value = ""; 
-    }
-}
-
-// =========================================================================
-// 3. INSCRIPTION COMPLÈTE ET DEVENIR VENDEUR
-// =========================================================================
-async function creerBoutiqueRapide(event) {
-    event.preventDefault();
-
-    const nomComplet = document.getElementById('insc-vendeur-nom').value;
-    const nomBoutique = document.getElementById('insc-vendeur-boutique').value;
-    const prefixe = document.getElementById('vendeur-prefixe').value;
-    const telephoneSaisi = document.getElementById('insc-vendeur-telephone').value;
-    const ville = document.getElementById('insc-vendeur-ville').value;
-    const pinChoisi = document.getElementById('insc-vendeur-pin').value;
-
-    const numeroComplet = prefixe + telephoneSaisi; 
-
-    if (pinChoisi.length !== 6 || isNaN(pinChoisi)) {
-        alert("❌ Le code PIN doit comporter exactement 6 chiffres.");
-        return;
-    }
-
-    const donneesBoutique = {
-        nom: nomComplet,
-        boutiqueNom: nomBoutique,
-        telephone: numeroComplet,
-        ville: ville,
-        vendeurPin: pinChoisi,
-        email: sessionUser ? sessionUser.email : "vendeur_" + Date.now() + "@leypay.com"
-    };
-
-    try {
-        const response = await fetch('/api/vendeurs/inscription', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(donneesBoutique)
-        });
-
-        const resultat = await response.json();
-
-        if (resultat.success) {
-            const codeVerification = prompt(`📱 Un code de validation a été envoyé au ${numeroComplet}.\nVeuillez saisir le code reçu :`);
-
-            if (!codeVerification) {
-                alert("❌ Validation annulée. La boutique n'a pas été créée.");
-                return;
-            }
-
-            const verifResponse = await fetch('/api/vendeurs/verifier-sms', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    email: donneesBoutique.email, 
-                    code: codeVerification 
-                })
-            });
-
-            const verifResultat = await verifResponse.json();
-
-            if (verifResultat.success) {
-                alert("🎉 Numéro vérifié avec succès ! Votre boutique Ley Pay Business est active.");
-                
-                // On stocke les informations de la boutique de façon autonome
-                localStorage.setItem('lp_vendeur_active', 'true');
-                localStorage.setItem('lp_vendeur_pin', pinChoisi);
-                localStorage.setItem('lp_vendeur_email', donneesBoutique.email);
-
-                // On force la saisie initiale du PIN pour des raisons de sécurité
-                vendeurDeverrouille = false; 
-                
-                rafraichirEspaceVendeur();
-                if (typeof rafraichirProfilClient === "function") rafraichirProfilClient();
-            } else {
-                alert("❌ Code de vérification incorrect. Inscription rejetée.");
-            }
-        } else {
-            alert("Erreur : " + resultat.message);
-        }
-    } catch (erreur) {
-        console.error("Erreur lors de la création :", erreur);
-        alert("Impossible de joindre le serveur.");
+        if (blocPin) blocPin.classList.add('cache');
+        if (corp) corp.classList.remove('cache');
     }
 }
 
