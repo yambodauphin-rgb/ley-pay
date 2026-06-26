@@ -644,41 +644,55 @@ function afficherExplicationLogistique() {
 // =========================================================================
 // 1. LA FONCTION DE ROUTAGE DU CENTRAL VENDEUR (100% AUTONOME)
 // =========================================================================
-function rafraichirEspaceVendeur() {
+async function rafraichirEspaceVendeur() {
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
     const req = document.getElementById('vendeur-auth-requis');
 
-    // On cache l'ancien message d'authentification obligatoire
+    // On cache d'abord le message d'authentification requis
     if (req) req.classList.add('cache');
 
-    // Détection autonome de la boutique
-    let sessionActive = JSON.parse(localStorage.getItem('lp_session')) || null;
-    const aDejaUneBoutique = (sessionActive && sessionActive.boutiqueCreee === true) || 
-                             (localStorage.getItem('lp_vendeur_active') === 'true');
+    try {
+        // On demande au serveur le statut de l'espace vendeur
+        const response = await fetch('/api/vendeur/statut');
+        const statut = await response.json();
 
-    // ÉTAPE 1 : Si aucune boutique n'est active, on FORCE l'affichage du formulaire
-    if (!aDejaUneBoutique) {
+        // ÉTAPE 1 : Si le serveur dit que l'utilisateur n'est pas connecté au compte client
+        if (!statut.connecte) {
+            if (req) req.classList.remove('cache');
+            if (formInsc) formInsc.classList.add('cache');
+            if (corp) corp.classList.add('cache');
+            if (blocPin) blocPin.classList.add('cache');
+            return;
+        }
+
+        // ÉTAPE 2 : Si le utilisateur connecté n'a pas encore créé de boutique
+        if (!statut.aUneBoutique) {
+            if (formInsc) formInsc.classList.remove('cache');
+            if (corp) corp.classList.add('cache');
+            if (blocPin) blocPin.classList.add('cache');
+            return;
+        }
+
+        // ÉTAPE 3 : L'utilisateur a une boutique, on masque le formulaire d'inscription
+        if (formInsc) formInsc.classList.add('cache');
+
+        // ÉTAPE 4 : On vérifie si l'espace est verrouillé par le code PIN au niveau du serveur
+        if (statut.estVerrouille) {
+            if (blocPin) blocPin.classList.remove('cache');
+            if (corp) corp.classList.add('cache');
+        } else {
+            if (blocPin) blocPin.classList.add('cache');
+            if (corp) corp.classList.remove('cache');
+        }
+
+    } catch (error) {
+        console.error("Erreur lors de la synchronisation avec le serveur :", error);
+        // En cas de panne serveur, on affiche le formulaire par défaut
         if (formInsc) formInsc.classList.remove('cache');
-        if (corp) corp.classList.add('cache');
-        if (blocPin) blocPin.classList.add('cache');
-        return;
-    }
-
-    // ÉTAPE 2 : Si une boutique existe, on masque le formulaire d'inscription
-    if (formInsc) formInsc.classList.add('cache');
-
-    // ÉTAPE 3 : Gestion du verrouillage par code PIN
-    if (!vendeurDeverrouille) {
-        if (blocPin) blocPin.classList.remove('cache');
-        if (corp) corp.classList.add('cache');
-    } else {
-        if (blocPin) blocPin.classList.add('cache');
-        if (corp) corp.classList.remove('cache');
     }
 }
-
 // =========================================================================
 // 4. OUTILS DIVERS (SUPPRESSION ET ENCODAGE)
 // =========================================================================
