@@ -136,10 +136,21 @@
 
     <div id="vendeur-auth-requis" class="auth-box text-center cache" style="max-width: 500px; margin: 40px auto; padding: 30px;">
         <h3>👋 Bienvenue sur Ley Pay Business</h3>
-        <p style="margin: 15px 0; color: #ccc;">Vous devez posséder un compte client et être connecté pour pouvoir créer une boutique ou accéder à votre espace.</p>
-        <button onclick="basculerOnglet('compte')" class="btn-auth-soumettre" style="background: var(--lp-gold); color: #111; border: none; padding: 12px; font-weight: bold; width: 100%;">
-            Se connecter ou s'inscrire d'abord
-        </button>
+        <p style="margin-bottom: 20px; color: #ccc;">Connectez-vous ou créez un compte client pour ouvrir votre boutique.</p>
+        
+        <form onsubmit="connexionDirecteVendeur(event)" style="margin-bottom: 20px; text-align: left;">
+            <div style="margin-bottom: 10px;">
+                <label style="display:block; font-size:12px; color:#aaa;">Adresse E-mail</label>
+                <input type="email" id="auth-vendeur-email" required style="width:100%; padding:10px; background:#222; border:1px solid #444; color:#fff;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-size:12px; color:#aaa;">Mot de passe</label>
+                <input type="password" id="auth-vendeur-mdp" required style="width:100%; padding:10px; background:#222; border:1px solid #444; color:#fff;">
+            </div>
+            <button type="submit" style="background: var(--lp-gold, #D4AF37); color: #111; border: none; padding: 12px; font-weight: bold; width: 100%; cursor: pointer;">
+                Se connecter au compte
+            </button>
+        </form>
     </div>
 
     <div id="formulaire-inscription-boutique" class="cache">
@@ -650,35 +661,35 @@ async function rafraichirEspaceVendeur() {
     const blocPin = document.getElementById('vendeur-verrouille-pin');
     const req = document.getElementById('vendeur-auth-requis');
 
-    // On cache d'abord le message d'authentification requis
-    if (req) req.classList.add('cache');
+    let localUser = JSON.parse(localStorage.getItem('lp_session'));
+
+    // ÉTAPE 1 : Si aucun utilisateur n'est connecté (ni localement, ni sur le serveur)
+    if (!localUser) {
+        if (req) req.classList.remove('cache');
+        if (formInsc) formInsc.classList.add('cache');
+        if (corp) corp.classList.add('cache');
+        if (blocPin) blocPin.classList.add('cache');
+        return;
+    }
 
     try {
-        // On demande au serveur le statut de l'espace vendeur
         const response = await fetch('/api/vendeur/statut');
         const statut = await response.json();
 
-        // ÉTAPE 1 : Si le serveur dit que l'utilisateur n'est pas connecté au compte client
-        if (!statut.connecte) {
-            if (req) req.classList.remove('cache');
-            if (formInsc) formInsc.classList.add('cache');
-            if (corp) corp.classList.add('cache');
-            if (blocPin) blocPin.classList.add('cache');
-            return;
-        }
-
-        // ÉTAPE 2 : Si le utilisateur connecté n'a pas encore créé de boutique
-        if (!statut.aUneBoutique) {
+        // ÉTAPE 2 : Si connecté mais pas de boutique -> Affiche le formulaire de création
+        if (!statut.aUneBoutique && !localUser.boutiqueCreee) {
+            if (req) req.classList.add('cache');
             if (formInsc) formInsc.classList.remove('cache');
             if (corp) corp.classList.add('cache');
             if (blocPin) blocPin.classList.add('cache');
             return;
         }
 
-        // ÉTAPE 3 : L'utilisateur a une boutique, on masque le formulaire d'inscription
+        // ÉTAPE 3 : Une boutique existe -> On cache le formulaire d'inscription
         if (formInsc) formInsc.classList.add('cache');
+        if (req) req.classList.add('cache');
 
-        // ÉTAPE 4 : On vérifie si l'espace est verrouillé par le code PIN au niveau du serveur
+        // ÉTAPE 4 : Gestion du code PIN pour entrer dans les tableaux
         if (statut.estVerrouille) {
             if (blocPin) blocPin.classList.remove('cache');
             if (corp) corp.classList.add('cache');
@@ -688,11 +699,42 @@ async function rafraichirEspaceVendeur() {
         }
 
     } catch (error) {
-        console.error("Erreur lors de la synchronisation avec le serveur :", error);
-        // En cas de panne serveur, on affiche le formulaire par défaut
+        // Mode secours si le serveur ne répond pas
+        if (req) req.classList.add('cache');
         if (formInsc) formInsc.classList.remove('cache');
     }
 }
+async function connexionDirecteVendeur(event) {
+    event.preventDefault();
+    const email = document.getElementById('auth-vendeur-email').value;
+    const mdp = document.getElementById('auth-vendeur-mdp').value;
+
+    try {
+        const response = await fetch('/api/connexion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, mdp })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert(data.message);
+            
+            // Stockage local de la session pour l'interface frontend
+            localStorage.setItem('lp_session', JSON.stringify(data.user));
+            
+            // Relancer le rafraîchissement pour passer au formulaire de création de boutique ou au PIN
+            rafraichirEspaceVendeur();
+        } else {
+            alert(data.message || "Identifiants incorrects.");
+        }
+    } catch (error) {
+        console.error("Erreur de connexion directe :", error);
+        alert("Impossible de joindre le serveur d'authentification.");
+    }
+}
+
 // =========================================================================
 // 4. OUTILS DIVERS (SUPPRESSION ET ENCODAGE)
 // =========================================================================
