@@ -133,16 +133,20 @@
         </section>
 
         <section id="section-vendeur" class="cache">
-            
-            <div id="formulaire-inscription-boutique" class="cache">
-                <form onsubmit="creerBoutiqueRapide(event)">
-                    <div class="section-inscription" id="etape-3-conditions">
-                        <h3><span class="badge-num">3</span> Conditions d'utilisation</h3>
-                        <div class="liste-conditions-cases">
-                            <div class="condition-item">
-                                <input type="checkbox" id="cond-legaux" required>
-                                <label for="cond-legaux">Je confirme que mes produits sont légaux.</label>
-                            </div>
+
+    <div id="vendeur-auth-requis" class="auth-box text-center cache" style="max-width: 500px; margin: 40px auto; padding: 30px;">
+        <h3>👋 Bienvenue sur Ley Pay Business</h3>
+        <p style="margin: 15px 0; color: #ccc;">Vous devez posséder un compte client et être connecté pour pouvoir créer une boutique ou accéder à votre espace vendeur.</p>
+        <button onclick="basculerOnglet('compte')" class="btn-auth-soumettre" style="background: var(--lp-gold); color: #111; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px;">
+            Se connecter ou s'inscrire d'abord
+        </button>
+    </div>
+<div id="formulaire-inscription-boutique" class="cache">
+        <form onsubmit="creerBoutiqueRapide(event)">
+            <div class="condition-item">
+                <input type="checkbox" id="cond-legaux" required>
+                <label for="cond-legaux">Je confirme que mes produits sont légaux.</label>
+            </div>                     </div>
                         </div>
                     </div>
                     <button type="submit" class="btn-creer-ma-boutique" style="background: #10b981; color: white; font-weight: bold; width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;">
