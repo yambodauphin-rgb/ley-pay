@@ -464,225 +464,213 @@ function basculerOnglet(nomOnglet) {
     }
 }
 
-        // GESTION AUTHENTIFICATION (INSCRIPTION & CONNEXION)
-        function basculerOngletAuth(mode) {
-            modeAuthActuel = mode;
-            document.getElementById('tab-login').classList.remove('actif');
-            document.getElementById('tab-register').classList.remove('actif');
-            
-            if(mode === 'login') {
-                document.getElementById('tab-login').classSet.add('actif');
-                document.querySelector('.id-complet-reg').classList.add('cache');
-                document.getElementById('btn-texte-auth').textContent = "Se connecter";
-            } else {
-                document.getElementById('tab-register').classList.add('actif');
-                document.querySelector('.id-complet-reg').classList.remove('cache');
-                document.getElementById('btn-texte-auth').textContent = "Créer mon compte Ley Pay";
-            }
-        }
+// GESTION AUTHENTIFICATION (INSCRIPTION & CONNEXION)
+function basculerOngletAuth(mode) {
+    modeAuthActuel = mode;
+    document.getElementById('tab-login').classList.remove('actif');
+    document.getElementById('tab-register').classList.remove('actif');
+    
+    if(mode === 'login') {
+        document.getElementById('tab-login').classList.add('actif');
+        document.querySelector('.id-complet-reg').classList.add('cache');
+        document.getElementById('btn-texte-auth').textContent = "Se connecter";
+    } else {
+        document.getElementById('tab-register').classList.add('actif');
+        document.querySelector('.id-complet-reg').classList.remove('cache');
+        document.getElementById('btn-texte-auth').textContent = "Créer mon compte Ley Pay";
+    }
+}
 
-        function executerAuthentification(e) {
-            e.preventDefault();
-            let email = document.getElementById('auth-email').value;
-            let nom = document.getElementById('auth-nom').value || "Utilisateur Ley Pay";
-            
-            sessionUser = { email: email, nom: nom };
-            localStorage.setItem('lp_session', JSON.stringify(sessionUser));
-            
-            lancerNotification("Authentification réussie !");
-            rafraichirProfilClient();
-            rafraichirEspaceVendeur();
-        }
+function executerAuthentification(e) {
+    e.preventDefault();
+    let email = document.getElementById('auth-email').value;
+    let nom = document.getElementById('auth-nom').value || "Utilisateur Ley Pay";
+    
+    sessionUser = { email: email, nom: nom };
+    localStorage.setItem('lp_session', JSON.stringify(sessionUser));
+    
+    lancerNotification("Authentification réussie !");
+    rafraichirProfilClient();
+    rafraichirEspaceVendeur();
+}
 
-        function executerDeconnexion() {
-            sessionUser = null;
-            localStorage.removeItem('lp_session');
-            panier = [];
-            calculerPanierTotaux();
-            rafraichirProfilClient();
-            rafraichirEspaceVendeur();
-            lancerNotification("Vous êtes maintenant déconnecté.");
-        }
+function executerDeconnexion() {
+    sessionUser = null;
+    localStorage.removeItem('lp_session');
+    panier = [];
+    calculerPanierTotaux();
+    rafraichirProfilClient();
+    rafraichirEspaceVendeur();
+    lancerNotification("Vous êtes maintenant déconnecté.");
+}
 
-       function rafraichirProfilClient() {
+function rafraichirProfilClient() {
     if(sessionUser) {
         document.getElementById('bloc-authentification').classList.add('cache');
         document.getElementById('info-profil-connecte').classList.remove('cache');
         document.getElementById('txt-nom-client').textContent = sessionUser.nom;
         
         const corps = document.getElementById('liste-commandes-client');
-        corps.innerHTML = "";
-        let mesCmds = commandes.filter(c => c.client === sessionUser.email);
-        
-        if(mesCmds.length === 0) {
-            corps.innerHTML = "<p style='color:#888;'>Aucune commande passée pour l'instant.</p>";
-        }
-        mesCmds.reverse().forEach(c => {
-            corps.innerHTML += `
-                <div class="bloc-amazon-profil">
-                    <strong>Commande ID : ${c.id}</strong><br>
-                    Article : ${c.produit} <br>
-                    Montant Payé : ${c.montant} $ | Statut : <span style="color:var(--lp-gold); font-weight:bold;">${c.statut}</span>
-                </div>
-            `;
-        });
-
-        // =========================================================================
-        // 🔒 ZONE DE SÉCURITÉ : Cache ou montre le bouton selon le statut vendeur
-        // =========================================================================
-        const btnMettreEnVente = document.getElementById('btn-mettre-en-vente-client'); 
-        
-        const aDejaUneBoutique = (typeof sessionUser !== "undefined" && sessionUser) && 
-                                 (sessionUser.boutiqueCreee || (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email)));
-
-        if (btnMettreEnVente) {
-            if (!aDejaUneBoutique) {
-                // Si c'est un simple client, on lui cache le bouton de mise en vente
-                btnMettreEnVente.classList.add('cache');
-            } else {
-                // Si c'est un vendeur validé, il peut voir le bouton
-                btnMettreEnVente.classList.remove('cache');
-            }
-        }
-        // =========================================================================
-
-    } else {
-        document.getElementById('bloc-authentification').classList.remove('cache');
-        document.getElementById('info-profil-connecte').classList.add('cache');
-    }
-}
-        // LOGIQUE COMPLÈTE DU PANIER FLOTTANT
-        function basculerPanier() { document.getElementById('panier-lateral').classList.toggle('ouvert'); }
-
-        function ajouterPanier(id) {
-            let prod = produits.find(p => p.id === id);
-            if(prod.stock <= 0) { alert("Désolé, rupture de stock critique pour ce produit !"); return; }
-            
-            let exist = panier.find(item => item.id === id);
-            if(exist) exist.qty++; else panier.push({ ...prod, qty: 1 });
-            
-            lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
-            calculerPanierTotaux();
-        }
-
-        function calculerPanierTotaux() {
-            let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
-            document.getElementById('panier-total-prix').textContent = total.toFixed(2) + " $";
-            document.getElementById('panier-badge').textContent = panier.reduce((sum, i) => sum + i.qty, 0);
-            
-            const corps = document.getElementById('panier-items');
+        if(corps) {
             corps.innerHTML = "";
-            panier.forEach(item => {
+            let mesCmds = commandes.filter(c => c.client === sessionUser.email);
+            
+            if(mesCmds.length === 0) {
+                corps.innerHTML = "<p style='color:#888;'>Aucune commande passée pour l'instant.</p>";
+            }
+            mesCmds.reverse().forEach(c => {
                 corps.innerHTML += `
-                    <div class="item-panier">
-                        <div>
-                            <strong>${item.nom}</strong><br>
-                            <span style="font-size:12px; color:var(--lp-gold);">${item.prix} $ x ${item.qty}</span>
-                        </div>
-                        <div>${(item.prix * item.qty).toFixed(2)} $</div>
+                    <div class="bloc-amazon-profil">
+                        <strong>Commande ID : ${c.id}</strong><br>
+                        Article : ${c.produit} <br>
+                        Montant Payé : ${c.montant} $ | Statut : <span style="color:var(--lp-gold); font-weight:bold;">${c.statut}</span>
                     </div>
                 `;
             });
         }
 
-        function validerCommandeGlobale() {
-            if(!sessionUser) {
-                alert("Veuillez vous inscrire ou vous connecter dans l'onglet 'Mon Profil' avant de payer.");
-                document.getElementById('lien-compte').click();
-                return;
-            }
-            if(panier.length === 0) return;
-
-            panier.forEach(item => {
-                let brut = item.prix * item.qty;
-                let commissionTaux = item.logistique === 'FBA' ? 0.10 : 0.05;
-                let commMontant = brut * commissionTaux;
-                
-                commandes.push({
-                    id: "CMD-" + Math.floor(Math.random()*1000000),
-                    client: sessionUser.email,
-                    vendeur: item.vendeur,
-                    produit: item.nom + ` (x${item.qty})`,
-                    montant: brut,
-                    commission: commMontant,
-                    statut: "Payé - En attente d'expédition"
-                });
-
-                let original = produits.find(p => p.id === item.id);
-                if(original) original.stock -= item.qty;
-            });
-
-            localStorage.setItem('lp_cmds', JSON.stringify(commandes));
-            localStorage.setItem('lp_prods', JSON.stringify(produits));
-            
-            panier = [];
-            calculerPanierTotaux();
-            basculerPanier();
-            lancerNotification("Paiement reçu avec succès ! Répartition automatique validée.");
-            afficherCatalogue();
-        }
-
-        // ESPACE SELLER CENTRAL (VENDEURS PERFORMANCE FBA/FBM)
-        function afficherExplicationLogistique() {
-            const choix = document.getElementById('p-logistique').value;
-            const explication = document.getElementById('explication-logistique');
-            if(choix === 'FBA') {
-                explication.textContent = "FBA : Ley Pay stocke, emballe et livre votre colis. Commission de 10%. Vos ventes augmentent de 40% !";
-            } else {
-                explication.textContent = "FBM : Vous gérez vous-même l'expédition et le colis. Commission réduite à 5%.";
-            }
-        }
         // =========================================================================
-// 1. LA FONCTION DE ROUTAGE ET D'AFFICHAGE DU DASHBOARD
+        // 🔒 ZONE DE SÉCURITÉ ALIGNÉE SUR LE SYSTÈME INDÉPENDANT
+        // =========================================================================
+        const btnMettreEnVente = document.getElementById('btn-mettre-en-vente-client'); 
+        const boutiqueActiveLocale = localStorage.getItem('lp_vendeur_active') === 'true';
+
+        if (btnMettreEnVente) {
+            if (!boutiqueActiveLocale) {
+                btnMettreEnVente.classList.add('cache');
+            } else {
+                btnMettreEnVente.classList.remove('cache');
+            }
+        }
+    } else {
+        document.getElementById('bloc-authentification').classList.remove('cache');
+        document.getElementById('info-profil-connecte').classList.add('cache');
+    }
+}
+
+// LOGIQUE COMPLÈTE DU PANIER FLOTTANT
+function basculerPanier() { document.getElementById('panier-lateral').classList.toggle('ouvert'); }
+
+function ajouterPanier(id) {
+    let prod = produits.find(p => p.id === id);
+    if(prod.stock <= 0) { alert("Désolé, rupture de stock critique pour ce produit !"); return; }
+    
+    let exist = panier.find(item => item.id === id);
+    if(exist) exist.qty++; else panier.push({ ...prod, qty: 1 });
+    
+    lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
+    calculerPanierTotaux();
+}
+
+function calcularPanierTotaux() { /* Écrit comme ça pour correspondre à ton appel */ calculerPanierTotaux(); }
+
+function calculerPanierTotaux() {
+    let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
+    document.getElementById('panier-total-prix').textContent = total.toFixed(2) + " $";
+    document.getElementById('panier-badge').textContent = panier.reduce((sum, i) => sum + i.qty, 0);
+    
+    const corps = document.getElementById('panier-items');
+    if(corps) {
+        corps.innerHTML = "";
+        panier.forEach(item => {
+            corps.innerHTML += `
+                <div class="item-panier">
+                    <div>
+                        <strong>${item.nom}</strong><br>
+                        <span style="font-size:12px; color:var(--lp-gold);">${item.prix} $ x ${item.qty}</span>
+                    </div>
+                    <div>${(item.prix * item.qty).toFixed(2)} $</div>
+                </div>
+            `;
+        });
+    }
+}
+
+function validerCommandeGlobale() {
+    if(!sessionUser) {
+        alert("Veuillez vous inscrire ou vous connecter dans l'onglet 'Mon Profil' avant de payer.");
+        document.getElementById('lien-compte').click();
+        return;
+    }
+    if(panier.length === 0) return;
+
+    panier.forEach(item => {
+        let brut = item.prix * item.qty;
+        let commissionTaux = item.logistique === 'FBA' ? 0.10 : 0.05;
+        let commMontant = brut * commissionTaux;
+        
+        commandes.push({
+            id: "CMD-" + Math.floor(Math.random()*1000000),
+            client: sessionUser.email,
+            vendeur: item.vendeur,
+            produit: item.nom + ` (x${item.qty})`,
+            montant: brut,
+            commission: commMontant,
+            statut: "Payé - En attente d'expédition"
+        });
+
+        let original = produits.find(p => p.id === item.id);
+        if(original) original.stock -= item.qty;
+    });
+
+    localStorage.setItem('lp_cmds', JSON.stringify(commandes));
+    localStorage.setItem('lp_prods', JSON.stringify(produits));
+    
+    panier = [];
+    calculerPanierTotaux();
+    basculerPanier();
+    lancerNotification("Paiement reçu avec succès ! Répartition automatique validée.");
+    afficherCatalogue();
+}
+
+function afficherExplicationLogistique() {
+    const choix = document.getElementById('p-logistique').value;
+    const explication = document.getElementById('explication-logistique');
+    if(choix === 'FBA') {
+        explication.textContent = "FBA : Ley Pay stocke, emballe et livre votre colis. Commission de 10%. Vos ventes augmentent de 40% !";
+    } else {
+        explication.textContent = "FBM : Vous gérez vous-même l'expédition et le colis. Commission réduite à 5%.";
+    }
+}
+
 // =========================================================================
-// =========================================================================
-// 1. LA FONCTION DE ROUTAGE ET DE RAFRAÎCHISSEMENT DE L'ESPACE VENDEUR
+// 1. LA FONCTION DE ROUTAGE DU CENTRAL VENDEUR (100% AUTONOME)
 // =========================================================================
 function rafraichirEspaceVendeur() {
-    // 1. Déclarer et cibler tous nos composants graphiques
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
     const req = document.getElementById('vendeur-auth-requis');
 
-    // On cache le bloc d'alerte s'il existe puisqu'on est désormais indépendant
     if (req) req.classList.add('cache');
 
-    // 2. Récupérer l'état de la boutique locale autonome
-    // Si l'utilisateur est connecté à un compte client, on vérifie sa session locale
-    let sessionActive = JSON.parse(localStorage.getItem('lp_session')) || null;
-    
-    // Une boutique existe si la session l'indique OU si un témoin global est actif
-    const aDejaUneBoutique = (sessionActive && sessionActive.boutiqueCreee === true) || 
-                             (typeof utilisateurABoutique !== "undefined" && utilisateurABoutique === true);
+    // Détection de la boutique via le localStorage autonome
+    const aDejaUneBoutique = localStorage.getItem('lp_vendeur_active') === 'true';
 
-    // 3. Système d'aiguillage (Routage)
     if (!aDejaUneBoutique) {
-        // ÉTAPE 1 : Pas de boutique -> On affiche le formulaire complet d'inscription
+        // ÉTAPE 1 : Pas de boutique créée -> Affiche TOUJOURS le formulaire complet
         if (formInsc) formInsc.classList.remove('cache');
         if (corp) corp.classList.add('cache');
         if (blocPin) blocPin.classList.add('cache');
         return;
     }
 
-    // Si une boutique existe, le formulaire d'inscription n'a plus rien à faire ici
+    // Si la boutique est créée, on masque le formulaire de création
     if (formInsc) formInsc.classList.add('cache');
 
     if (!vendeurDeverrouille) {
-        // ÉTAPE 2 : Boutique créée mais verrouillée -> Demande du Code PIN
+        // ÉTAPE 2 : Boutique créée mais verrouillée -> Demande du code PIN
         if (blocPin) blocPin.classList.remove('cache');
         if (corp) corp.classList.add('cache');
         return;
     }
 
-    // ÉTAPE 3 : Boutique validée + PIN déverrouillé -> Tableau de bord !
+    // ÉTAPE 3 : Déverrouillé -> Tableau de bord final !
     if (blocPin) blocPin.classList.add('cache');
     if (corp) corp.classList.remove('cache');
 
-    // =========================================================================
-    // CHARGEMENT DES DONNÉES DU TABLEAU DE BORD
-    // =========================================================================
-    let emailVendeur = sessionActive ? sessionActive.email : "vendeur_independant@leypay.com";
+    // Chargement des données du tableau de bord
+    let emailVendeur = localStorage.getItem('lp_vendeur_email') || "vendeur_independant@leypay.com";
     
     let mesOffres = (typeof produits !== "undefined") ? produits.filter(p => p.vendeur === emailVendeur) : [];
     let mesVentes = (typeof commandes !== "undefined") ? commandes.filter(c => c.vendeur === emailVendeur) : [];
@@ -719,14 +707,14 @@ function rafraichirEspaceVendeur() {
 }
 
 // =========================================================================
-// 2. LA FONCTION DE VÉRIFICATION DU PIN EXIGÉ AU VERROUILLAGE
+// 2. LA FONCTION DE VÉRIFICATION DU PIN INDÉPENDANT
 // =========================================================================
 function verifierPinVendeur() {
     const inputPin = document.getElementById('input-pin-connexion');
     if (!inputPin) return;
 
     const pinSaisi = inputPin.value;
-    const pinAttendu = sessionUser.vendeurPin || sessionUser.pin; 
+    const pinAttendu = localStorage.getItem('lp_vendeur_pin'); 
 
     if (pinSaisi && pinSaisi === pinAttendu) {
         alert("🔓 Accès accordé. Bienvenue dans votre Central Vendeur.");
@@ -740,7 +728,7 @@ function verifierPinVendeur() {
 }
 
 // =========================================================================
-// 3. INSCRIPTION RAPIDE + VÉRIFICATION DU NUMÉRO MOBILE
+// 3. INSCRIPTION COMPLÈTE ET DEVENIR VENDEUR
 // =========================================================================
 async function creerBoutiqueRapide(event) {
     event.preventDefault();
@@ -765,7 +753,7 @@ async function creerBoutiqueRapide(event) {
         telephone: numeroComplet,
         ville: ville,
         vendeurPin: pinChoisi,
-        email: sessionUser.email
+        email: sessionUser ? sessionUser.email : "vendeur_" + Date.now() + "@leypay.com"
     };
 
     try {
@@ -789,7 +777,7 @@ async function creerBoutiqueRapide(event) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    email: sessionUser.email, 
+                    email: donneesBoutique.email, 
                     code: codeVerification 
                 })
             });
@@ -799,16 +787,16 @@ async function creerBoutiqueRapide(event) {
             if (verifResultat.success) {
                 alert("🎉 Numéro vérifié avec succès ! Votre boutique Ley Pay Business est active.");
                 
-                // MAV : Mise à jour immédiate et forcée de la session locale
-                sessionUser.boutiqueCreee = true;
-                sessionUser.vendeurPin = pinChoisi;
-                localStorage.setItem('lp_session', JSON.stringify(sessionUser));
+                // On stocke les informations de la boutique de façon autonome
+                localStorage.setItem('lp_vendeur_active', 'true');
+                localStorage.setItem('lp_vendeur_pin', pinChoisi);
+                localStorage.setItem('lp_vendeur_email', donneesBoutique.email);
 
-                // On force le verrouillage initial pour exiger la saisie du PIN créé à l'instant
+                // On force la saisie initiale du PIN pour des raisons de sécurité
                 vendeurDeverrouille = false; 
                 
-                // Redirection propre vers l'écran PIN
                 rafraichirEspaceVendeur();
+                if (typeof rafraichirProfilClient === "function") rafraichirProfilClient();
             } else {
                 alert("❌ Code de vérification incorrect. Inscription rejetée.");
             }
@@ -894,7 +882,6 @@ async function vendeurAjouterProduit(e) {
         e.preventDefault();
     }
 
-    // 1. Récupération des éléments HTML du formulaire
     const elLogistique = document.getElementById('p-logistique');
     const elNom = document.getElementById('p-nom');
     const elPrix = document.getElementById('p-prix');
@@ -905,51 +892,37 @@ async function vendeurAjouterProduit(e) {
     const elImg3 = document.getElementById('p-image3');
     const elImg4 = document.getElementById('p-image4');
 
-    // 2. Sécurité : Vérification que tous les champs existent dans la page HTML
     if (!elLogistique || !elNom || !elPrix || !elStock || !elCat || !elImg1 || !elImg2 || !elImg3 || !elImg4) {
         alert("⚠️ Erreur technique : Un ou plusieurs champs du formulaire sont introuvables.");
         return;
     }
 
-    // =========================================================================
-    // 🔒 AJOUT SÉCURITÉ : Blocage des simples clients qui n'ont pas de boutique
-    // =========================================================================
-    const aDejaUneBoutique = (typeof sessionUser !== "undefined" && sessionUser) && 
-                             (sessionUser.boutiqueCreee || (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email)));
+    // Vérification de sécurité autonome
+    const boutiqueActiveLocale = localStorage.getItem('lp_vendeur_active') === 'true';
 
-    if (!aDejaUneBoutique) {
+    if (!boutiqueActiveLocale) {
         alert("⚠️ Accès refusé : Vous devez d'abord remplir le formulaire d'inscription dans l'onglet 'ESPACE VENDEUR' pour pouvoir mettre un produit en vente.");
-        
-        // Redirection automatique vers l'onglet Espace Vendeur
-        const lienBoutique = document.getElementById('lien-boutique');
-        if (lienBoutique) {
-            lienBoutique.click(); 
-        }
-        return; // Bloque et arrête définitivement l'exécution ici
+        basculerOnglet('vendeur');
+        return; 
     }
-    // =========================================================================
 
-    // 3. Calcul des variables de logistique
     let modeLog = elLogistique.value;
     let taux = modeLog === 'FBA' ? 0.10 : 0.05;
 
-    // 4. Récupération des fichiers images
     const file1 = elImg1.files[0];
     const file2 = elImg2.files[0];
     const file3 = elImg3.files[0];
     const file4 = elImg4.files[0];
 
-    // 5. Sécurité : Vérification des 4 photos
     if (!file1 || !file2 || !file3 || !file4) {
         alert("Veuillez sélectionner les 4 photos obligatoires avant de valider.");
         return;
     }
 
-    // Déclaration globale de la variable produit pour qu'elle fonctionne aussi dans le bloc catch (secours)
     let nouveauProduit = null;
+    let emailVendeurActuel = localStorage.getItem('lp_vendeur_email') || "vendeur_independant@leypay.com";
 
     try {
-        // 6. Conversion des images en Base64 simultanément
         const [base64Img1, base64Img2, base64Img3, base64Img4] = await Promise.all([
             convertirFichierEnBase64(file1),
             convertirFichierEnBase64(file2),
@@ -957,7 +930,6 @@ async function vendeurAjouterProduit(e) {
             convertirFichierEnBase64(file4)
         ]);
 
-        // 7. Création de l'objet produit complet
         nouveauProduit = {
             id: Date.now(),
             nom: elNom.value,
@@ -970,11 +942,10 @@ async function vendeurAjouterProduit(e) {
             img_detail1: base64Img2,
             img_detail2: base64Img3,
             img_detail3: base64Img4,
-            vendeur: sessionUser.email,
+            vendeur: emailVendeurActuel,
             valide: true
         };
 
-        // 8. Envoi en ligne vers ton serveur Render
         const reponse = await fetch('/api/produits', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -985,7 +956,6 @@ async function vendeurAjouterProduit(e) {
             throw new Error("Le serveur en ligne n'a pas pu valider l'enregistrement.");
         }
 
-        // Si le serveur accepte le produit, on recharge la liste depuis la BDD
         if (typeof chargerProduitsDepuisBDD === "function") {
             await chargerProduitsDepuisBDD();
         } else {
@@ -1004,9 +974,6 @@ async function vendeurAjouterProduit(e) {
 
     } catch (erreur) {
         console.error("Détail de l'erreur détectée :", erreur);
-        console.warn("Enregistrement en mode local (Secours informatique).");
-        
-        // Mode secours sans plantage
         let produitsLocaux = JSON.parse(localStorage.getItem('lp_prods')) || [];
         if (nouveauProduit) {
             produitsLocaux.push(nouveauProduit);
