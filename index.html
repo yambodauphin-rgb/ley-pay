@@ -1428,169 +1428,80 @@ async function creerBoutiqueRapide(event) {
     event.preventDefault();
 
     try {
-        // 1. Récupération des données du formulaire
-        const nomComplet = document.getElementById('vendeur-nom')?.value || "";
-        const nomBoutique = document.getElementById('vendeur-boutique-nom')?.value || "";
-        const emailBoutique = document.getElementById('vendeur-email')?.value || "";
+        // 1. Récupération des données du formulaire d'après les IDs HTML
+        const nom = document.getElementById('vendeur-nom')?.value.trim() || "";
+        const boutiqueNom = document.getElementById('vendeur-boutique-nom')?.value.trim() || "";
+        const emailBoutique = document.getElementById('vendeur-email')?.value.trim() || "";
         const prefixe = document.getElementById('vendeur-prefixe')?.value || "+243";
-        const telephoneSaisi = document.getElementById('vendeur-telephone')?.value || "";
-        const pays = document.getElementById('vendeur-pays')?.value || "RDC";
-        const ville = document.getElementById('vendeur-ville')?.value || "";
+        const telephoneSaisi = document.getElementById('vendeur-telephone')?.value.trim() || "";
+        const ville = document.getElementById('vendeur-ville')?.value.trim() || "";
         
-        // Paiement
-        const titulaireCompte = document.getElementById('vendeur-titulaire-compte')?.value || "";
-        const reseauMoney = document.getElementById('vendeur-reseau-money')?.value || "";
-        const numeroMoney = document.getElementById('vendeur-numero-money')?.value || "";
-        const nomCompteMoney = document.getElementById('vendeur-nom-compte-money')?.value || "";
-        
-        // Sécurité
-        const codePin = document.getElementById('vendeur-pin')?.value || "";
+        // Sécurité (Code PIN)
+        const vendeurPin = document.getElementById('vendeur-pin')?.value.trim() || "";
 
-        // Nettoyage et formatage du téléphone
+        // Formatage du numéro de téléphone propre
         const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
 
-        // 2. Vérification de la session locale de l'utilisateur connecté
+        // 2. Récupération de la session client connectée
         const localUser = JSON.parse(localStorage.getItem('lp_session'));
         if (!localUser || !localUser.email) {
             alert("Erreur : Vous devez être connecté à votre compte client pour créer une boutique.");
             return;
         }
 
-        // Préparation de l'objet (Payload) avec toutes les variables requises
+        // 3. Construction du Payload STRICTEMENT identique aux attentes de la ligne 250 de server.js
         const payload = {
-            emailCompteClient: localUser.email,
-            nomComplet,
-            nomBoutique,
-            emailBoutique,
+            nom: nom,
+            boutiqueNom: boutiqueNom,
             telephone: telephoneComplet,
-            pays,
-            ville,
-            moyenPaiement: "Mobile Money", // Forcé ici pour éviter l'absence de données requises
-            titulaireCompte,
-            reseauMoney,
-            numeroMoney,
-            nomCompteMoney,
-            codePin
+            ville: ville,
+            vendeurPin: vendeurPin,
+            email: localUser.email // Le serveur utilise 'email' pour identifier le compte et stocker le SMS
         };
 
-        // 3. Envoi au serveur backend
+        // Optionnel : Si ton backend a besoin des infos de paiement dès cette étape, on peut les ajouter, 
+        // mais d'après la ligne 250, elles ne bloquent pas la validation initiale.
+        payload.emailBoutique = emailBoutique;
+        payload.titulaireCompte = document.getElementById('vendeur-titulaire-compte')?.value.trim() || "";
+        payload.reseauMoney = document.getElementById('vendeur-reseau-money')?.value || "";
+        payload.numeroMoney = document.getElementById('vendeur-numero-money')?.value.trim() || "";
+        payload.nomCompteMoney = document.getElementById('vendeur-nom-compte-money')?.value.trim() || "";
+
+        // 4. Envoi de la requête au serveur backend
         const response = await fetch('/api/vendeurs/inscription', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        // Vérification si la réponse est bien du JSON pour éviter le crash du JSON.parse
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            const texteErreur = await response.text();
-            console.error("Réponse brute du serveur (Non-JSON) :", texteErreur);
-            alert("Le serveur a renvoyé une erreur interne. Regardez les logs de Render.");
+            const txt = await response.text();
+            console.error("Réponse brute du serveur :", txt);
+            alert("Erreur technique : Le serveur n'a pas renvoyé de JSON.");
             return;
         }
 
         const data = await response.json();
 
         if (data.success) {
-            alert("🎉 Inscription réussie ! Votre boutique Ley Pay a été créée avec succès.");
+            // Puisque ton serveur génère un code OTP (ligne 256), il y aura probablement une étape de vérification SMS
+            alert("📩 Un code de vérification a été généré ! " + (data.message || "Veuillez vérifier vos messages."));
+            
+            // Si tu as une fonction ou une boîte modale pour saisir le code SMS/OTP, affiche-la ici :
+            // ex: afficherBoiteOTP();
+            
+            // Si le serveur valide directement sans bloquer (mode test) :
             localUser.boutiqueCreee = true;
             localStorage.setItem('lp_session', JSON.stringify(localUser));
-            if (typeof rafraichirEspaceVendeur === "function") {
-                rafraichirEspaceVendeur();
-            } else {
-                window.location.reload();
-            }
+            window.location.reload();
         } else {
-            alert(data.message || "Certaines données requises sont manquantes ou incorrectes.");
+            alert(data.message || "Une erreur est survenue lors de la validation.");
         }
 
     } catch (error) {
-        console.error("Erreur lors de l'inscription :", error);
-        alert("Impossible de communiquer avec le serveur.");
-    }
-}async function creerBoutiqueRapide(event) {
-    event.preventDefault();
-
-    try {
-        // 1. Récupération des données du formulaire
-        const nomComplet = document.getElementById('vendeur-nom')?.value || "";
-        const nomBoutique = document.getElementById('vendeur-boutique-nom')?.value || "";
-        const emailBoutique = document.getElementById('vendeur-email')?.value || "";
-        const prefixe = document.getElementById('vendeur-prefixe')?.value || "+243";
-        const telephoneSaisi = document.getElementById('vendeur-telephone')?.value || "";
-        const pays = document.getElementById('vendeur-pays')?.value || "RDC";
-        const ville = document.getElementById('vendeur-ville')?.value || "";
-        
-        // Paiement
-        const titulaireCompte = document.getElementById('vendeur-titulaire-compte')?.value || "";
-        const reseauMoney = document.getElementById('vendeur-reseau-money')?.value || "";
-        const numeroMoney = document.getElementById('vendeur-numero-money')?.value || "";
-        const nomCompteMoney = document.getElementById('vendeur-nom-compte-money')?.value || "";
-        
-        // Sécurité
-        const codePin = document.getElementById('vendeur-pin')?.value || "";
-
-        // Nettoyage et formatage du téléphone
-        const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
-
-        // 2. Vérification de la session locale de l'utilisateur connecté
-        const localUser = JSON.parse(localStorage.getItem('lp_session'));
-        if (!localUser || !localUser.email) {
-            alert("Erreur : Vous devez être connecté à votre compte client pour créer une boutique.");
-            return;
-        }
-
-        // Préparation de l'objet (Payload) avec toutes les variables requises
-        const payload = {
-            emailCompteClient: localUser.email,
-            nomComplet,
-            nomBoutique,
-            emailBoutique,
-            telephone: telephoneComplet,
-            pays,
-            ville,
-            moyenPaiement: "Mobile Money", // Forcé ici pour éviter l'absence de données requises
-            titulaireCompte,
-            reseauMoney,
-            numeroMoney,
-            nomCompteMoney,
-            codePin
-        };
-
-        // 3. Envoi au serveur backend
-        const response = await fetch('/api/vendeurs/inscription', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        // Vérification si la réponse est bien du JSON pour éviter le crash du JSON.parse
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            const texteErreur = await response.text();
-            console.error("Réponse brute du serveur (Non-JSON) :", texteErreur);
-            alert("Le serveur a renvoyé une erreur interne. Regardez les logs de Render.");
-            return;
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert("🎉 Inscription réussie ! Votre boutique Ley Pay a été créée avec succès.");
-            localUser.boutiqueCreee = true;
-            localStorage.setItem('lp_session', JSON.stringify(localUser));
-            if (typeof rafraichirEspaceVendeur === "function") {
-                rafraichirEspaceVendeur();
-            } else {
-                window.location.reload();
-            }
-        } else {
-            alert(data.message || "Certaines données requises sont manquantes ou incorrectes.");
-        }
-
-    } catch (error) {
-        console.error("Erreur lors de l'inscription :", error);
-        alert("Impossible de communiquer avec le serveur.");
+        console.error("Erreur Inscription :", error);
+        alert("Impossible de joindre le serveur. Vérifie ta connexion réseau.");
     }
 }
     </script>
