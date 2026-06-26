@@ -132,28 +132,28 @@
             </div>
         </section>
 
-      <section id="section-vendeur" class="cache">
+   <section id="section-vendeur" class="cache">
     <div id="vendeur-auth-requis" class="auth-box text-center cache">
         <h3>Veuillez d'Abord vous connecter ou créer un compte client pour ouvrir une boutique vendeur.</h3>
     </div>
     
-    <div id="formulaire-inscription-boutique" class="inscription-vendeur-container">
+    <div id="formulaire-inscription-boutique" class="inscription-vendeur-container cache">
         <div class="logo-espace-vendeur">
             <span class="logo-ley">LEY</span> <span class="logo-pay">Pay Business</span>
         </div>
         <h2><i class="fas fa-store-alt"></i> Formulaire d'inscription Vendeur</h2>
-        <p class="subtitle">Veuillez remplir l'intégralité des sections pour activer vos fonctionnalités vendeurs.</p>
+        <p class="subtitle">Créez votre boutique en quelques secondes pour commencer à vendre.</p>
 
-        <form id="form-inscription-vendeur" onsubmit="gererInscriptionVendeur(event)">
+        <form id="form-inscription-vendeur" onsubmit="creerBoutiqueRapide(event)">
             
             <div class="section-inscription" id="etape-1-profil">
-                <h3><span class="badge-num">1</span> Informations personnelles</h3>
+                <h3><span class="badge-num">1</span> Informations de la boutique</h3>
                 
                 <div class="champ-groupe">
                     <label>Nom complet</label>
                     <div class="input-avec-icone">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="vendeur-nom" placeholder="Entrez votre nom complet" required>
+                        <input type="text" id="insc-vendeur-nom" placeholder="Entrez votre nom complet" required>
                     </div>
                 </div>
 
@@ -161,15 +161,7 @@
                     <label>Nom de la boutique</label>
                     <div class="input-avec-icone">
                         <i class="fas fa-store"></i>
-                        <input type="text" id="boutique-nom-form" placeholder="Entrez le nom de votre boutique" required>
-                    </div>
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Email</label>
-                    <div class="input-avec-icone">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="vendeur-email" placeholder="exemple@email.com" required>
+                        <input type="text" id="insc-vendeur-boutique" placeholder="Entrez le nom de votre boutique" required>
                     </div>
                 </div>
 
@@ -182,7 +174,7 @@
                                 <option value="+243">+243</option>
                             </select>
                         </div>
-                        <input type="tel" id="vendeur-telephone" placeholder="Numéro de téléphone" required>
+                        <input type="tel" id="insc-vendeur-telephone" placeholder="Ex: 081234567" required>
                     </div>
                 </div>
 
@@ -200,159 +192,27 @@
                         <label>Ville</label>
                         <div class="input-avec-icone">
                             <i class="fas fa-map-marker-alt"></i>
-                            <input type="text" id="vendeur-ville" placeholder="Votre ville" required>
+                            <input type="text" id="insc-vendeur-ville" placeholder="Ex: Kinshasa" required>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="section-inscription" id="etape-2-kyc">
-                <h3><span class="badge-num">2</span> Vérification d'identité (sécurité)</h3>
-                <div class="bloc-telechargement-kyc">
-                    <div class="box-upload">
-                        <span>Photo de la pièce d'identité</span>
-                        <div class="upload-zone-interne">
-                            <i class="fas fa-id-card size-upload-icon"></i>
-                            <label for="file-id-card" class="btn-upload-label"><i class="fas fa-arrow-up"></i> Télécharger</label>
-                            <input type="file" id="file-id-card" accept="image/*" required>
-                        </div>
-                    </div>
-                    <div class="box-upload">
-                        <span>Selfie avec la pièce d'identité</span>
-                        <div class="upload-zone-interne">
-                            <i class="fas fa-user-shield size-upload-icon"></i>
-                            <label for="file-selfie" class="btn-upload-label"><i class="fas fa-arrow-up"></i> Télécharger</label>
-                            <input type="file" id="file-selfie" accept="image/*" required>
-                        </div>
-                    </div>
+            <div class="section-inscription" id="etape-2-securite-pin">
+                <h3><span class="badge-num">2</span> Sécurité du compte (Code PIN)</h3>
+                <p style="font-size: 13px; color: #ccc; margin-bottom: 15px;">
+                    Ce code secret à 6 chiffres remplacera le mot de passe et vous sera demandé à chaque fois que vous accéderez à votre Central Vendeur.
+                </p>
+
+                <div class="champ-groupe" style="text-align: center;">
+                    <label style="display:block; text-align:left; margin-bottom: 8px;">Définir votre Code PIN à 6 chiffres</label>
+                    <input type="password" id="insc-vendeur-pin" maxlength="6" pattern="[0-9]{6}" placeholder="******" required 
+                           style="width: 180px; height: 45px; text-align: center; font-size: 24px; letter-spacing: 6px; background: #222; border: 1px solid #D4AF37; color: white; border-radius: 6px;">
                 </div>
             </div>
 
-            <div class="section-inscription" id="etape-3-boutique">
-                <h3><span class="badge-num">3</span> Informations sur la boutique</h3>
-                
-                <div class="champ-groupe">
-                    <label>Catégorie</label>
-                    <div class="boutons-selection-categories">
-                        <button type="button" class="btn-cat-select active" onclick="selectionnerCategorieForm('Mode')"><i class="fas fa-tshirt"></i> Mode</button>
-                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Beauté')"><i class="fas fa-magic"></i> Beauté</button>
-                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Maison')"><i class="fas fa-home"></i> Maison</button>
-                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Technologie')"><i class="fas fa-laptop"></i> Technologie</button>
-                        <button type="button" class="btn-cat-select" onclick="selectionnerCategorieForm('Autres')"><i class="fas fa-ellipsis-h"></i> Autres</button>
-                    </div>
-                    <input type="hidden" id="boutique-categorie-input" value="Mode">
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Description de la boutique</label>
-                    <textarea id="boutique-description" rows="4" placeholder="Décrivez votre boutique, vos produits..." required></textarea>
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Logo de la boutique (optionnel)</label>
-                    <div class="upload-logo-zone">
-                        <i class="far fa-image"></i>
-                        <div>
-                            <label for="file-logo" style="cursor:pointer; font-weight:600; color:#D4AF37;">Télécharger votre logo</label>
-                            <p style="margin:5px 0 0 0; font-size:11px; color:#aaa;">PNG, JPG (max. 2MB)</p>
-                        </div>
-                        <input type="file" id="file-logo" accept="image/*">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-inscription" id="etape-4-paiement">
-                <h3><span class="badge-num">4</span> Informations de paiement</h3>
-                
-                <div class="champ-groupe">
-                    <label>Nom du titulaire du compte</label>
-                    <input type="text" id="paiement-titulaire" placeholder="Entrez le nom du titulaire" required>
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Moyen de paiement</label>
-                    <div class="onglets-paiement">
-                        <button type="button" class="btn-pay-methode active" onclick="changerMethodePaiement('Mobile Money')"><i class="fas fa-mobile-alt"></i> Mobile Money</button>
-                        <button type="button" class="btn-pay-methode" onclick="changerMethodePaiement('Banque')"><i class="fas fa-university"></i> Banque</button>
-                        <button type="button" class="btn-pay-methode" onclick="changerMethodePaiement('PayPal')"><i class="fab fa-paypal"></i> PayPal</button>
-                        <button type="button" class="btn-pay-methode" onclick="changerMethodePaiement('Autre')"><i class="fas fa-ellipsis-h"></i> Autre</button>
-                    </div>
-                    <input type="hidden" id="paiement-methode-input" value="Mobile Money">
-                </div>
-
-                <div id="details-momo-bloc" class="details-paiement-box">
-                    <h4>Détails Mobile Money</h4>
-                    <div class="champ-groupe">
-                        <label>Nom du réseau utilisé</label>
-                        <select id="momo-reseau">
-                            <option value="Airtel Money">Airtel Money</option>
-                            <option value="Orange Money">Orange Money</option>
-                            <option value="M-Pesa">M-Pesa</option>
-                            <option value="Afrimoney">Afrimoney</option>
-                        </select>
-                    </div>
-                    <div class="champ-groupe">
-                        <label>Numéro Mobile Money</label>
-                        <div class="phone-input-container">
-                            <select style="width:70px; background:#222; color:white; border:1px solid #444;"><option>+243</option></select>
-                            <input type="tel" id="momo-numero" placeholder="Entrez votre numéro">
-                        </div>
-                    </div>
-                    <div class="champ-groupe">
-                        <label>Nom enregistré sur le compte</label>
-                        <input type="text" id="momo-nom-compte" placeholder="Nom tel qu'enregistré sur le compte">
-                    </div>
-                    <div class="checkbox-simple">
-                        <input type="checkbox" id="momo-confirmation" checked required>
-                        <label for="momo-confirmation">Je confirme que ce moyen de paiement m'appartient.</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-inscription" id="etape-5-securite">
-                <h3><span class="badge-num">5</span> Siège de sécurité</h3>
-                
-                <div class="champ-groupe">
-                    <label>Créer un mot de passe</label>
-                    <div class="input-avec-pass">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="secure-pass" placeholder="Entrez un mot de passe" required>
-                    </div>
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Confirmer le mot de passe</label>
-                    <div class="input-avec-pass">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="secure-pass-conf" placeholder="Confirmez votre mot de passe" required>
-                    </div>
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Code PIN vendeur (6 chiffres)</label>
-                    <div class="pin-container-6">
-                        <input type="text" maxlength="1" class="pin-digit" required>
-                        <input type="text" maxlength="1" class="pin-digit" required>
-                        <input type="text" maxlength="1" class="pin-digit" required>
-                        <input type="text" maxlength="1" class="pin-digit" required>
-                        <input type="text" maxlength="1" class="pin-digit" required>
-                        <input type="text" maxlength="1" class="pin-digit" required>
-                    </div>
-                    <input type="hidden" id="secure-pin-final">
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Activer la double authentification</label>
-                    <div class="onglets-paiement">
-                        <button type="button" class="btn-2fa active"><i class="fas fa-comment-alt"></i> SMS</button>
-                        <button type="button" class="btn-2fa"><i class="fas fa-envelope"></i> Email</button>
-                        <button type="button" class="btn-2fa"><i class="fas fa-shield-alt"></i> Application</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-inscription" id="etape-6-conditions">
-                <h3><span class="badge-num">6</span> Conditions d'utilisation</h3>
+            <div class="section-inscription" id="etape-3-conditions">
+                <h3><span class="badge-num">3</span> Conditions d'utilisation</h3>
                 
                 <div class="liste-conditions-cases">
                     <div class="condition-item">
@@ -361,37 +221,27 @@
                     </div>
                     <div class="condition-item">
                         <input type="checkbox" id="cond-ventes" required>
-                        <label for="cond-ventes">J'accepte les conditions de vente de la plateforme.</label>
-                    </div>
-                    <div class="condition-item">
-                        <input type="checkbox" id="cond-conf" required>
-                        <label for="cond-conf">J'accepte la politique de confidentialité.</label>
+                        <label for="cond-ventes">J'accepte les conditions de vente de la plateforme Ley Pay.</label>
                     </div>
                 </div>
 
-                <div class="clause-securite-police">
+                <div class="clause-securite-police" style="margin-top: 20px;">
                     <div class="entete-alerte">
                         <i class="fas fa-gavel"></i>
-                        <span>AVERTISSEMENT JURIDIQUE DE SÉCURITÉ</span>
+                        <span>AVERTISSEMENT DE SÉCURITÉ</span>
                     </div>
                     <p class="texte-alerte">
-                        En cas de toute fonctionnalité illégale, d'actes inégaux ou d'escroquerie constatés sur votre compte, 
-                        <strong>préparez-vous à être arrêté immédiatement par ma police et vous serez traduit devant le tribunal.</strong>
+                        En cas de fraude, d'articles interdits ou d'escroquerie constatés, votre compte sera immédiatement suspendu et des poursuites judiciaires pourront être engagées.
                     </p>
-                    <div class="checkbox-validation-obligatoire">
-                        <input type="checkbox" id="accepter-police-tribunal" required>
-                        <label for="accepter-police-tribunal">
-                            Je certifie avoir lu et compris cet avertissement. J'accepte les poursuites judiciaires et l'arrestation immédiate en cas d'escroquerie de ma part.
-                        </label>
-                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-creer-ma-boutique">
+            <button type="submit" class="btn-creer-ma-boutique" style="background: #10b981; color: white; font-weight: bold;">
                 <i class="fas fa-lock"></i> Créer ma boutique
             </button>
         </form>
     </div>
+</section> 
 
     <div id="vendeur-verrouille-pin" class="auth-box text-center cache" style="max-width: 450px; margin: 40px auto; padding: 30px; background: #111; border: 1px solid #D4AF37; border-radius: 12px; color: white;">
         <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Sécurisé</h3>
@@ -842,13 +692,16 @@ function afficherCatalogue(items = produits) {
                 explication.textContent = "FBM : Vous gérez vous-même l'expédition et le colis. Commission réduite à 5%.";
             }
         }
-        function rafraichirEspaceVendeur() {
+        // =========================================================================
+// 1. LA FONCTION DE ROUTAGE ET D'AFFICHAGE DU DASHBOARD
+// =========================================================================
+function rafraichirEspaceVendeur() {
     const req = document.getElementById('vendeur-auth-requis');
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
 
-    // 1. Si l'utilisateur n'est pas connecté du tout
+    // Si l'utilisateur n'est pas connecté du tout
     if(!sessionUser) {
         if(req) req.classList.remove('cache');
         if(formInsc) formInsc.classList.add('cache');
@@ -860,21 +713,20 @@ function afficherCatalogue(items = produits) {
     // L'utilisateur est connecté, on cache le bloc d'authentification requise
     if(req) req.classList.add('cache');
 
-    // 2. VÉRIFICATION : L'utilisateur a-t-il déjà créé une boutique ?
+    // VÉRIFICATION : L'utilisateur a-t-il déjà créé une boutique ?
     const aDejaUneBoutique = sessionUser.boutiqueCreee || (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email));
 
     if (aDejaUneBoutique) {
-        // Il a une boutique : on cache obligatoirement le formulaire d'inscription
         if(formInsc) formInsc.classList.add('cache');
 
         // On vérifie s'il a déjà tapé son bon code PIN pour cette session
         if (vendeurDeverrouille) {
-            if(blocPin) blocPin.classList.add('cache'); // Le PIN est bon, on cache le verrou
-            if(corp) corp.classList.remove('cache');    // On affiche le Central Vendeur
+            if(blocPin) blocPin.classList.add('cache'); 
+            if(corp) corp.classList.remove('cache');    
         } else {
-            if(blocPin) blocPin.classList.remove('cache'); // 🔓 ICI : On affiche ton bloc PIN !
-            if(corp) corp.classList.add('cache');          // 🔒 Et on cache le Central Vendeur
-            return; // ⛔ Bloque la suite tant que le PIN n'est pas validé !
+            if(blocPin) blocPin.classList.remove('cache'); 
+            if(corp) corp.classList.add('cache');          
+            return; 
         }
     } else {
         // Il n'a pas de boutique : on lui montre le formulaire d'inscription
@@ -884,9 +736,7 @@ function afficherCatalogue(items = produits) {
         return;
     }
 
-    // =========================================================================
-    // 📊 3. CHARGEMENT DES DONNÉES DU TABLEAU DE BORD (Uniquement si PIN validé)
-    // =========================================================================
+    // CHARGEMENT DES DONNÉES DU TABLEAU DE BORD (Uniquement si PIN validé)
     let mesOffres = produits.filter(p => p.vendeur === sessionUser.email);
     let mesVentes = commandes.filter(c => c.vendeur === sessionUser.email);
     
@@ -900,7 +750,6 @@ function afficherCatalogue(items = produits) {
     if (kpiBrut) kpiBrut.textContent = totalBrut.toFixed(2) + " $";
     if (kpiSolde) kpiSolde.textContent = soldeNet.toFixed(2) + " $";
 
-    // Récupération du tableau des stocks
     const tStocks = document.querySelector('.table-custom tbody') || document.getElementById('t-stocks');
     if (tStocks) {
         tStocks.innerHTML = ""; 
@@ -920,7 +769,6 @@ function afficherCatalogue(items = produits) {
         });
     }
 
-    // Récupération du tableau des retraits (Unique et bien placé)
     const tRetraits = document.getElementById('vendeur-table-retraits');
     if (tRetraits) {
         tRetraits.innerHTML = "";
@@ -929,21 +777,9 @@ function afficherCatalogue(items = produits) {
         });
     }
 }
-// =========================================================================
-// 1. LA FONCTION DE ROUTAGE ET D'AFFICHAGE DU DASHBOARD
-// =========================================================================
-function rafraichirEspaceVendeur() {
-    // ... tout le code propre qu'on a corrigé juste avant ...
-    if (tRetraits) {
-        tRetraits.innerHTML = "";
-        retraits.filter(r => r.vendeur === sessionUser.email).forEach(r => {
-            tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
-        });
-    }
-} // 🔓 Fin de la fonction rafraichirEspaceVendeur
 
 // =========================================================================
-// 2. LA FONCTION DE VÉRIFICATION DU PIN (À METTRE EXACTEMENT ICI)
+// 2. LA FONCTION DE VÉRIFICATION DU PIN EXIGÉ AU VERROUILLAGE
 // =========================================================================
 function verifierPinVendeur() {
     const inputPin = document.getElementById('input-pin-connexion');
@@ -956,15 +792,97 @@ function verifierPinVendeur() {
         alert("🔓 Accès accordé. Bienvenue dans votre Central Vendeur.");
         vendeurDeverrouille = true; 
         inputPin.value = ""; 
-        rafraichirEspaceVendeur(); // On relance la fonction du haut pour enlever le verrou
+        rafraichirEspaceVendeur(); 
     } else {
         alert("❌ Code PIN incorrect. Veuillez réessayer.");
         inputPin.value = ""; 
     }
-} // 🔐 Fin de la fonction verifierPinVendeur
+}
 
+// =========================================================================
+// 3. INSCRIPTION RAPIDE + VÉRIFICATION DU NUMÉRO MOBILE (NOUVEAU)
+// =========================================================================
+async function creerBoutiqueRapide(event) {
+    event.preventDefault();
 
+    const nomComplet = document.getElementById('insc-vendeur-nom').value;
+    const nomBoutique = document.getElementById('insc-vendeur-boutique').value;
+    const prefixe = document.getElementById('vendeur-prefixe').value;
+    const telephoneSaisi = document.getElementById('insc-vendeur-telephone').value;
+    const ville = document.getElementById('insc-vendeur-ville').value;
+    const pinChoisi = document.getElementById('insc-vendeur-pin').value;
 
+    const numeroComplet = prefixe + telephoneSaisi; 
+
+    if (pinChoisi.length !== 6 || isNaN(pinChoisi)) {
+        alert("❌ Le code PIN doit comporter exactement 6 chiffres.");
+        return;
+    }
+
+    const donneesBoutique = {
+        nom: nomComplet,
+        boutiqueNom: nomBoutique,
+        telephone: numeroComplet,
+        ville: ville,
+        vendeurPin: pinChoisi,
+        email: sessionUser.email
+    };
+
+    try {
+        // Envoi au serveur pour initier l'inscription et déclencher le SMS
+        const response = await fetch('/api/vendeurs/inscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(donneesBoutique)
+        });
+
+        const resultat = await response.json();
+
+        if (resultat.success) {
+            // Demande du code envoyé sur son numéro mobile
+            const codeVerification = prompt(`📱 Un code de validation a été envoyé au ${numeroComplet}.\nVeuillez saisir le code reçu :`);
+
+            if (!codeVerification) {
+                alert("❌ Validation annulée. La boutique n'a pas été créée.");
+                return;
+            }
+
+            // Validation du jeton OTP sur le serveur backend
+            const verifResponse = await fetch('/api/vendeurs/verifier-sms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    email: sessionUser.email, 
+                    code: codeVerification 
+                })
+            });
+
+            const verifResultat = await verifResponse.json();
+
+            if (verifResultat.success) {
+                alert("🎉 Numéro vérifié avec succès ! Votre boutique Ley Pay Business est active.");
+                
+                sessionUser.boutiqueCreee = true;
+                sessionUser.vendeurPin = pinChoisi;
+                localStorage.setItem('lp_session', JSON.stringify(sessionUser));
+
+                vendeurDeverrouille = true; 
+                rafraichirEspaceVendeur();
+            } else {
+                alert("❌ Code de vérification incorrect. Inscription rejetée.");
+            }
+        } else {
+            alert("Erreur : " + resultat.message);
+        }
+    } catch (erreur) {
+        console.error("Erreur lors de la création :", erreur);
+        alert("Impossible de joindre le serveur.");
+    }
+}
+
+// =========================================================================
+// 4. OUTILS DIVERS (SUPPRESSION ET ENCODAGE)
+// =========================================================================
 async function supprimerPropreProduit(id) {
     if (confirm("Voulez-vous vraiment supprimer définitivement cet article de la plateforme Ley Pay ?")) {
         try {
@@ -985,8 +903,8 @@ async function supprimerPropreProduit(id) {
                 alert("Erreur du serveur : " + resultat.message);
             }
         } catch (error) {
-            console.error("Erreur lors de la communication avec le serveur :", error);
-            alert("Impossible de joindre le serveur pour supprimer le produit.");
+            console.error("Erreur :", error);
+            alert("Impossible de joindre le serveur.");
         }
     }
 }
