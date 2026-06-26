@@ -639,51 +639,52 @@ function basculerOnglet(nomOnglet) {
 // 1. LA FONCTION DE ROUTAGE ET DE RAFRAÎCHISSEMENT DE L'ESPACE VENDEUR
 // =========================================================================
 function rafraichirEspaceVendeur() {
+    // 🔄 On force la mise à jour de la session pour chasser les bugs
+    sessionUser = JSON.parse(localStorage.getItem('lp_session')) || null;
+
     const req = document.getElementById('vendeur-auth-requis');
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
 
-    // Cas 1 : Si l'utilisateur n'est pas connecté du tout au site
+    // 1️⃣ ÉTAPE 1 : Si l'utilisateur n'est pas connecté du tout au site
     if (!sessionUser) {
-        if(req) req.classList.remove('cache');
+        if(req) req.classList.remove('cache'); // On montre le message d'alerte !
         if(formInsc) formInsc.classList.add('cache');
         if(corp) corp.classList.add('cache');
         if(blocPin) blocPin.classList.add('cache'); 
         return;
     }
 
-    // L'utilisateur est connecté, on cache le bloc d'authentification requise
+    // Si l'utilisateur est connecté, on cache le message d'avertissement
     if(req) req.classList.add('cache');
 
-    // VÉRIFICATION : L'utilisateur a-t-il déjà créé une boutique ?
-    const aDejaUneBoutique = sessionUser.boutiqueCreee === true || 
-                             (typeof produits !== "undefined" && produits.some(p => p.vendeur === sessionUser.email));
+    // 2️⃣ ÉTAPE 2 : On regarde UNIQUEMENT si l'utilisateur a créé sa boutique (on ignore les produits démo)
+    const aDejaUneBoutique = sessionUser.boutiqueCreee === true;
 
     if (!aDejaUneBoutique) {
-        // ÉTAPE 1 : Il n'a pas de boutique -> On montre UNIQUEMENT le formulaire d'inscription
-        if(formInsc) formInsc.classList.remove('cache');
+        if(formInsc) formInsc.classList.remove('cache'); // On affiche ENFIN tout le formulaire complet !
         if(corp) corp.classList.add('cache');
         if(blocPin) blocPin.classList.add('cache');
         return; 
     }
 
-    // Si on arrive ici, c'est qu'il A une boutique. On cache définitivement le formulaire d'inscription.
+    // 3️⃣ ÉTAPE 3 : Si la boutique existe, on cache le formulaire d'inscription
     if(formInsc) formInsc.classList.add('cache');
 
+    // On vérifie s'il a déjà tapé son code PIN pour cette session
     if (!vendeurDeverrouille) {
-        // ÉTAPE 2 : La boutique existe mais le PIN n'est pas encore validé -> On montre le cadenas PIN
-        if(blocPin) blocPin.classList.remove('cache'); 
+        if(blocPin) blocPin.classList.remove('cache'); // On montre le cadenas PIN
         if(corp) corp.classList.add('cache');          
         return; 
     }
 
-    // ÉTAPE 3 : Boutique existante ET Code PIN validé -> On montre le Central Vendeur
+    // Le PIN est validé -> Tableau de bord !
     if(blocPin) blocPin.classList.add('cache'); 
     if(corp) corp.classList.remove('cache');    
 
     // =========================================================================
-    // CHARGEMENT DES DONNÉES DU TABLEAU DE BORD (Sécurisé après validation du PIN)
+    // CHARGEMENT DES DONNÉES DU TABLEAU DE BORD
     // =========================================================================
     let mesOffres = (typeof produits !== "undefined") ? produits.filter(p => p.vendeur === sessionUser.email) : [];
     let mesVentes = (typeof commandes !== "undefined") ? commandes.filter(c => c.vendeur === sessionUser.email) : [];
