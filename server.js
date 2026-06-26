@@ -15,6 +15,9 @@ mongoose.connect(cleanURI)
 // Stockage temporaire en mémoire pour les codes SMS (OTP)
 const codesVerificationSMS = {};
 
+// Stockage temporaire pour les sessions actives (Simule un gestionnaire de session)
+const sessionsActives = {};
+
 // =========================================================
 // 1. DÉFINITION DES SCHÉMAS ET MODÈLES MONGOOSE
 // =========================================================
@@ -35,15 +38,14 @@ const produitSchema = new mongoose.Schema({
     vendeur: { type: String, default: "vendeur@test.com" },
     valide: { type: Boolean, default: true }
 });
-mongoose.model('Produit', produitSchema);
+if (!mongoose.models.Produit) mongoose.model('Produit', produitSchema);
 
-// Schéma pour les Utilisateurs (Mis à jour avec les champs Vendeur)
+// Schéma pour les Utilisateurs
 const utilisateurSchema = new mongoose.Schema({
     nom: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     motDePasse: { type: String, required: true },
     
-    // Nouveaux champs pour la gestion Ley Pay Business
     boutiqueCreee: { type: Boolean, default: false },
     vendeurNom: { type: String, default: "" },
     boutiqueNom: { type: String, default: "" },
@@ -51,7 +53,7 @@ const utilisateurSchema = new mongoose.Schema({
     vendeurVille: { type: String, default: "" },
     vendeurPin: { type: String, default: "" }
 });
-mongoose.model('Utilisateur', utilisateurSchema);
+if (!mongoose.models.Utilisateur) mongoose.model('Utilisateur', utilisateurSchema);
 
 // =========================================================
 
@@ -95,6 +97,14 @@ app.post('/api/connexion', async (req, res) => {
 
         if (user) {
             console.log(`🔑 Connexion réussie pour : ${user.nom}`);
+            
+            // Sauvegarde de l'état connecté sur le serveur lié à cet e-mail
+            sessionsActives[user.email] = {
+                connected: true,
+                email: user.email,
+                vendeurDeverrouille: false // Reste verrouillé par PIN par défaut à la connexion
+            };
+
             res.json({ 
                 success: true, 
                 message: `Bienvenue ${user.nom} !`, 
@@ -111,6 +121,55 @@ app.post('/api/connexion', async (req, res) => {
     } catch (err) {
         console.error("❌ Erreur MongoDB lors de la connexion :", err);
         return res.status(500).json({ success: false, message: "Erreur serveur." });
+    }
+});
+
+// ==========================================
+// 🆕 ROUTE CRUCIALE : STATUT ESPACE VENDEUR
+// ==========================================
+app.get('/api/vendeur/statut', async (req, res) => {
+    try {
+        // Idéalement, on récupère l'email de l'utilisateur actif (passé via en-tête ou requête)
+        // Pour l'instant, on cherche s'il y a un utilisateur connecté dans notre registre temporaire
+        const sessionUserEmail = Object.keys(sessionsActives)[0]; 
+
+        if (!sessionUserEmail) {
+            return res.json({ connecte: false, aUneBoutique: false, estVerrouille: true });
+        }
+
+        const session = sessionsActives[sessionUserEmail];
+        const user = await mongoose.model('Utilisateur').findOne({ email: session.email });
+
+        if (!user) {
+            return res.json({ connecte: false, aUneBoutique: false, estVerrouille: true });
+        }
+
+        res.json({
+            connecte: true,
+            aUneBoutique: user.boutiqueCreee,
+            estVerrouille: !session.vendeurDeverrouille // Verrouillé si pas explicitement déverrouillé
+        });
+
+    } catch (error) {
+        console.error("❌ Erreur de statut vendeur :", error);
+        res.status(500).json({ connecte: false, error: "Erreur serveur" });
+    }
+});
+
+// Déverrouillage par code PIN
+app.post('/api/vendeur/verifier-pin', async (req, res) => {
+    const { email, pin } = req.body;
+    try {
+        const user = await mongoose.model('Utilisateur').findOne({ email: email });
+        if (user && user.vendeurPin === pin) {
+            if (sessionsActives[email]) {
+                sessionsActives[email].vendeurDeverrouille = true;
+            }
+            return res.json({ success: true, message: "Code PIN valide !" });
+        }
+        res.status(400).json({ success: false, message: "Code PIN incorrect." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Erreur serveur." });
     }
 });
 
@@ -183,10 +242,9 @@ app.delete('/api/produits/:id', async (req, res) => {
 });
 
 // =========================================================================
-// 🆕 NOUVELLES ROUTES : INSCRIPTION VENDEUR RAPIDE & VÉRIFICATION SMS (OTP)
+// 🆕 ROUTES : INSCRIPTION VENDEUR RAPIDE & VÉRIFICATION SMS (OTP)
 // =========================================================================
 
-// Route 1 : Demande d'inscription et génération du code secret SMS
 app.post('/api/vendeurs/inscription', async (req, res) => {
     try {
         const { nom, boutiqueNom, telephone, ville, vendeurPin, email } = req.body;
@@ -195,17 +253,14 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
             return res.status(400).json({ success: false, message: "Certaines données requises sont manquantes." });
         }
 
-        // Génération d'un code OTP à 4 chiffres
         const codeOTP = Math.floor(1000 + Math.random() * 9000).toString();
 
-        // Sauvegarde temporaire en mémoire
         codesVerificationSMS[email] = {
             code: codeOTP,
             donnees: { nom, boutiqueNom, telephone, ville, vendeurPin },
-            expireAt: Date.now() + 10 * 60 * 1000 // Validité de 10 minutes
+            expireAt: Date.now() + 10 * 60 * 1000 
         };
 
-        // 👀 Regarde tes logs dans ton terminal Render / Local pour voir le code s'afficher !
         console.log(`\n📱 [SMS LEY PAY] Code envoyé à ${telephone} : -> ${codeOTP} <-\n`);
 
         return res.json({ success: true, message: "Code de validation généré avec succès." });
@@ -215,7 +270,6 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
     }
 });
 
-// Route 2 : Validation finale du code entré par l'utilisateur
 app.post('/api/vendeurs/verifier-sms', async (req, res) => {
     try {
         const { email, code } = req.body;
@@ -230,11 +284,9 @@ app.post('/api/vendeurs/verifier-sms', async (req, res) => {
             return res.status(400).json({ success: false, message: "Le code de vérification a expiré." });
         }
 
-        // Le code est validé ! On extrait les données sauvegardées
         const { nom, boutiqueNom, telephone, ville, vendeurPin } = sessionVerif.donnees;
         const UtilisateurModel = mongoose.model('Utilisateur');
 
-        // Mise à jour de l'utilisateur dans MongoDB Atlas
         await UtilisateurModel.updateOne(
             { email: email },
             {
@@ -249,7 +301,6 @@ app.post('/api/vendeurs/verifier-sms', async (req, res) => {
             }
         );
 
-        // Nettoyage de la mémoire temporaire
         delete codesVerificationSMS[email];
 
         console.log(`🎉 Boutique active avec succès dans MongoDB pour l'utilisateur : ${email}`);
