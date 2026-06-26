@@ -1490,9 +1490,9 @@ async function verifierPinVendeur() {
         return;
     }
 
-    const vendeurPin = pinInput.value.trim();
-    if (!vendeurPin) {
-        alert("Veuillez entrer votre code PIN.");
+    const codeSaisi = pinInput.value.trim();
+    if (!codeSaisi) {
+        alert("Veuillez entrer votre code.");
         return;
     }
 
@@ -1503,12 +1503,13 @@ async function verifierPinVendeur() {
     }
 
     try {
-        const response = await fetch('/api/vendeurs/verifier-pin', {
+        // CORRECTION : On envoie vers 'verifier-sms' qui existe à la ligne 273 de ton serveur
+        const response = await fetch('/api/vendeurs/verifier-sms', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 email: localUser.email,
-                vendeurPin: vendeurPin
+                code: codeSaisi // Ton serveur attend 'code' d'après la ligne 275
             })
         });
 
@@ -1517,15 +1518,14 @@ async function verifierPinVendeur() {
         if (data.success) {
             alert("🔑 Accès autorisé ! Bienvenue dans votre Central Vendeur.");
             
-            // Gestion de l'affichage des sections
             document.getElementById('vendeur-verrouille-pin').classList.add('cache');
             document.getElementById('corps-espace-vendeur').classList.remove('cache');
         } else {
-            alert(data.message || "Code PIN incorrect.");
+            alert(data.message || "Code incorrect.");
             pinInput.value = "";
         }
     } catch (error) {
-        console.error("Erreur PIN:", error);
+        console.error("Erreur Vérification:", error);
         alert("Erreur réseau lors de la vérification.");
     }
 }
