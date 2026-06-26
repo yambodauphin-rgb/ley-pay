@@ -132,196 +132,102 @@
             </div>
         </section>
 
-   <section id="section-vendeur" class="cache">
-    <div id="vendeur-auth-requis" class="auth-box text-center cache">
-        <h3>Veuillez d'Abord vous connecter ou créer un compte client pour ouvrir une boutique vendeur.</h3>
-    </div>
-    
-    <div id="formulaire-inscription-boutique" class="inscription-vendeur-container cache">
-        <div class="logo-espace-vendeur">
-            <span class="logo-ley">LEY</span> <span class="logo-pay">Pay Business</span>
-        </div>
-        <h2><i class="fas fa-store-alt"></i> Formulaire d'inscription Vendeur</h2>
-        <p class="subtitle">Créez votre boutique en quelques secondes pour commencer à vendre.</p>
-
-        <form id="form-inscription-vendeur" onsubmit="creerBoutiqueRapide(event)">
+        <section id="section-vendeur" class="cache">
             
-            <div class="section-inscription" id="etape-1-profil">
-                <h3><span class="badge-num">1</span> Informations de la boutique</h3>
-                
-                <div class="champ-groupe">
-                    <label>Nom complet</label>
-                    <div class="input-avec-icone">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="insc-vendeur-nom" placeholder="Entrez votre nom complet" required>
-                    </div>
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Nom de la boutique</label>
-                    <div class="input-avec-icone">
-                        <i class="fas fa-store"></i>
-                        <input type="text" id="insc-vendeur-boutique" placeholder="Entrez le nom de votre boutique" required>
-                    </div>
-                </div>
-
-                <div class="champ-groupe">
-                    <label>Numéro de téléphone</label>
-                    <div class="phone-input-container">
-                        <div class="select-prefixe">
-                            <i class="fas fa-phone-alt"></i>
-                            <select id="vendeur-prefixe">
-                                <option value="+243">+243</option>
-                            </select>
-                        </div>
-                        <input type="tel" id="insc-vendeur-telephone" placeholder="Ex: 081234567" required>
-                    </div>
-                </div>
-
-                <div class="champs-alignes">
-                    <div class="champ-groupe">
-                        <label>Pays</label>
-                        <div class="input-avec-icone">
-                            <i class="fas fa-globe"></i>
-                            <select id="vendeur-pays" required>
-                                <option value="RDC">République Démocratique du Congo</option>
-                            </select>
+            <div id="formulaire-inscription-boutique" class="cache">
+                <form onsubmit="creerBoutiqueRapide(event)">
+                    <div class="section-inscription" id="etape-3-conditions">
+                        <h3><span class="badge-num">3</span> Conditions d'utilisation</h3>
+                        <div class="liste-conditions-cases">
+                            <div class="condition-item">
+                                <input type="checkbox" id="cond-legaux" required>
+                                <label for="cond-legaux">Je confirme que mes produits sont légaux.</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="champ-groupe">
-                        <label>Ville</label>
-                        <div class="input-avec-icone">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <input type="text" id="insc-vendeur-ville" placeholder="Ex: Kinshasa" required>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-inscription" id="etape-2-securite-pin">
-                <h3><span class="badge-num">2</span> Sécurité du compte (Code PIN)</h3>
-                <p style="font-size: 13px; color: #ccc; margin-bottom: 15px;">
-                    Ce code secret à 6 chiffres remplacera le mot de passe et vous sera demandé à chaque fois que vous accéderez à votre Central Vendeur.
-                </p>
-
-                <div class="champ-groupe" style="text-align: center;">
-                    <label style="display:block; text-align:left; margin-bottom: 8px;">Définir votre Code PIN à 6 chiffres</label>
-                    <input type="password" id="insc-vendeur-pin" maxlength="6" pattern="[0-9]{6}" placeholder="******" required 
-                           style="width: 180px; height: 45px; text-align: center; font-size: 24px; letter-spacing: 6px; background: #222; border: 1px solid #D4AF37; color: white; border-radius: 6px;">
-                </div>
-            </div>
-
-            <div class="section-inscription" id="etape-3-conditions">
-                <h3><span class="badge-num">3</span> Conditions d'utilisation</h3>
-                
-                <div class="liste-conditions-cases">
-                    <div class="condition-item">
-                        <input type="checkbox" id="cond-legaux" required>
-                        <label for="cond-legaux">Je confirme que mes produits sont légaux et ne violent aucune loi.</label>
-                    </div>
-                    <div class="condition-item">
-                        <input type="checkbox" id="cond-ventes" required>
-                        <label for="cond-ventes">J'accepte les conditions de vente de la plateforme Ley Pay.</label>
-                    </div>
-                </div>
-
-                <div class="clause-securite-police" style="margin-top: 20px;">
-                    <div class="entete-alerte">
-                        <i class="fas fa-gavel"></i>
-                        <span>AVERTISSEMENT DE SÉCURITÉ</span>
-                    </div>
-                    <p class="texte-alerte">
-                        En cas de fraude, d'articles interdits ou d'escroquerie constatés, votre compte sera immédiatement suspendu et des poursuites judiciaires pourront être engagées.
-                    </p>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-creer-ma-boutique" style="background: #10b981; color: white; font-weight: bold;">
-                <i class="fas fa-lock"></i> Créer ma boutique
-            </button>
-        </form>
-    </div>
-</section> 
-
-    <div id="vendeur-verrouille-pin" class="auth-box text-center cache" style="max-width: 450px; margin: 40px auto; padding: 30px; background: #111; border: 1px solid #D4AF37; border-radius: 12px; color: white;">
-        <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Sécurisé</h3>
-        <p style="font-size: 14px; color: #ccc; margin-bottom: 20px;">Veuillez saisir votre Code PIN à 6 chiffres pour accéder à votre Central Vendeur.</p>
-        
-        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
-            <input type="password" maxlength="6" id="input-pin-connexion" placeholder="******" style="width: 150px; height: 45px; text-align: center; font-size: 22px; letter-spacing: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 6px;">
-        </div>
-        
-        <button onclick="verifierPinVendeur()" style="width: 100%; background: #D4AF37; color: #111; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer;">
-            Déverrouiller l'Espace Vendeur
-        </button>
-    </div>
-    </section>
-
-    <div id="corps-espace-vendeur" class="cache">
-        <div class="hero-banner-vendeur">
-            <h2>Central Vendeur Ley Pay</h2>
-            <p>Gérez vos stocks, optimisez vos profits et choisissez votre mode logistique.</p>
-        </div>
-
-        <div class="vendeur-kpi-container">
-            <div class="kpi-box"><div class="kpi-val" id="v-kpi-brut">0.00 $</div><div>Ventes Brutes</div></div>
-            <div class="kpi-box"><div class="kpi-val" id="v-kpi-solde">0.00 $</div><div>Votre Solde Retirable</div></div>
-        </div>
-
-        <div class="profil-container">
-            <div class="carte-profil-gauche">
-                <h3>📦 Publier un nouvel article</h3>
-                <form onsubmit="vendeurAjouterProduit(event)">
-                    <div class="champ"><label>Nom du produit :</label><input type="text" id="p-nom" required></div>
-                    <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="p-prix" required></div>
-                    <div class="champ"><label>Stock disponible :</label><input type="number" id="p-stock" value="10" required></div>
-                    <div class="champ">
-                        <label>Catégorie :</label>
-                        <select id="p-cat">
-                            <option value="Tech">High-Tech</option>
-                            <option value="Habit">Mode</option>
-                            <option value="Maison">Maison</option>
-                        </select>
-                    </div>
-                    <div class="champ">
-                        <label>Mode Logistique :</label>
-                        <select id="p-logistique">
-                            <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
-                            <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
-                        </select>
-                    </div>
-                    <div class="champ"><label for="p-image1">Photo Principale :</label><input type="file" id="p-image1" accept="image/*" required></div>
-                    <div class="champ"><label for="p-image2">Photo Détail 1 :</label><input type="file" id="p-image2" accept="image/*" required></div>
-                    <div class="champ"><label for="p-image3">Photo Détail 2 :</label><input type="file" id="p-image3" accept="image/*" required></div>
-                    <div class="champ"><label for="p-image4">Photo Détail 3 :</label><input type="file" id="p-image4" accept="image/*" required></div>
-                    
-                    <button type="submit" class="btn-auth-soumettre">Mettre en vente</button>
-                </form>
-                
-                <h3 style="margin-top:30px;">💸 Demander un versement</h3>
-                <form onsubmit="vendeurSoumettreRetrait(event)">
-                    <div class="champ"><label>Montant du retrait ($) :</label><input type="number" id="r-montant" min="1" required></div>
-                    <div class="champ"><label>Numéro Mobile Money :</label><input type="text" id="r-tel" placeholder="Ex: 0812345678" required></div>
-                    <button type="submit" class="btn-auth-soumettre" style="background:#10b981; color:white;">Valider la demande</button>
+                    <button type="submit" class="btn-creer-ma-boutique" style="background: #10b981; color: white; font-weight: bold; width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;">
+                        <i class="fas fa-lock"></i> Créer ma boutique
+                    </button>
                 </form>
             </div>
 
-            <div class="carte-profil-droite">
-                <h3>📊 Suivi de vos stocks</h3>
-                <table class="table-custom">
-                    <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th><th>Action</th></tr></thead>
-                    <tbody id="vendeur-table-stocks"></tbody>
-                </table>
-
-                <h3 style="margin-top:30px;">📜 Historique des retraits</h3>
-                <table class="table-custom">
-                    <thead><tr><th>ID</th><th>Montant</th><th>Numéro</th><th>Statut</th></tr></thead>
-                    <tbody id="vendeur-table-retraits"></tbody>
-                </table>
+            <div id="vendeur-verrouille-pin" class="auth-box text-center cache" style="max-width: 450px; margin: 40px auto; padding: 30px; background: #111; border: 1px solid #D4AF37; border-radius: 12px; color: white;">
+                <h3 style="color: #D4AF37;"><i class="fas fa-lock"></i> Espace Vendeur Sécurisé</h3>
+                <p style="font-size: 14px; color: #ccc; margin-bottom: 20px;">Veuillez saisir votre Code PIN à 6 chiffres pour accéder à votre Central Vendeur.</p>
+                <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
+                    <input type="password" maxlength="6" id="input-pin-connexion" placeholder="******" style="width: 150px; height: 45px; text-align: center; font-size: 22px; letter-spacing: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 6px;">
+                </div>
+                <button onclick="verifierPinVendeur()" style="width: 100%; background: #D4AF37; color: #111; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+                    Déverrouiller l'Espace Vendeur
+                </button>
             </div>
-        </div>
-    </div>
-</section>
+
+            <div id="corps-espace-vendeur" class="cache">
+                <div class="hero-banner-vendeur">
+                    <h2>Central Vendeur Ley Pay</h2>
+                    <p>Gérez vos stocks, optimisez vos profits et choisissez votre mode logistique.</p>
+                </div>
+
+                <div class="vendeur-kpi-container">
+                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-brut">0.00 $</div><div>Ventes Brutes</div></div>
+                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-solde">0.00 $</div><div>Votre Solde Retirable</div></div>
+                </div>
+
+                <div class="profil-container">
+                    <div class="carte-profil-gauche">
+                        <h3>📦 Publier un nouvel article</h3>
+                        <form onsubmit="vendeurAjouterProduit(event)">
+                            <div class="champ"><label>Nom du produit :</label><input type="text" id="p-nom" required></div>
+                            <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="p-prix" required></div>
+                            <div class="champ"><label>Stock disponible :</label><input type="number" id="p-stock" value="10" required></div>
+                            <div class="champ">
+                                <label>Catégorie :</label>
+                                <select id="p-cat">
+                                    <option value="Tech">High-Tech</option>
+                                    <option value="Habit">Mode</option>
+                                    <option value="Maison">Maison</option>
+                                </select>
+                            </div>
+                            <div class="champ">
+                                <label>Mode Logistique :</label>
+                                <select id="p-logistique">
+                                    <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
+                                    <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
+                                </select>
+                            </div>
+                            <div class="champ"><label for="p-image1">Photo Principale :</label><input type="file" id="p-image1" accept="image/*" required></div>
+                            <div class="champ"><label for="p-image2">Photo Détail 1 :</label><input type="file" id="p-image2" accept="image/*" required></div>
+                            <div class="champ"><label for="p-image3">Photo Détail 2 :</label><input type="file" id="p-image3" accept="image/*" required></div>
+                            <div class="champ"><label for="p-image4">Photo Détail 3 :</label><input type="file" id="p-image4" accept="image/*" required></div>
+                            
+                            <button type="submit" class="btn-auth-soumettre">Mettre en vente</button>
+                        </form>
+                        
+                        <h3 style="margin-top:30px;">💸 Demander un versement</h3>
+                        <form onsubmit="vendeurSoumettreRetrait(event)">
+                            <div class="champ"><label>Montant du retrait ($) :</label><input type="number" id="r-montant" min="1" required></div>
+                            <div class="champ"><label>Numéro Mobile Money :</label><input type="text" id="r-tel" placeholder="Ex: 0812345678" required></div>
+                            <button type="submit" class="btn-auth-soumettre" style="background:#10b981; color:white;">Valider la demande</button>
+                        </form>
+                    </div>
+
+                    <div class="carte-profil-droite">
+                        <h3>📊 Suivi de vos stocks</h3>
+                        <table class="table-custom">
+                            <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th><th>Action</th></tr></thead>
+                            <tbody id="vendeur-table-stocks"></tbody>
+                        </table>
+
+                        <h3 style="margin-top:30px;">📜 Historique des retraits</h3>
+                        <table class="table-custom">
+                            <thead><tr><th>ID</th><th>Montant</th><th>Numéro</th><th>Statut</th></tr></thead>
+                            <tbody id="vendeur-table-retraits"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="section-admin" class="cache">
             <div id="admin-verrou-box" class="auth-box text-center">
                 <h3 class="titre-vendeur-verrou">Accès Hautement Sécurisé</h3>
@@ -382,7 +288,6 @@
                 </div>
             </div>
         </div>
-
         <div class="chat-boite cache" id="chat-vendeur-box">
             <div class="chat-header" onclick="fermerChat()"><span>💬 Chat Direct Marchand</span><span>×</span></div>
             <div class="chat-messages" id="chat-messages-corps"></div>
@@ -523,6 +428,37 @@ function afficherCatalogue(items = produits) {
             if(p.video) infoMedia += `Vidéo démonstrative reliée : ${p.video}\n`;
             alert(infoMedia + `Prix : ${p.prix} $\nLogistique : ${p.logistique}\nStock : ${p.stock} pièces restantes.`);
         }
+
+        // --- SYSTÈME DE NAVIGATION CORRECT (NETTOYAGE DU BLOC PIN) ---
+function basculerOnglet(nomOnglet) {
+    // 1. On cache TOUTES les sections principales pour faire place nette
+    document.getElementById('section-produits')?.classList.add('cache');
+    document.getElementById('section-favoris')?.classList.add('cache');
+    document.getElementById('section-compte')?.classList.add('cache');
+    document.getElementById('section-vendeur')?.classList.add('cache');
+    document.getElementById('section-admin')?.classList.add('cache');
+    
+    // 🔒 SÉCURITÉ CRITIQUE : On masque obligatoirement le bloc PIN et les formulaires vendeurs
+    document.getElementById('vendeur-verrouille-pin')?.classList.add('cache');
+    document.getElementById('formulaire-inscription-boutique')?.classList.add('cache');
+    document.getElementById('corps-espace-vendeur')?.classList.add('cache');
+
+    // 2. On affiche uniquement l'onglet sur lequel l'utilisateur vient de cliquer
+    if (nomOnglet === 'vendeur') {
+        document.getElementById('section-vendeur')?.classList.remove('cache');
+        // On laisse la fonction dédiée décider si on montre le formulaire d'inscription ou le PIN
+        if (typeof rafraichirEspaceVendeur === 'function') rafraichirEspaceVendeur(); 
+    } else if (nomOnglet === 'accueil' || nomOnglet === 'boutique') {
+        document.getElementById('section-produits')?.classList.remove('cache');
+    } else if (nomOnglet === 'compte' || nomOnglet === 'profil') {
+        document.getElementById('section-compte')?.classList.remove('cache');
+        if (typeof rafraichirProfilClient === 'function') rafraichirProfilClient();
+    } else if (nomOnglet === 'favoris') {
+        document.getElementById('section-favoris')?.classList.remove('cache');
+    } else if (nomOnglet === 'admin') {
+        document.getElementById('section-admin')?.classList.remove('cache');
+    }
+}
 
         // GESTION AUTHENTIFICATION (INSCRIPTION & CONNEXION)
         function basculerOngletAuth(mode) {
