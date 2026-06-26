@@ -311,7 +311,7 @@
     </footer>
 
     <script>
-        let vendeurDeverrouille = false;
+        let utilisateurABoutique = false;
         let sessionUser = JSON.parse(localStorage.getItem('lp_session')) || null;
         let produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
         let commandes = JSON.parse(localStorage.getItem('lp_cmds')) || [];
@@ -639,56 +639,54 @@ function basculerOnglet(nomOnglet) {
 // 1. LA FONCTION DE ROUTAGE ET DE RAFRAÎCHISSEMENT DE L'ESPACE VENDEUR
 // =========================================================================
 function rafraichirEspaceVendeur() {
-    // 🔄 On force la mise à jour de la session pour chasser les bugs
-    sessionUser = JSON.parse(localStorage.getItem('lp_session')) || null;
-
-    const req = document.getElementById('vendeur-auth-requis');
+    // 1. Déclarer et cibler tous nos composants graphiques
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
+    const req = document.getElementById('vendeur-auth-requis');
 
-    // 1️⃣ ÉTAPE 1 : Si l'utilisateur n'est pas connecté du tout au site
-    if (!sessionUser) {
-        if(req) req.classList.remove('cache'); // On montre le message d'alerte !
-        if(formInsc) formInsc.classList.add('cache');
-        if(corp) corp.classList.add('cache');
-        if(blocPin) blocPin.classList.add('cache'); 
+    // On cache le bloc d'alerte s'il existe puisqu'on est désormais indépendant
+    if (req) req.classList.add('cache');
+
+    // 2. Récupérer l'état de la boutique locale autonome
+    // Si l'utilisateur est connecté à un compte client, on vérifie sa session locale
+    let sessionActive = JSON.parse(localStorage.getItem('lp_session')) || null;
+    
+    // Une boutique existe si la session l'indique OU si un témoin global est actif
+    const aDejaUneBoutique = (sessionActive && sessionActive.boutiqueCreee === true) || 
+                             (typeof utilisateurABoutique !== "undefined" && utilisateurABoutique === true);
+
+    // 3. Système d'aiguillage (Routage)
+    if (!aDejaUneBoutique) {
+        // ÉTAPE 1 : Pas de boutique -> On affiche le formulaire complet d'inscription
+        if (formInsc) formInsc.classList.remove('cache');
+        if (corp) corp.classList.add('cache');
+        if (blocPin) blocPin.classList.add('cache');
         return;
     }
 
-    // Si l'utilisateur est connecté, on cache le message d'avertissement
-    if(req) req.classList.add('cache');
+    // Si une boutique existe, le formulaire d'inscription n'a plus rien à faire ici
+    if (formInsc) formInsc.classList.add('cache');
 
-    // 2️⃣ ÉTAPE 2 : On regarde UNIQUEMENT si l'utilisateur a créé sa boutique (on ignore les produits démo)
-    const aDejaUneBoutique = sessionUser.boutiqueCreee === true;
-
-    if (!aDejaUneBoutique) {
-        if(formInsc) formInsc.classList.remove('cache'); // On affiche ENFIN tout le formulaire complet !
-        if(corp) corp.classList.add('cache');
-        if(blocPin) blocPin.classList.add('cache');
-        return; 
-    }
-
-    // 3️⃣ ÉTAPE 3 : Si la boutique existe, on cache le formulaire d'inscription
-    if(formInsc) formInsc.classList.add('cache');
-
-    // On vérifie s'il a déjà tapé son code PIN pour cette session
     if (!vendeurDeverrouille) {
-        if(blocPin) blocPin.classList.remove('cache'); // On montre le cadenas PIN
-        if(corp) corp.classList.add('cache');          
-        return; 
+        // ÉTAPE 2 : Boutique créée mais verrouillée -> Demande du Code PIN
+        if (blocPin) blocPin.classList.remove('cache');
+        if (corp) corp.classList.add('cache');
+        return;
     }
 
-    // Le PIN est validé -> Tableau de bord !
-    if(blocPin) blocPin.classList.add('cache'); 
-    if(corp) corp.classList.remove('cache');    
+    // ÉTAPE 3 : Boutique validée + PIN déverrouillé -> Tableau de bord !
+    if (blocPin) blocPin.classList.add('cache');
+    if (corp) corp.classList.remove('cache');
 
     // =========================================================================
     // CHARGEMENT DES DONNÉES DU TABLEAU DE BORD
     // =========================================================================
-    let mesOffres = (typeof produits !== "undefined") ? produits.filter(p => p.vendeur === sessionUser.email) : [];
-    let mesVentes = (typeof commandes !== "undefined") ? commandes.filter(c => c.vendeur === sessionUser.email) : [];
-    let mesRetraits = (typeof retraits !== "undefined") ? retraits.filter(r => r.vendeur === sessionUser.email) : [];
+    let emailVendeur = sessionActive ? sessionActive.email : "vendeur_independant@leypay.com";
+    
+    let mesOffres = (typeof produits !== "undefined") ? produits.filter(p => p.vendeur === emailVendeur) : [];
+    let mesVentes = (typeof commandes !== "undefined") ? commandes.filter(c => c.vendeur === emailVendeur) : [];
+    let mesRetraits = (typeof retraits !== "undefined") ? retraits.filter(r => r.vendeur === emailVendeur) : [];
     
     let totalBrut = mesVentes.reduce((sum, c) => sum + c.montant, 0);
     let totalCommissions = mesVentes.reduce((sum, c) => sum + c.commission, 0);
@@ -716,14 +714,6 @@ function rafraichirEspaceVendeur() {
                     </button>
                 </td>
             </tr>`;
-        });
-    }
-
-    const tRetraits = document.getElementById('vendeur-table-retraits');
-    if (tRetraits) {
-        tRetraits.innerHTML = "";
-        mesRetraits.forEach(r => {
-            tRetraits.innerHTML += `<tr><td>${r.id}</td><td>${r.montant} $</td><td>${r.telephone}</td><td><strong>${r.statut}</strong></td></tr>`;
         });
     }
 }
