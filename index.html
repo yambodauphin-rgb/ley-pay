@@ -654,32 +654,48 @@ function basculerOnglet(nomOnglet) {
 
 // GESTION AUTHENTIFICATION (INSCRIPTION & CONNEXION)
 function basculerOngletAuth(mode) {
-    modeAuthActuel = mode;
-    document.getElementById('tab-login').classList.remove('actif');
-    document.getElementById('tab-register').classList.remove('actif');
-    
-    if(mode === 'login') {
-        document.getElementById('tab-login').classList.add('actif');
-        document.querySelector('.id-complet-reg').classList.add('cache');
-        document.getElementById('btn-texte-auth').textContent = "Se connecter";
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const champsInscription = document.querySelectorAll('.id-complet-reg');
+    const btnTexte = document.getElementById('btn-texte-auth');
+    const titreInterne = document.getElementById('auth-titre-interne');
+    const sousTitre = document.getElementById('auth-sous-titre');
+
+    if (mode === 'register') {
+        // Mode Inscription (Inspiré de M.png)
+        tabLogin.classList.remove('actif');
+        tabRegister.classList.add('actif');
+        btnTexte.innerText = "Créer mon compte";
+        titreInterne.innerText = "Créer un compte";
+        sousTitre.innerText = "Rejoignez-nous et commencez à vendre ou à acheter dès maintenant.";
+        
+        // Afficher les champs d'inscription et la proposition vendeur
+        champsInscription.forEach(el => el.classList.remove('cache'));
     } else {
-        document.getElementById('tab-register').classList.add('actif');
-        document.querySelector('.id-complet-reg').classList.remove('cache');
-        document.getElementById('btn-texte-auth').textContent = "Créer mon compte Ley Pay";
+        // Mode Connexion (Inspiré de image_99d582.png)
+        tabLogin.add('actif');
+        tabRegister.classList.remove('actif');
+        btnTexte.innerText = "Se connecter";
+        titreInterne.innerText = "Connexion";
+        sousTitre.innerText = "Bon retour ! Connectez-vous à votre compte client.";
+        
+        // Cacher les champs d'inscription et le bloc boutique si ouvert
+        champsInscription.forEach(el => el.classList.add('cache'));
+        document.getElementById('bloc-champs-boutique-optionnel').classList.add('cache');
+        document.getElementById('choix-devenir-vendeur').checked = false;
     }
 }
 
-function executerAuthentification(e) {
-    e.preventDefault();
-    let email = document.getElementById('auth-email').value;
-    let nom = document.getElementById('auth-nom').value || "Utilisateur Ley Pay";
-    
-    sessionUser = { email: email, nom: nom };
-    localStorage.setItem('lp_session', JSON.stringify(sessionUser));
-    
-    lancerNotification("Authentification réussie !");
-    rafraichirProfilClient();
-    rafraichirEspaceVendeur();
+// Fonction aiguillage lors de la soumission du formulaire unique
+function gererActionAuthentification() {
+    const tabRegister = document.getElementById('tab-register');
+    if (tabRegister.classList.contains('actif')) {
+        gererInscriptionGlobale();
+    } else {
+        if (typeof executerAuthentification === 'function') {
+            executerAuthentification(event);
+        }
+    }
 }
 
 function executerDeconnexion() {
