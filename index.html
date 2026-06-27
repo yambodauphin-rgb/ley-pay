@@ -1513,8 +1513,15 @@ async function soumettreFormulaireBoutiqueComplete() {
         
         // 5. Traitement du retour du serveur
         if (data.success) {
-            alert("🎉 Boutique créée avec succès !");
-            
+            alert("Compte et Boutique créés avec succès !");
+
+// 1. Masquer définitivement la boîte d'authentification unifiée
+document.getElementById('auth-box').classList.add('cache'); 
+
+// 2. Option A : Recharger la page pour que la session s'active proprement
+window.location.reload();
+
+          
             // Enregistrement propre de la session locale avec l'e-mail du vendeur inscrit
             localStorage.setItem('lp_session', JSON.stringify({
                 email: document.getElementById('vendeur-email').value,
