@@ -1557,7 +1557,7 @@ function basculerChampsBoutique() {
 async function gererInscriptionGlobale() {
     const nom = document.getElementById('auth-nom').value;
     const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value; // Vérifie si ton ID est auth-password ou auth-mdp
+    const password = document.getElementById('auth-password').value; 
     const passwordConf = document.getElementById('auth-password-conf').value;
     const veutVendre = document.getElementById('choix-devenir-vendeur').checked;
 
@@ -1574,9 +1574,6 @@ async function gererInscriptionGlobale() {
         estVendeur: veutVendre 
     };
 
-    // =========================================================================
-    // 🌟 C'EST ICI QUE TU COLLES TON BLOC DE CODE MIS À JOUR :
-    // =========================================================================
     if (veutVendre) {
         payload.nomBoutique = document.getElementById('boutique-nom').value;
         payload.telephone = document.getElementById('vendeur-pays').value + document.getElementById('vendeur-tel').value;
@@ -1592,7 +1589,6 @@ async function gererInscriptionGlobale() {
         payload.swift = document.getElementById('paiement-swift')?.value || null;
         payload.paypalEmail = document.getElementById('paiement-paypal-email')?.value || null;
     }
-    // =========================================================================
 
     try {
         const response = await fetch('/api/vendeurs/inscription', {
@@ -1606,16 +1602,16 @@ async function gererInscriptionGlobale() {
         if (data.success) {
             alert(veutVendre ? "🎉 Compte et Boutique créés avec succès !" : "🎉 Compte créé avec succès !");
             
+            // 1. ON ENREGISTRE LA SESSION EN PREMIER 
             localStorage.setItem('lp_session', JSON.stringify({
                 email: payload.email,
                 nom: payload.nom,
                 boutiqueCreee: veutVendre 
             }));
 
-            if (typeof rafraichirProfilClient === 'function') rafraichirProfilClient();
-            if (veutVendre && typeof rafraichirEspaceVendeur === 'function') {
-                rafraichirEspaceVendeur();
-            }
+            // 2. ON FORCE LE RECHARGEMENT POUR ÉVITER L'ÉCRAN NOIR
+            window.location.reload();
+
         } else {
             alert("Erreur : " + data.message);
         }
