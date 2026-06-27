@@ -89,139 +89,102 @@
                     <button class="onglet-btn" id="tab-register" onclick="basculerOngletAuth('register')">Inscription</button>
                 </div>
 
-                <form id="formulaire-auth" onsubmit="event.preventDefault(); gererInscriptionGlobale();"></form>
-    <div class="champ id-complet-reg cache">
-        <label>Nom complet :</label>
-        <input type="text" id="auth-nom" placeholder="Ex: Jean Mukendi">
-    </div>
+               <form id="formulaire-auth" onsubmit="event.preventDefault(); gererActionAuthentification();">
+                
+                <div style="margin-bottom: 20px;">
+                    <h2 id="auth-titre-interne" style="color: #fff; margin: 0 0 5px 0; font-size: 1.5em;">Connexion</h2>
+                    <p id="auth-sous-titre" style="color: #aaa; margin: 0; font-size: 0.9em;">Bon retour ! Connectez-vous à votre compte client.</p>
+                </div>
 
-    <div class="champ">
-        <label>Adresse E-mail :</label>
-        <input type="email" id="auth-email" value="client@leypay.com" required>
-    </div>
+                <div class="champ id-complet-reg cache" style="margin-bottom: 15px;">
+                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Nom complet :</label>
+                    <input type="text" id="auth-nom" placeholder="Entrez votre nom complet" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+                </div>
 
-    <div class="champ">
-        <label>Mot de passe :</label>
-        <input type="password" id="auth-password" placeholder="Créez un mot de passe" required>
-    </div>
+                <div class="champ" style="margin-bottom: 15px;">
+                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Adresse E-mail :</label>
+                    <input type="email" id="auth-email" placeholder="Entrez votre e-mail" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+                </div>
 
-    <div class="champ id-complet-reg cache">
-        <label>Confirmer le mot de passe :</label>
-        <input type="password" id="auth-password-conf" placeholder="Confirmez votre mot de passe">
-    </div>
-<div class="champ id-complet-reg cache" style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 5px; border-left: 3px solid #D4AF37;">
-                    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <div class="champ" style="margin-bottom: 15px;">
+                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Mot de passe :</label>
+                    <input type="password" id="auth-password" placeholder="Entrez votre mot de passe" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+                </div>
+
+                <div class="champ id-complet-reg cache" style="margin-bottom: 15px;">
+                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Confirmer le mot de passe :</label>
+                    <input type="password" id="auth-password-conf" placeholder="Confirmez votre mot de passe" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+                </div>
+
+                <div class="champ id-complet-reg cache" style="margin: 15px 0; background: #1a1a1a; padding: 12px; border-radius: 5px; border-left: 3px solid #D4AF37;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; color: #fff; margin: 0;">
                         <input type="checkbox" id="choix-devenir-vendeur" onchange="basculerChampsBoutique()" style="width: auto; margin: 0;"> 
-                        <strong style="color: #333; font-size: 0.9em;">Je souhaite également devenir vendeur et créer ma boutique</strong>
+                        <span style="font-size: 0.9em;">Je souhaite également devenir vendeur et créer ma boutique</span>
                     </label>
                 </div>
 
                 <div id="bloc-champs-boutique-optionnel" class="cache" style="border-left: 3px solid #D4AF37; padding-left: 15px; margin-bottom: 15px;">
-                    <p style="color: #e67e22; font-size: 0.85em; margin-bottom: 10px;">
-                        💡 <strong>Note :</strong> Le mot de passe configuré ci-dessus sera celui utilisé pour déverrouiller votre Espace Vendeur.
+                    <p style="color: #e67e22; font-size: 0.85em; margin-bottom: 15px;">
+                        💡 <strong>Note :</strong> Le mot de passe configuré ci-dessus déverrouillera votre Espace Vendeur.
                     </p>
                     
-                    <div class="champ">
-                        <label>Nom de la boutique :</label>
-                        <input type="text" id="boutique-nom" placeholder="Entrez le nom de votre boutique">
+                    <div class="champ" style="margin-bottom: 12px;">
+                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Nom de la boutique :</label>
+                        <input type="text" id="boutique-nom" placeholder="Nom de votre boutique" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
                     </div>
 
-                    <div class="champ">
-                        <label>Numéro de téléphone :</label>
+                    <div class="champ" style="margin-bottom: 12px;">
+                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Numéro de téléphone :</label>
                         <div style="display: flex; gap: 5px;">
-                            <select id="vendeur-pays" style="width: 90px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: white;">
+                            <select id="vendeur-pays" style="width: 90px; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
                                 <option value="+243">+243 (RDC)</option>
                             </select>
-                            <input type="text" id="vendeur-tel" placeholder="Numéro de téléphone" style="flex: 1;">
+                            <input type="text" id="vendeur-tel" placeholder="Téléphone" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
                         </div>
                     </div>
 
-                    <div class="champ">
-                        <label>Votre ville :</label>
-                        <input type="text" id="vendeur-ville" placeholder="Votre ville">
+                    <div class="champ" style="margin-bottom: 12px;">
+                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Votre ville :</label>
+                        <input type="text" id="vendeur-ville" placeholder="Ex: Kinshasa" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
                     </div>
-                    
-                    <div class="champ id-complet-reg cache" style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 5px; border-left: 3px solid #D4AF37;">
-        <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
-            <input type="checkbox" id="choix-devenir-vendeur" onchange="basculerChampsBoutique()" style="width: auto; margin: 0;"> 
-            <strong style="color: #333;">Je souhaite également devenir vendeur et créer ma boutique</strong>
-        </label>
-    </div>
 
-    <div id="bloc-champs-boutique-optionnel" class="cache" style="border-left: 3px solid #D4AF37; padding-left: 15px; margin-bottom: 15px;">
-        <p style="color: #e67e22; font-size: 0.9em; margin-bottom: 15px;">
-            💡 <strong>Note :</strong> Le mot de passe configuré ci-dessus sera celui utilisé pour déverrouiller votre Espace Vendeur.
-        </p>
-        
-        <div class="champ">
-            <label>Nom de la boutique :</label>
-            <input type="text" id="boutique-nom" placeholder="Entrez le nom de votre boutique">
-        </div>
+                    <div class="champ" style="margin-top: 15px;">
+                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Moyen de réception de vos revenus :</label>
+                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <button type="button" onclick="selectionnerModePaiement('mobile')" id="btn-pay-mobile" style="flex: 1; padding: 8px; border: 2px solid #D4AF37; background: #222; color: #fff; cursor: pointer; border-radius: 4px;">📱 Mobile Money</button>
+                            <button type="button" onclick="selectionnerModePaiement('banque')" id="btn-pay-banque" style="flex: 1; padding: 8px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer; border-radius: 4px;">🏦 Banque</button>
+                            <button type="button" onclick="selectionnerModePaiement('paypal')" id="btn-pay-paypal" style="flex: 1; padding: 8px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer; border-radius: 4px;">🅿️ PayPal</button>
+                        </div>
+                    </div>
 
-        <div class="champ">
-            <label>Numéro de téléphone :</label>
-            <div style="display: flex; gap: 5px;">
-                <select id="vendeur-pays" style="width: 90px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff;">
-                    <option value="+243">+243 (RDC)</option>
-                </select>
-                <input type="text" id="vendeur-tel" placeholder="Numéro de téléphone" style="flex: 1;">
-            </div>
-        </div>
+                    <div class="champ" style="margin-bottom: 12px;">
+                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Nom du titulaire du compte :</label>
+                        <input type="text" id="paiement-titulaire" placeholder="Nom du titulaire" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+                    </div>
 
-        <div class="champ">
-            <label>Votre ville :</label>
-            <input type="text" id="vendeur-ville" placeholder="Votre ville">
-        </div>
-        
-        <div class="champ" style="margin-top: 20px;">
-            <label>Moyen de réception de vos revenus :</label>
-            <div style="display: flex; gap: 5px; margin: 10px 0;">
-                <button type="button" onclick="selectionnerModePaiement('mobile')" id="btn-pay-mobile" style="flex: 1; padding: 10px; border: 2px solid #D4AF37; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold;">📱 Mobile Money</button>
-                <button type="button" onclick="selectionnerModePaiement('banque')" id="btn-pay-banque" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold;">🏦 Banque (Monde)</button>
-                <button type="button" onclick="selectionnerModePaiement('paypal')" id="btn-pay-paypal" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold;">🅿️ PayPal</button>
-            </div>
-        </div>
+                    <div id="details-paiement-mobile">
+                        <div class="champ" style="margin-bottom: 12px;">
+                            <input type="text" id="paiement-reseau" placeholder="Réseau (M-Pesa, Orange, Airtel...)" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+                        </div>
+                        <div class="champ">
+                            <input type="text" id="paiement-numero" placeholder="Numéro Mobile Money" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+                        </div>
+                    </div>
 
-        <div class="champ">
-            <label>Nom du titulaire du compte :</label>
-            <input type="text" id="paiement-titulaire" placeholder="Nom complet du titulaire">
-        </div>
+                    <div id="details-paiement-banque" class="cache">
+                        <div class="champ" style="margin-bottom: 12px;"><input type="text" id="paiement-banque-nom" placeholder="Nom de la banque" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
+                        <div class="champ" style="margin-bottom: 12px;"><input type="text" id="paiement-iban" placeholder="Numéro de compte / IBAN" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
+                        <div class="champ"><input type="text" id="paiement-swift" placeholder="Code SWIFT / BIC" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
+                    </div>
 
-        <div id="details-paiement-mobile">
-            <div class="champ">
-                <label>Réseau Mobile Money :</label>
-                <input type="text" id="paiement-reseau" placeholder="Ex: Airtel Money, Orange Money, M-Pesa...">
-            </div>
-            <div class="champ">
-                <label>Numéro Mobile Money :</label>
-                <input type="text" id="paiement-numero" placeholder="Numéro rattaché au compte mobile money">
-            </div>
-        </div>
+                    <div id="details-paiement-paypal" class="cache">
+                        <div class="champ"><input type="email" id="paiement-paypal-email" placeholder="E-mail PayPal" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
+                    </div>
+                </div>
 
-        <div id="details-paiement-banque" class="cache">
-            <div class="champ">
-                <label>Nom de la banque :</label>
-                <input type="text" id="paiement-banque-nom" placeholder="Ex: Rawbank, EquityBCDC, Ecobank, BNP...">
-            </div>
-            <div class="champ">
-                <label>Numéro de compte ou IBAN :</label>
-                <input type="text" id="paiement-iban" placeholder="Numéro de compte complet ou IBAN international">
-            </div>
-            <div class="champ">
-                <label>Code SWIFT / BIC :</label>
-                <input type="text" id="paiement-swift" placeholder="Code SWIFT requis pour l'international">
-            </div>
-        </div>
+                <button type="submit" class="btn-principal" id="btn-texte-auth" style="margin-top: 15px; width: 100%;">Se connecter</button>
 
-        <div id="details-paiement-paypal" class="cache">
-            <div class="champ">
-                <label>Adresse E-mail PayPal :</label>
-                <input type="email" id="paiement-paypal-email" placeholder="votre-compte@paypal.com">
-            </div>
-        </div>
-
-    </div> <button type="submit" class="btn-principal" id="btn-texte-auth" style="margin-top: 15px;">Valider</button>
-                </form>
+            </form>
             <div id="info-profil-connecte" class="cache profil-container">
                 <div class="carte-profil-gauche">
                     <h3>Mon Compte Client</h3>
