@@ -278,39 +278,62 @@ app.post('/api/vendeurs/verifier-sms', async (req, res) => {
             return res.status(400).json({ success: false, message: "Données manquantes." });
         }
 
-        // 1. Vérification dans la session temporaire d'inscription
+        // 1. Recherche de la session temporaire d'inscription de la boutique
         const sessionVendeur = codesVerificationSMS[email];
 
         if (sessionVendeur) {
-            // On accepte soit le code OTP généré, soit le code PIN choisi par le vendeur
+            // Si le code tapé correspond au code PIN ou au code OTP généré
             if (sessionVendeur.code === code || sessionVendeur.donnees.vendeurPin === code) {
                 
-                // ICI : Ajoutez votre logique pour enregistrer définitivement le vendeur 
-                // dans votre base de données MongoDB / SQL si ce n'est pas déjà fait.
-                
+                // 💾 SAUVEGARDE EN BASE DE DONNÉES DANS L'UTILISATEUR CONNECTÉ
+                const utilisateurModifie = await mongoose.models.Utilisateur.findOneAndUpdate(
+                    { email: email },
+                    {
+                        $set: {
+                            boutiqueCreee: true,
+                            vendeurNom: sessionVendeur.donnees.nom,
+                            boutiqueNom: sessionVendeur.donnees.boutiqueNom,
+                            vendeurTelephone: sessionVendeur.donnees.telephone,
+                            vendeurVille: sessionVendeur.donnees.ville,
+                            vendeurPin: sessionVendeur.donnees.vendeurPin
+                        }
+                    },
+                    { new: true }
+                );
+
+                if (!utilisateurModifie) {
+                    return res.status(404).json({ success: false, message: "Compte utilisateur introuvable." });
+                }
+
+                // Supprime la session temporaire de la mémoire volatile
+                delete codesVerificationSMS[email];
+
                 return res.json({ 
                     success: true, 
-                    message: "🔑 Accès autorisé ! Bienvenue dans votre Espace Vendeur." 
+                    message: "🔑 Boutique activée et enregistrée de manière permanente !" 
                 });
             }
         }
 
-        // 2. Si non trouvé dans les sessions temporaires, message d'erreur personnalisé
+        // 2. SÉCURITÉ POUR LE TÉLÉPHONE & RECONNEXION : Validation directe via MongoDB si la RAM a été vidée
+        const utilisateurPermanent = await mongoose.models.Utilisateur.findOne({ email: email });
+        
+        if (utilisateurPermanent && utilisateurPermanent.vendeurPin === code) {
+            return res.json({ 
+                success: true, 
+                message: "🔑 Connexion permanente validée avec succès !" 
+            });
+        }
+
         return res.status(400).json({ 
             success: false, 
-            message: "Le code de vérification ou PIN est incorrect, ou la session a expiré." 
+            message: "Le code ou PIN saisi est incorrect, ou la session a expiré." 
         });
 
     } catch (error) {
-        console.error("Erreur vérification :", error);
-        res.status(500).json({ success: false, message: "Erreur interne du serveur." });
+        console.error("Erreur de validation :", error);
+        res.status(500).json({ success: false, message: "Erreur interne lors de la vérification permanente." });
     }
-});
-// ==========================================
-// ROUTE PAR DÉFAUT (FALLBACK FRONTEND)
-// ==========================================
-app.use((req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Lancement du serveur
