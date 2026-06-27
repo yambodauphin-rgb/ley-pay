@@ -663,7 +663,8 @@ function ajouterPanier(id) {
     calculerPanierTotaux();
 }
 
-function calcularPanierTotaux() { /* Écrit comme ça pour correspondre à ton appel */ calculerPanierTotaux(); }
+// Correction du doublon de frappe qui créait une boucle infinie
+function calcularPanierTotaux() { calculerPanierTotaux(); }
 
 function calculerPanierTotaux() {
     let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
@@ -688,6 +689,7 @@ function calculerPanierTotaux() {
 }
 
 function validerCommandeGlobale() {
+    let sessionUser = JSON.parse(localStorage.getItem('lp_session'));
     if(!sessionUser) {
         alert("Veuillez vous inscrire ou vous connecter dans l'onglet 'Mon Profil' avant de payer.");
         document.getElementById('lien-compte').click();
@@ -735,7 +737,7 @@ function afficherExplicationLogistique() {
 }
 
 // =========================================================================
-// 1. LA FONCTION DE ROUTAGE DU CENTRAL VENDEUR (100% AUTONOME)
+// 1. LA FONCTION DE ROUTAGE DU CENTRAL VENDEUR
 // =========================================================================
 async function rafraichirEspaceVendeur() {
     const formInsc = document.getElementById('formulaire-inscription-boutique');
@@ -745,7 +747,6 @@ async function rafraichirEspaceVendeur() {
 
     let localUser = JSON.parse(localStorage.getItem('lp_session'));
 
-    // ÉTAPE 1 : Si aucun utilisateur n'est connecté (ni localement, ni sur le serveur)
     if (!localUser) {
         if (req) req.classList.remove('cache');
         if (formInsc) formInsc.classList.add('cache');
@@ -758,7 +759,6 @@ async function rafraichirEspaceVendeur() {
         const response = await fetch('/api/vendeur/statut');
         const statut = await response.json();
 
-        // ÉTAPE 2 : Si connecté mais pas de boutique -> Affiche le formulaire de création
         if (!statut.aUneBoutique && !localUser.boutiqueCreee) {
             if (req) req.classList.add('cache');
             if (formInsc) formInsc.classList.remove('cache');
@@ -767,25 +767,23 @@ async function rafraichirEspaceVendeur() {
             return;
         }
 
-        // ÉTAPE 3 : Une boutique existe -> On cache le formulaire d'inscription
         if (formInsc) formInsc.classList.add('cache');
         if (req) req.classList.add('cache');
 
-        // ÉTAPE 4 : Gestion du code PIN pour entrer dans les tableaux
         if (statut.estVerrouille) {
-            if (blocPin) blocPin.classList.remove('cache');
-            if (corp) corp.classList.add('cache');
-        } else {
-            if (blocPin) blocPin.classList.add('cache');
-            if (corp) corp.classList.remove('cache');
-        }
+    if (blocPin) blocPin.classList.remove('cache');
+    if (corp) corp.classList.add('cache');
+} else {
+    if (blocPin) blocPin.classList.add('cache');
+    if (corp) corp.classList.remove('cache');
+}
 
     } catch (error) {
-        // Mode secours si le serveur ne répond pas
         if (req) req.classList.add('cache');
         if (formInsc) formInsc.classList.remove('cache');
     }
 }
+
 async function connexionDirecteVendeur(event) {
     event.preventDefault();
     const email = document.getElementById('auth-vendeur-email').value;
@@ -801,13 +799,13 @@ async function connexionDirecteVendeur(event) {
         const data = await response.json();
 
         if (data.success) {
-            alert(data.message);
+            alert(data.message || "🎉 Connexion réussie !");
             
-            // Stockage local de la session pour l'interface frontend
+            // 1. Enregistrement propre de la session
             localStorage.setItem('lp_session', JSON.stringify(data.user));
             
-            // Relancer le rafraîchissement pour passer au formulaire de création de boutique ou au PIN
-            rafraichirEspaceVendeur();
+            // 2. RECHARGEMENT FORCE POUR EVITER L'ECRAN NOIR ET ACTIVER L'ESPACE CONNECTE
+            window.location.reload();
         } else {
             alert(data.message || "Identifiants incorrects.");
         }
