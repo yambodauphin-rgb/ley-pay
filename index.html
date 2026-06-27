@@ -1515,21 +1515,20 @@ async function soumettreFormulaireBoutiqueComplete() {
         if (data.success) {
             alert("Compte et Boutique créés avec succès !");
 
-// 1. Masquer définitivement la boîte d'authentification unifiée
-document.getElementById('auth-box').classList.add('cache'); 
-
-// 2. Option A : Recharger la page pour que la session s'active proprement
-window.location.reload();
-
-          
-            // Enregistrement propre de la session locale avec l'e-mail du vendeur inscrit
+            // Enregistrement de la session LOCALE d'abord (avant de recharger)
             localStorage.setItem('lp_session', JSON.stringify({
                 email: document.getElementById('vendeur-email').value,
                 boutiqueCreee: true
             }));
 
-            // Relancer le routage automatique pour ouvrir directement le Central Vendeur
-            rafraichirEspaceVendeur();
+            // Masquer la boîte si nécessaire
+            if (document.getElementById('auth-box')) {
+                document.getElementById('auth-box').classList.add('cache');
+            }
+
+            // On recharge la page pour appliquer la session proprement
+            window.location.reload();
+
         } else {
             alert("Erreur : " + data.message);
         }
