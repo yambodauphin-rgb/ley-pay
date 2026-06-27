@@ -40,20 +40,35 @@ const produitSchema = new mongoose.Schema({
 });
 if (!mongoose.models.Produit) mongoose.model('Produit', produitSchema);
 
-// Schéma pour les Utilisateurs
+// 🏦 SCHÉMA UTILISATEUR MIS À JOUR POUR LE CONTENU INTERNATIONAL
 const utilisateurSchema = new mongoose.Schema({
     nom: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    motDePasse: { type: String, required: true },
+    password: { type: String, required: true }, // Harmonisé avec le payload
     
     boutiqueCreee: { type: Boolean, default: false },
     vendeurNom: { type: String, default: "" },
     boutiqueNom: { type: String, default: "" },
     vendeurTelephone: { type: String, default: "" },
+    vendeurPays: { type: String, default: "Congo (RDC)" },
     vendeurVille: { type: String, default: "" },
-    vendeurPin: { type: String, default: "" }
+    vendeurPin: { type: String, default: "" },
+
+    // 💳 Nouveaux champs de paiement (Monde entier)
+    paiementTitulaire: { type: String, default: "" },
+    paiementReseau: { type: String, default: null },       // Mobile Money
+    paiementNumero: { type: String, default: null },       // Mobile Money
+    paiementBanqueNom: { type: String, default: null },    // Virement Bancaire
+    paiementIban: { type: String, default: null },         // Virement Bancaire
+    paiementSwift: { type: String, default: null },        // Virement Bancaire
+    paiementPaypalEmail: { type: String, default: null }   // PayPal
 });
-if (!mongoose.models.Utilisateur) mongoose.model('Utilisateur', utilisateurSchema);
+
+// Réinitialisation ou déclaration propre du modèle
+if (mongoose.models.Utilisateur) {
+    delete mongoose.models.Utilisateur;
+}
+mongoose.model('Utilisateur', utilisateurSchema);
 
 // =========================================================
 
@@ -93,16 +108,15 @@ app.post('/api/connexion', async (req, res) => {
     const { email, mdp } = req.body;
 
     try {
-        const user = await mongoose.model('Utilisateur').findOne({ email: email, motDePasse: mdp });
+        const user = await mongoose.model('Utilisateur').findOne({ email: email, password: mdp });
 
         if (user) {
             console.log(`🔑 Connexion réussie pour : ${user.nom}`);
             
-            // Sauvegarde de l'état connecté sur le serveur lié à cet e-mail
             sessionsActives[user.email] = {
                 connected: true,
                 email: user.email,
-                vendeurDeverrouille: false // Reste verrouillé par PIN par défaut à la connexion
+                vendeurDeverrouille: false 
             };
 
             res.json({ 
@@ -124,13 +138,8 @@ app.post('/api/connexion', async (req, res) => {
     }
 });
 
-// ==========================================
-// 🆕 ROUTE CRUCIALE : STATUT ESPACE VENDEUR
-// ==========================================
 app.get('/api/vendeur/statut', async (req, res) => {
     try {
-        // Idéalement, on récupère l'email de l'utilisateur actif (passé via en-tête ou requête)
-        // Pour l'instant, on cherche s'il y a un utilisateur connecté dans notre registre temporaire
         const sessionUserEmail = Object.keys(sessionsActives)[0]; 
 
         if (!sessionUserEmail) {
@@ -147,7 +156,7 @@ app.get('/api/vendeur/statut', async (req, res) => {
         res.json({
             connecte: true,
             aUneBoutique: user.boutiqueCreee,
-            estVerrouille: !session.vendeurDeverrouille // Verrouillé si pas explicitement déverrouillé
+            estVerrouille: !session.vendeurDeverrouille 
         });
 
     } catch (error) {
@@ -156,7 +165,6 @@ app.get('/api/vendeur/statut', async (req, res) => {
     }
 });
 
-// Déverrouillage par code PIN
 app.post('/api/vendeur/verifier-pin', async (req, res) => {
     const { email, pin } = req.body;
     try {
@@ -242,39 +250,36 @@ app.delete('/api/produits/:id', async (req, res) => {
 });
 
 // =========================================================================
-// 🆕 ROUTES : INSCRIPTION VENDEUR RAPIDE & VÉRIFICATION SMS (OTP)
+// 🌟 ROUTE INSCRIPTION VENDEUR INTERNATIONALE AJUSTÉE (Banque, Mobile, PayPal)
 // =========================================================================
-
 app.post('/api/vendeurs/inscription', async (req, res) => {
     try {
         const { 
             nom, email, password, estVendeur,
             nomBoutique, telephone, pays, ville,
-            titulaireCompte, reseauMobileMoney, numeroMobileMoney
+            titulaireCompte, reseauMobileMoney, numeroMobileMoney,
+            nomBanque, iban, swift, paypalEmail
         } = req.body;
 
         if (!nom || !email || !password) {
             return res.status(400).json({ success: false, message: "Données de compte obligatoires manquantes." });
         }
 
-        // Vérification doublon email
-        const utilisateurExiste = await mongoose.models.Utilisateur.findOne({ email });
+        const utilisateurExiste = await mongoose.model('Utilisateur').findOne({ email });
         if (utilisateurExiste) {
             return res.status(400).json({ success: false, message: "Cet e-mail est déjà utilisé." });
         }
 
-        // Objet de base pour l'utilisateur
         const nouvelUtilisateur = {
             nom,
             email,
-            password, // À hacher avec bcrypt si configuré
+            password, 
             boutiqueCreee: false
         };
 
-        // 🏪 Si l'inscription inclut la création d'une boutique
         if (estVendeur) {
-            if (!nomBoutique || !telephone || !ville || !reseauMobileMoney || !numeroMobileMoney) {
-                return res.status(400).json({ success: false, message: "Veuillez remplir toutes les informations de votre boutique et de paiement." });
+            if (!nomBoutique || !telephone || !ville) {
+                return res.status(400).json({ success: false, message: "Veuillez remplir les informations de base de votre boutique." });
             }
             
             nouvelUtilisateur.boutiqueCreee = true;
@@ -284,13 +289,17 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
             nouvelUtilisateur.vendeurPays = pays || "Congo (RDC)";
             nouvelUtilisateur.vendeurVille = ville;
             
-            // 💰 Infos de Paiement Récoltées (errbeny.jpg)
+            // Collecte des informations de paiement selon ce que l'utilisateur a configuré
             nouvelUtilisateur.paiementTitulaire = titulaireCompte || nom;
-            nouvelUtilisateur.paiementReseau = reseauMobileMoney; // Ex: Airtel Money, M-Pesa...
-            nouvelUtilisateur.paiementNumero = numeroMobileMoney;
+            nouvelUtilisateur.paiementReseau = reseauMobileMoney || null;
+            nouvelUtilisateur.paiementNumero = numeroMobileMoney || null;
+            nouvelUtilisateur.paiementBanqueNom = nomBanque || null;
+            nouvelUtilisateur.paiementIban = iban || null;
+            nouvelUtilisateur.paiementSwift = swift || null;
+            nouvelUtilisateur.paiementPaypalEmail = paypalEmail || null;
         }
 
-        await mongoose.models.Utilisateur.create(nouvelUtilisateur);
+        await mongoose.model('Utilisateur').create(nouvelUtilisateur);
 
         return res.json({ 
             success: true, 
@@ -299,7 +308,7 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
 
     } catch (error) {
         console.error("Erreur inscription complète :", error);
-        return res.status(500).json({ success: false, message: "Erreur lors de la création du profil vendeur." });
+        return res.status(500).json({ success: false, message: "Erreur lors de la création du profil." });
     }
 });
 
