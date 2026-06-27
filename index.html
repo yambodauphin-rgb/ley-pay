@@ -89,23 +89,139 @@
                     <button class="onglet-btn" id="tab-register" onclick="basculerOngletAuth('register')">Inscription</button>
                 </div>
 
-                <form id="form-auth" onsubmit="executerAuthentification(event)">
-                    <div class="champ id-complet-reg cache">
-                        <label>Nom complet :</label>
-                        <input type="text" id="auth-nom" placeholder="Ex: Jean Mukendi">
-                    </div>
-                    <div class="champ">
-                        <label>Adresse E-mail :</label>
-                        <input type="email" id="auth-email" value="client@leypay.com" required>
-                    </div>
-                    <div class="champ">
-                        <label>Mot de passe :</label>
-                        <input type="password" id="auth-mdp" value="12345" required>
-                    </div>
-                    <button type="submit" class="btn-auth-soumettre" id="btn-texte-auth">Se connecter</button>
-                </form>
-            </div>
+                <form id="formulaire-auth" onsubmit="event.preventDefault(); gererInscriptionGlobale();"></form>
+    <div class="champ id-complet-reg cache">
+        <label>Nom complet :</label>
+        <input type="text" id="auth-nom" placeholder="Ex: Jean Mukendi">
+    </div>
 
+    <div class="champ">
+        <label>Adresse E-mail :</label>
+        <input type="email" id="auth-email" value="client@leypay.com" required>
+    </div>
+
+    <div class="champ">
+        <label>Mot de passe :</label>
+        <input type="password" id="auth-password" placeholder="Créez un mot de passe" required>
+    </div>
+
+    <div class="champ id-complet-reg cache">
+        <label>Confirmer le mot de passe :</label>
+        <input type="password" id="auth-password-conf" placeholder="Confirmez votre mot de passe">
+    </div>
+<div class="champ id-complet-reg cache" style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 5px; border-left: 3px solid #D4AF37;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="choix-devenir-vendeur" onchange="basculerChampsBoutique()" style="width: auto; margin: 0;"> 
+                        <strong style="color: #333; font-size: 0.9em;">Je souhaite également devenir vendeur et créer ma boutique</strong>
+                    </label>
+                </div>
+
+                <div id="bloc-champs-boutique-optionnel" class="cache" style="border-left: 3px solid #D4AF37; padding-left: 15px; margin-bottom: 15px;">
+                    <p style="color: #e67e22; font-size: 0.85em; margin-bottom: 10px;">
+                        💡 <strong>Note :</strong> Le mot de passe configuré ci-dessus sera celui utilisé pour déverrouiller votre Espace Vendeur.
+                    </p>
+                    
+                    <div class="champ">
+                        <label>Nom de la boutique :</label>
+                        <input type="text" id="boutique-nom" placeholder="Entrez le nom de votre boutique">
+                    </div>
+
+                    <div class="champ">
+                        <label>Numéro de téléphone :</label>
+                        <div style="display: flex; gap: 5px;">
+                            <select id="vendeur-pays" style="width: 90px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: white;">
+                                <option value="+243">+243 (RDC)</option>
+                            </select>
+                            <input type="text" id="vendeur-tel" placeholder="Numéro de téléphone" style="flex: 1;">
+                        </div>
+                    </div>
+
+                    <div class="champ">
+                        <label>Votre ville :</label>
+                        <input type="text" id="vendeur-ville" placeholder="Votre ville">
+                    </div>
+                    
+                    <div class="champ id-complet-reg cache" style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 5px; border-left: 3px solid #D4AF37;">
+        <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="choix-devenir-vendeur" onchange="basculerChampsBoutique()" style="width: auto; margin: 0;"> 
+            <strong style="color: #333;">Je souhaite également devenir vendeur et créer ma boutique</strong>
+        </label>
+    </div>
+
+    <div id="bloc-champs-boutique-optionnel" class="cache" style="border-left: 3px solid #D4AF37; padding-left: 15px; margin-bottom: 15px;">
+        <p style="color: #e67e22; font-size: 0.9em; margin-bottom: 15px;">
+            💡 <strong>Note :</strong> Le mot de passe configuré ci-dessus sera celui utilisé pour déverrouiller votre Espace Vendeur.
+        </p>
+        
+        <div class="champ">
+            <label>Nom de la boutique :</label>
+            <input type="text" id="boutique-nom" placeholder="Entrez le nom de votre boutique">
+        </div>
+
+        <div class="champ">
+            <label>Numéro de téléphone :</label>
+            <div style="display: flex; gap: 5px;">
+                <select id="vendeur-pays" style="width: 90px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff;">
+                    <option value="+243">+243 (RDC)</option>
+                </select>
+                <input type="text" id="vendeur-tel" placeholder="Numéro de téléphone" style="flex: 1;">
+            </div>
+        </div>
+
+        <div class="champ">
+            <label>Votre ville :</label>
+            <input type="text" id="vendeur-ville" placeholder="Votre ville">
+        </div>
+        
+        <div class="champ" style="margin-top: 20px;">
+            <label>Moyen de réception de vos revenus :</label>
+            <div style="display: flex; gap: 5px; margin: 10px 0;">
+                <button type="button" onclick="selectionnerModePaiement('mobile')" id="btn-pay-mobile" style="flex: 1; padding: 10px; border: 2px solid #D4AF37; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold;">📱 Mobile Money</button>
+                <button type="button" onclick="selectionnerModePaiement('banque')" id="btn-pay-banque" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold;">🏦 Banque (Monde)</button>
+                <button type="button" onclick="selectionnerModePaiement('paypal')" id="btn-pay-paypal" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold;">🅿️ PayPal</button>
+            </div>
+        </div>
+
+        <div class="champ">
+            <label>Nom du titulaire du compte :</label>
+            <input type="text" id="paiement-titulaire" placeholder="Nom complet du titulaire">
+        </div>
+
+        <div id="details-paiement-mobile">
+            <div class="champ">
+                <label>Réseau Mobile Money :</label>
+                <input type="text" id="paiement-reseau" placeholder="Ex: Airtel Money, Orange Money, M-Pesa...">
+            </div>
+            <div class="champ">
+                <label>Numéro Mobile Money :</label>
+                <input type="text" id="paiement-numero" placeholder="Numéro rattaché au compte mobile money">
+            </div>
+        </div>
+
+        <div id="details-paiement-banque" class="cache">
+            <div class="champ">
+                <label>Nom de la banque :</label>
+                <input type="text" id="paiement-banque-nom" placeholder="Ex: Rawbank, EquityBCDC, Ecobank, BNP...">
+            </div>
+            <div class="champ">
+                <label>Numéro de compte ou IBAN :</label>
+                <input type="text" id="paiement-iban" placeholder="Numéro de compte complet ou IBAN international">
+            </div>
+            <div class="champ">
+                <label>Code SWIFT / BIC :</label>
+                <input type="text" id="paiement-swift" placeholder="Code SWIFT requis pour l'international">
+            </div>
+        </div>
+
+        <div id="details-paiement-paypal" class="cache">
+            <div class="champ">
+                <label>Adresse E-mail PayPal :</label>
+                <input type="email" id="paiement-paypal-email" placeholder="votre-compte@paypal.com">
+            </div>
+        </div>
+
+    </div> <button type="submit" class="btn-principal" id="btn-texte-auth" style="margin-top: 15px;">Valider</button>
+                </form>
             <div id="info-profil-connecte" class="cache profil-container">
                 <div class="carte-profil-gauche">
                     <h3>Mon Compte Client</h3>
@@ -613,7 +729,7 @@ function executerDeconnexion() {
     lancerNotification("Vous êtes maintenant déconnecté.");
 }
 
-function rafraichirProfilClient() {
+function rafraifchirProfilClient() {
     // =========================================================================
     // 🟢 ALIGNEMENT SUR NOTRE NOUVELLE LOGIQUE
     // Récupération de l'utilisateur connecté via la nouvelle clé 'lp_session'
@@ -647,11 +763,29 @@ function rafraichirProfilClient() {
         }
 
         // =========================================================================
-        // 🔒 ZONE DE SÉCURITÉ CONSERVÉE (Bouton visible dès qu'on est connecté)
+        // 🔒 ZONE DE SÉCURITÉ CONSERVÉE & ACTION DU BOUTON ACTIVÉE
         // =========================================================================
         const btnMettreEnVente = document.getElementById('btn-mettre-en-vente-client'); 
         if (btnMettreEnVente) {
             btnMettreEnVente.classList.remove('cache');
+
+            // ⚡ AJOUT DE L'ACTION DE CLIC ICI :
+            btnMettreEnVente.onclick = function(event) {
+                event.preventDefault(); // Évite un rechargement de page inutile
+                
+                // 1. Masquer la section profil
+                const sectionProfil = document.getElementById('section-profil-client') || document.getElementById('info-profil-connecte');
+                if (sectionProfil) sectionProfil.classList.add('cache');
+
+                // 2. Afficher la section vendeur
+                const sectionVendeur = document.getElementById('section-vendeur');
+                if (sectionVendeur) {
+                    sectionVendeur.classList.remove('cache');
+                    
+                    // 3. Lancer le routage central du vendeur qu'on a créé ensemble
+                    rafraichirEspaceVendeur();
+                }
+            };
         }
     } else {
         document.getElementById('bloc-authentification').classList.remove('cache');
@@ -1543,6 +1677,122 @@ async function soumettreFormulaireBoutiqueComplete() {
         alert("Impossible de contacter le serveur.");
     }
 }
-  </script>
-</body>
+// 1. Fonction pour afficher/masquer le formulaire de la boutique
+
+function basculerChampsBoutique() {
+    const veutVendre = document.getElementById('choix-devenir-vendeur').checked;
+    const blocBoutique = document.getElementById('bloc-champs-boutique-optionnel');
+    
+    if (blocBoutique) {
+        if (veutVendre) {
+            blocBoutique.classList.remove('cache');
+        } else {
+            blocBoutique.classList.add('cache');
+        }
+    }
+}
+
+async function gererInscriptionGlobale() {
+    const nom = document.getElementById('auth-nom').value;
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value; // Vérifie si ton ID est auth-password ou auth-mdp
+    const passwordConf = document.getElementById('auth-password-conf').value;
+    const veutVendre = document.getElementById('choix-devenir-vendeur').checked;
+
+    if (password !== passwordConf) {
+        alert("⚠️ Les deux mots de passe ne correspondent pas.");
+        return;
+    }
+
+    // Base du compte client standard
+    const payload = {
+        nom: nom,
+        email: email,
+        password: password,
+        estVendeur: veutVendre 
+    };
+
+    // =========================================================================
+    // 🌟 C'EST ICI QUE TU COLLES TON BLOC DE CODE MIS À JOUR :
+    // =========================================================================
+    if (veutVendre) {
+        payload.nomBoutique = document.getElementById('boutique-nom').value;
+        payload.telephone = document.getElementById('vendeur-pays').value + document.getElementById('vendeur-tel').value;
+        payload.pays = "Congo (RDC)";
+        payload.ville = document.getElementById('vendeur-ville').value;
+        payload.titulaireCompte = document.getElementById('paiement-titulaire').value;
+        
+        // Données dynamiques selon la méthode de paiement choisie
+        payload.reseauMobileMoney = document.getElementById('paiement-reseau')?.value || null;
+        payload.numeroMobileMoney = document.getElementById('paiement-numero')?.value || null;
+        payload.nomBanque = document.getElementById('paiement-banque-nom')?.value || null;
+        payload.iban = document.getElementById('paiement-iban')?.value || null;
+        payload.swift = document.getElementById('paiement-swift')?.value || null;
+        payload.paypalEmail = document.getElementById('paiement-paypal-email')?.value || null;
+    }
+    // =========================================================================
+
+    try {
+        const response = await fetch('/api/vendeurs/inscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(veutVendre ? "🎉 Compte et Boutique créés avec succès !" : "🎉 Compte créé avec succès !");
+            
+            localStorage.setItem('lp_session', JSON.stringify({
+                email: payload.email,
+                nom: payload.nom,
+                boutiqueCreee: veutVendre 
+            }));
+
+            if (typeof rafraichirProfilClient === 'function') rafraichirProfilClient();
+            if (veutVendre && typeof rafraichirEspaceVendeur === 'function') {
+                rafraichirEspaceVendeur();
+            }
+        } else {
+            alert("Erreur : " + data.message);
+        }
+    } catch (error) {
+        console.error("Erreur d'inscription :", error);
+        alert("Impossible de contacter le serveur.");
+    }
+}
+function selectionnerModePaiement(mode) {
+    // 1. Récupération des blocs de formulaire
+    const blocMobile = document.getElementById('details-paiement-mobile');
+    const blocBanque = document.getElementById('details-paiement-banque');
+    const blocPaypal = document.getElementById('details-paiement-paypal');
+    
+    // 2. Récupération des boutons pour changer leur style visuel
+    const btnMobile = document.getElementById('btn-pay-mobile');
+    const btnBanque = document.getElementById('btn-pay-banque');
+    const btnPaypal = document.getElementById('btn-pay-paypal');
+
+    // Réinitialisation des affichages
+    blocMobile.classList.add('cache');
+    blocBanque.classList.add('cache');
+    blocPaypal.classList.add('cache');
+    btnMobile.style.borderColor = "#ccc";
+    btnBanque.style.borderColor = "#ccc";
+    btnPaypal.style.borderColor = "#ccc";
+
+    // Activation du mode sélectionné
+    if (mode === 'mobile') {
+        blocMobile.classList.remove('cache');
+        btnMobile.style.borderColor = "#D4AF37";
+    } else if (mode === 'banque') {
+        blocBanque.classList.remove('cache');
+        btnBanque.style.borderColor = "#D4AF37";
+    } else if (mode === 'paypal') {
+        blocPaypal.classList.remove('cache');
+        btnPaypal.style.borderColor = "#D4AF37";
+    }
+}
+
+</script> </body>
 </html>
