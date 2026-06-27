@@ -247,95 +247,59 @@ app.delete('/api/produits/:id', async (req, res) => {
 
 app.post('/api/vendeurs/inscription', async (req, res) => {
     try {
-        const { nom, boutiqueNom, telephone, ville, vendeurPin, email } = req.body;
+        const { 
+            nom, email, password, estVendeur,
+            nomBoutique, telephone, pays, ville,
+            titulaireCompte, reseauMobileMoney, numeroMobileMoney
+        } = req.body;
 
-        if (!email || !telephone) {
-            return res.status(400).json({ success: false, message: "Certaines données requises sont manquantes." });
+        if (!nom || !email || !password) {
+            return res.status(400).json({ success: false, message: "Données de compte obligatoires manquantes." });
         }
 
-        const codeOTP = Math.floor(1000 + Math.random() * 9000).toString();
+        // Vérification doublon email
+        const utilisateurExiste = await mongoose.models.Utilisateur.findOne({ email });
+        if (utilisateurExiste) {
+            return res.status(400).json({ success: false, message: "Cet e-mail est déjà utilisé." });
+        }
 
-        codesVerificationSMS[email] = {
-            code: codeOTP,
-            donnees: { nom, boutiqueNom, telephone, ville, vendeurPin },
-            expireAt: Date.now() + 10 * 60 * 1000 
+        // Objet de base pour l'utilisateur
+        const nouvelUtilisateur = {
+            nom,
+            email,
+            password, // À hacher avec bcrypt si configuré
+            boutiqueCreee: false
         };
 
-        console.log(`\n📱 [SMS LEY PAY] Code envoyé à ${telephone} : -> ${codeOTP} <-\n`);
-
-        return res.json({ success: true, message: "Code de validation généré avec succès." });
-    } catch (error) {
-        console.error("❌ Erreur lors de l'initiation de la boutique :", error);
-        return res.status(500).json({ success: false, message: "Erreur interne du serveur." });
-    }
-});
-
-app.post('/api/vendeurs/verifier-sms', async (req, res) => {
-    try {
-        const { email, code } = req.body;
-
-        if (!email || !code) {
-            return res.status(400).json({ success: false, message: "Données manquantes." });
-        }
-
-        // 1. Recherche de la session temporaire
-        const sessionVendeur = codesVerificationSMS[email];
-
-        if (sessionVendeur) {
-            if (sessionVendeur.code === code || sessionVendeur.donnees.vendeurPin === code) {
-                const utilisateurModifie = await mongoose.models.Utilisateur.findOneAndUpdate(
-                    { email: email },
-                    {
-                        $set: {
-                            boutiqueCreee: true,
-                            vendeurNom: sessionVendeur.donnees.nom,
-                            boutiqueNom: sessionVendeur.donnees.boutiqueNom,
-                            vendeurTelephone: sessionVendeur.donnees.telephone,
-                            vendeurVille: sessionVendeur.donnees.ville,
-                            vendeurPin: sessionVendeur.donnees.vendeurPin
-                        }
-                    },
-                    { new: true }
-                );
-
-                if (!utilisateurModifie) {
-                    return res.status(404).json({ success: false, message: "Compte utilisateur introuvable." });
-                }
-
-                delete codesVerificationSMS[email];
-
-                return res.json({ 
-                    success: true, 
-                    message: "🔑 Boutique activée et enregistrée de manière permanente !" 
-                });
+        // 🏪 Si l'inscription inclut la création d'une boutique
+        if (estVendeur) {
+            if (!nomBoutique || !telephone || !ville || !reseauMobileMoney || !numeroMobileMoney) {
+                return res.status(400).json({ success: false, message: "Veuillez remplir toutes les informations de votre boutique et de paiement." });
             }
+            
+            nouvelUtilisateur.boutiqueCreee = true;
+            nouvelUtilisateur.vendeurNom = nom;
+            nouvelUtilisateur.boutiqueNom = nomBoutique;
+            nouvelUtilisateur.vendeurTelephone = telephone;
+            nouvelUtilisateur.vendeurPays = pays || "Congo (RDC)";
+            nouvelUtilisateur.vendeurVille = ville;
+            
+            // 💰 Infos de Paiement Récoltées (errbeny.jpg)
+            nouvelUtilisateur.paiementTitulaire = titulaireCompte || nom;
+            nouvelUtilisateur.paiementReseau = reseauMobileMoney; // Ex: Airtel Money, M-Pesa...
+            nouvelUtilisateur.paiementNumero = numeroMobileMoney;
         }
 
-        // 2. Sécurité de secours
-        let utilisateurPermanent = null;
-        if (email) {
-            utilisateurPermanent = await mongoose.models.Utilisateur.findOne({ email: email });
-        }
-        
-        if (!utilisateurPermanent && code) {
-            utilisateurPermanent = await mongoose.models.Utilisateur.findOne({ vendeurPin: code });
-        }
-        
-        if (utilisateurPermanent && utilisateurPermanent.vendeurPin === code) {
-            return res.json({ 
-                success: true, 
-                message: "🔑 Connexion permanente validée avec succès !" 
-            });
-        }
+        await mongoose.models.Utilisateur.create(nouvelUtilisateur);
 
-        return res.status(400).json({ 
-            success: false, 
-            message: "Le code ou PIN saisi est incorrect, ou la session a expiré." 
+        return res.json({ 
+            success: true, 
+            message: estVendeur ? "🚀 Votre boutique a été créée et configurée avec succès !" : "Compte client créé avec succès !" 
         });
 
     } catch (error) {
-        console.error("Erreur de validation :", error);
-        return res.status(500).json({ success: false, message: "Erreur interne lors de la vérification." });
+        console.error("Erreur inscription complète :", error);
+        return res.status(500).json({ success: false, message: "Erreur lors de la création du profil vendeur." });
     }
 });
 
