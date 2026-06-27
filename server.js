@@ -278,14 +278,11 @@ app.post('/api/vendeurs/verifier-sms', async (req, res) => {
             return res.status(400).json({ success: false, message: "Données manquantes." });
         }
 
-        // 1. Recherche de la session temporaire d'inscription de la boutique
+        // 1. Recherche de la session temporaire
         const sessionVendeur = codesVerificationSMS[email];
 
         if (sessionVendeur) {
-            // Si le code tapé correspond au code PIN ou au code OTP généré
             if (sessionVendeur.code === code || sessionVendeur.donnees.vendeurPin === code) {
-                
-                // 💾 SAUVEGARDE EN BASE DE DONNÉES DANS L'UTILISATEUR CONNECTÉ
                 const utilisateurModifie = await mongoose.models.Utilisateur.findOneAndUpdate(
                     { email: email },
                     {
@@ -305,7 +302,6 @@ app.post('/api/vendeurs/verifier-sms', async (req, res) => {
                     return res.status(404).json({ success: false, message: "Compte utilisateur introuvable." });
                 }
 
-                // Supprime la session temporaire de la mémoire volatile
                 delete codesVerificationSMS[email];
 
                 return res.json({ 
@@ -315,8 +311,15 @@ app.post('/api/vendeurs/verifier-sms', async (req, res) => {
             }
         }
 
-        // 2. SÉCURITÉ POUR LE TÉLÉPHONE & RECONNEXION : Validation directe via MongoDB si la RAM a été vidée
-        const utilisateurPermanent = await mongoose.models.Utilisateur.findOne({ email: email });
+        // 2. Sécurité de secours
+        let utilisateurPermanent = null;
+        if (email) {
+            utilisateurPermanent = await mongoose.models.Utilisateur.findOne({ email: email });
+        }
+        
+        if (!utilisateurPermanent && code) {
+            utilisateurPermanent = await mongoose.models.Utilisateur.findOne({ vendeurPin: code });
+        }
         
         if (utilisateurPermanent && utilisateurPermanent.vendeurPin === code) {
             return res.json({ 
@@ -332,7 +335,7 @@ app.post('/api/vendeurs/verifier-sms', async (req, res) => {
 
     } catch (error) {
         console.error("Erreur de validation :", error);
-        res.status(500).json({ success: false, message: "Erreur interne lors de la vérification permanente." });
+        return res.status(500).json({ success: false, message: "Erreur interne lors de la vérification." });
     }
 });
 

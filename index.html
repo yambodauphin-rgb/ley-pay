@@ -1484,48 +1484,45 @@ async function creerBoutiqueRapide(event) {
 // 2. FONCTION : DÉVERROUILLAGE PAR PIN (Ton bouton bloqué)
 // ==========================================
 async function verifierPinVendeur() {
-    const pinInput = document.getElementById('input-pin-connexion');
-    if (!pinInput) {
-        alert("Champ PIN introuvable.");
-        return;
-    }
+    // 1. Récupérer le PIN tapé par l'utilisateur
+    const pinSaisi = document.getElementById('input-pin-connexion')?.value;
+    
+    // 2. Récupérer l'email de l'utilisateur stocké dans sa session locale
+    const localUser = JSON.parse(localStorage.getItem('lp_session')) || {};
+    const emailUtilisateur = localUser.email || "";
 
-    const codeSaisi = pinInput.value.trim();
-    if (!codeSaisi) {
-        alert("Veuillez entrer votre code.");
-        return;
-    }
-
-    const localUser = JSON.parse(localStorage.getItem('lp_session'));
-    if (!localUser || !localUser.email) {
-        alert("Erreur : Session expirée. Reconnectez-vous.");
+    if (!pinSaisi) {
+        alert("Veuillez saisir votre code PIN.");
         return;
     }
 
     try {
-        // CORRECTION : On envoie vers 'verifier-sms' qui existe à la ligne 273 de ton serveur
         const response = await fetch('/api/vendeurs/verifier-sms', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
-                email: localUser.email,
-                code: codeSaisi // Ton serveur attend 'code' d'après la ligne 275
+                email: emailUtilisateur, // Envoie l'email pour que le serveur sache qui se connecte
+                code: pinSaisi          // Envoie le code PIN saisi
             })
         });
 
         const data = await response.json();
 
         if (data.success) {
-            alert("🔑 Accès autorisé ! Bienvenue dans votre Central Vendeur.");
+            alert("🔑 " + data.message);
             
-            document.getElementById('vendeur-verrouille-pin').classList.add('cache');
-            document.getElementById('corps-espace-vendeur').classList.remove('cache');
+            // Masquer la boîte de verrouillage PIN
+            document.getElementById('vendeur-verrouille-pin')?.classList.add('cache');
+            
+            // Afficher le Central Vendeur
+            document.getElementById('corps-espace-vendeur')?.classList.remove('cache');
         } else {
-            alert(data.message || "Code incorrect.");
-            pinInput.value = "";
+            alert(data.message);
         }
     } catch (error) {
-        console.error("Erreur Vérification:", error);
+        console.error("Erreur de communication :", error);
         alert("Erreur réseau lors de la vérification.");
     }
 }
