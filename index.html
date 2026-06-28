@@ -563,17 +563,8 @@ function basculerOngletAuth(mode) {
     }
 }
 
-// Fonction aiguillage lors de la soumission du formulaire unique
-function gererActionAuthentification() {
-    const tabRegister = document.getElementById('tab-register');
-    if (tabRegister.classList.contains('actif')) {
-        gererInscriptionGlobale();
-    } else {
-        if (typeof executerAuthentification === 'function') {
-            executerAuthentification(event);
-        }
-    }
-}
+
+
 
 function executerDeconnexion() {
     sessionUser = null;
@@ -739,81 +730,6 @@ function afficherExplicationLogistique() {
 // =========================================================================
 // 1. LA FONCTION DE ROUTAGE DU CENTRAL VENDEUR
 // =========================================================================
-async function rafraichirEspaceVendeur() {
-    const formInsc = document.getElementById('formulaire-inscription-boutique');
-    const corp = document.getElementById('corps-espace-vendeur');
-    const blocPin = document.getElementById('vendeur-verrouille-pin');
-    const req = document.getElementById('vendeur-auth-requis');
-
-    let localUser = JSON.parse(localStorage.getItem('lp_session'));
-
-    if (!localUser) {
-        if (req) req.classList.remove('cache');
-        if (formInsc) formInsc.classList.add('cache');
-        if (corp) corp.classList.add('cache');
-        if (blocPin) blocPin.classList.add('cache');
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/vendeur/statut');
-        const statut = await response.json();
-
-        if (!statut.aUneBoutique && !localUser.boutiqueCreee) {
-            if (req) req.classList.add('cache');
-            if (formInsc) formInsc.classList.remove('cache');
-            if (corp) corp.classList.add('cache');
-            if (blocPin) blocPin.classList.add('cache');
-            return;
-        }
-
-        if (formInsc) formInsc.classList.add('cache');
-        if (req) req.classList.add('cache');
-
-        if (statut.estVerrouille) {
-    if (blocPin) blocPin.classList.remove('cache');
-    if (corp) corp.classList.add('cache');
-} else {
-    if (blocPin) blocPin.classList.add('cache');
-    if (corp) corp.classList.remove('cache');
-}
-
-    } catch (error) {
-        if (req) req.classList.add('cache');
-        if (formInsc) formInsc.classList.remove('cache');
-    }
-}
-
-async function connexionDirecteVendeur(event) {
-    event.preventDefault();
-    const email = document.getElementById('auth-vendeur-email').value;
-    const mdp = document.getElementById('auth-vendeur-mdp').value;
-
-    try {
-        const response = await fetch('/api/connexion', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, mdp })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert(data.message || "🎉 Connexion réussie !");
-            
-            // 1. Enregistrement propre de la session
-            localStorage.setItem('lp_session', JSON.stringify(data.user));
-            
-            // 2. RECHARGEMENT FORCE POUR EVITER L'ECRAN NOIR ET ACTIVER L'ESPACE CONNECTE
-            window.location.reload();
-        } else {
-            alert(data.message || "Identifiants incorrects.");
-        }
-    } catch (error) {
-        console.error("Erreur de connexion directe :", error);
-        alert("Impossible de joindre le serveur d'authentification.");
-    }
-}
 
 // =========================================================================
 // 4. OUTILS DIVERS (SUPPRESSION ET ENCODAGE)
@@ -1552,72 +1468,7 @@ function basculerChampsBoutique() {
     }
 }
 
-async function gererInscriptionGlobale() {
-    const nom = document.getElementById('auth-nom').value;
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value; 
-    const passwordConf = document.getElementById('auth-password-conf').value;
-    const veutVendre = document.getElementById('choix-devenir-vendeur').checked;
 
-    if (password !== passwordConf) {
-        alert("⚠️ Les deux mots de passe ne correspondent pas.");
-        return;
-    }
-
-    // Base du compte client standard
-    const payload = {
-        nom: nom,
-        email: email,
-        password: password,
-        estVendeur: veutVendre 
-    };
-
-    if (veutVendre) {
-        payload.nomBoutique = document.getElementById('boutique-nom').value;
-        payload.telephone = document.getElementById('vendeur-pays').value + document.getElementById('vendeur-tel').value;
-        payload.pays = "Congo (RDC)";
-        payload.ville = document.getElementById('vendeur-ville').value;
-        payload.titulaireCompte = document.getElementById('paiement-titulaire').value;
-        
-        // Données dynamiques selon la méthode de paiement choisie
-        payload.reseauMobileMoney = document.getElementById('paiement-reseau')?.value || null;
-        payload.numeroMobileMoney = document.getElementById('paiement-numero')?.value || null;
-        payload.nomBanque = document.getElementById('paiement-banque-nom')?.value || null;
-        payload.iban = document.getElementById('paiement-iban')?.value || null;
-        payload.swift = document.getElementById('paiement-swift')?.value || null;
-        payload.paypalEmail = document.getElementById('paiement-paypal-email')?.value || null;
-    }
-
-    try {
-        const response = await fetch('/api/vendeurs/inscription', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        
-        if (data.success) {
-            alert(veutVendre ? "🎉 Compte et Boutique créés avec succès !" : "🎉 Compte créé avec succès !");
-            
-            // 1. ON ENREGISTRE LA SESSION EN PREMIER 
-            localStorage.setItem('lp_session', JSON.stringify({
-                email: payload.email,
-                nom: payload.nom,
-                boutiqueCreee: veutVendre 
-            }));
-
-            // 2. ON FORCE LE RECHARGEMENT POUR ÉVITER L'ÉCRAN NOIR
-            window.location.reload();
-
-        } else {
-            alert("Erreur : " + data.message);
-        }
-    } catch (error) {
-        console.error("Erreur d'inscription :", error);
-        alert("Impossible de contacter le serveur.");
-    }
-}
 function selectionnerModePaiement(mode) {
     // 1. Récupération des blocs de formulaire
     const blocMobile = document.getElementById('details-paiement-mobile');
@@ -1649,21 +1500,206 @@ function selectionnerModePaiement(mode) {
         btnPaypal.style.borderColor = "#D4AF37";
     }
 }
+// =========================================================================
+// 1. ROUTEUR D'AUTHENTIFICATION CENTRAL (Appelé par le formulaire "Mon Profil")
+// =========================================================================
 function gererActionAuthentification() {
-    // On regarde quel onglet est actif pour savoir si l'utilisateur veut se connecter ou s'inscrire
     const ongletLogin = document.getElementById('tab-login');
     
     if (ongletLogin && ongletLogin.classList.contains('actif')) {
-        // 1. Si l'onglet Connexion est actif, on lance la connexion
-        console.log("Déclenchement de la connexion...");
+        // Mode Connexion
         gererConnexionGlobale();
     } else {
-        // 2. Sinon, c'est l'onglet Inscription qui est actif, on lance l'inscription
-        console.log("Déclenchement de l'inscription...");
+        // Mode Inscription
         gererInscriptionGlobale();
     }
 }
 
+// =========================================================================
+// 2. LOGIQUE DE CONNEXION GENERALE (Onglet Mon Profil)
+// =========================================================================
+async function gererConnexionGlobale() {
+    const email = document.getElementById('auth-email').value; 
+    const password = document.getElementById('auth-password').value; 
 
+    const payload = { email, password };
+
+    try {
+        const response = await fetch('/api/vendeurs/connexion', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("🎉 Connexion réussie !");
+
+            // Sauvegarde de la session localement
+            localStorage.setItem('lp_session', JSON.stringify({
+                email: data.user.email,
+                nom: data.user.nom,
+                boutiqueCreee: data.user.estVendeur
+            }));
+
+            // Actualisation immédiate pour basculer l'affichage
+            window.location.reload();
+        } else {
+            alert("Erreur : " + data.message);
+        }
+    } catch (error) {
+        console.error("Erreur de connexion :", error);
+        alert("Impossible de contacter le serveur.");
+    }
+}
+
+// =========================================================================
+// 3. LOGIQUE D'INSCRIPTION GENERALE (Onglet Mon Profil - Client ou Vendeur)
+// =========================================================================
+async function gererInscriptionGlobale() {
+    const nom = document.getElementById('auth-nom').value;
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value; 
+    const passwordConf = document.getElementById('auth-password-conf').value;
+    const veutVendre = document.getElementById('choix-devenir-vendeur').checked;
+
+    if (password !== passwordConf) {
+        alert("⚠️ Les deux mots de passe ne correspondent pas.");
+        return;
+    }
+
+    const payload = {
+        nom: nom,
+        email: email,
+        password: password,
+        estVendeur: veutVendre 
+    };
+
+    if (veutVendre) {
+        payload.nomBoutique = document.getElementById('boutique-nom').value;
+        payload.telephone = document.getElementById('vendeur-pays').value + document.getElementById('vendeur-tel').value;
+        payload.pays = "Congo (RDC)";
+        payload.ville = document.getElementById('vendeur-ville').value;
+        payload.titulaireCompte = document.getElementById('paiement-titulaire').value;
+        
+        payload.reseauMobileMoney = document.getElementById('paiement-reseau')?.value || null;
+        payload.numeroMobileMoney = document.getElementById('paiement-numero')?.value || null;
+        payload.nomBanque = document.getElementById('paiement-banque-nom')?.value || null;
+        payload.iban = document.getElementById('paiement-iban')?.value || null;
+        payload.swift = document.getElementById('paiement-swift')?.value || null;
+        payload.paypalEmail = document.getElementById('paiement-paypal-email')?.value || null;
+    }
+
+    try {
+        const response = await fetch('/api/vendeurs/inscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(veutVendre ? "🎉 Compte et Boutique créés avec succès !" : "🎉 Compte créé avec succès !");
+            
+            localStorage.setItem('lp_session', JSON.stringify({
+                email: payload.email,
+                nom: payload.nom,
+                boutiqueCreee: veutVendre 
+            }));
+
+            window.location.reload();
+        } else {
+            alert("Erreur : " + data.message);
+        }
+    } catch (error) {
+        console.error("Erreur d'inscription :", error);
+        alert("Impossible de contacter le serveur.");
+    }
+}
+
+// =========================================================================
+// 4. ROUTEUR ET VERIFICATION DE L'ESPACE VENDEUR
+// =========================================================================
+async function rafraichirEspaceVendeur() {
+    const formInsc = document.getElementById('formulaire-inscription-boutique');
+    const corp = document.getElementById('corps-espace-vendeur');
+    const blocPin = document.getElementById('vendeur-verrouille-pin');
+    const req = document.getElementById('vendeur-auth-requis');
+
+    let localUser = JSON.parse(localStorage.getItem('lp_session'));
+
+    // Étape A : Si pas connecté globalement
+    if (!localUser) {
+        if (req) req.classList.remove('cache');
+        if (formInsc) formInsc.classList.add('cache');
+        if (corp) corp.classList.add('cache');
+        if (blocPin) blocPin.classList.add('cache');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/vendeur/statut');
+        const statut = await response.json();
+
+        // Étape B : Connecté mais n'a pas encore créé sa boutique
+        if (!statut.aUneBoutique && !localUser.boutiqueCreee) {
+            if (req) req.classList.add('cache');
+            if (formInsc) formInsc.classList.remove('cache');
+            if (corp) corp.classList.add('cache');
+            if (blocPin) blocPin.classList.add('cache');
+            return;
+        }
+
+        // Étape C : Une boutique existe, on retire les formulaires d'accès/création
+        if (formInsc) formInsc.classList.add('cache');
+        if (req) req.className = "cache";
+
+        // Étape D : Gestion du Code PIN de sécurité du tableau de bord
+        if (statut.estVerrouille) {
+            if (blocPin) blocPin.classList.remove('cache');
+            if (corp) corp.classList.add('cache');
+        } else {
+            if (blocPin) blocPin.classList.add('cache');
+            if (corp) corp.classList.remove('cache'); // Affiche le tableau du vendeur
+        }
+
+    } catch (error) {
+        // En cas de déconnexion du serveur, mode sécurité standard
+        if (req) req.classList.add('cache');
+        if (formInsc) formInsc.classList.remove('cache');
+    }
+}
+
+// =========================================================================
+// 5. BOUTON DE CONNEXION DIRECTE DEPUIS L'ESPACE VENDEUR
+// =========================================================================
+async function connexionDirecteVendeur(event) {
+    event.preventDefault();
+    const email = document.getElementById('auth-vendeur-email').value;
+    const mdp = document.getElementById('auth-vendeur-mdp').value;
+
+    try {
+        const response = await fetch('/api/connexion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, mdp })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert(data.message || "🎉 Connexion réussie !");
+            localStorage.setItem('lp_session', JSON.stringify(data.user));
+            window.location.reload(); 
+        } else {
+            alert(data.message || "Identifiants incorrects.");
+        }
+    } catch (error) {
+        console.error("Erreur de connexion directe :", error);
+        alert("Impossible de joindre le serveur d'authentification.");
+    }
+}
 </script> </body>
 </html>
