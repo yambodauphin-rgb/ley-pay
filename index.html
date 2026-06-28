@@ -1622,8 +1622,8 @@ async function gererInscriptionGlobale() {
 // =========================================================================
 // 4. ROUTEUR ET VERIFICATION DE L'ESPACE VENDEUR
 // =========================================================================
-// 🟢 VERSION CORRIGÉE (Sans le return bloquant) :
-async function rafraichirEspaceVendeur() {
+
+async function rafraichirEspaceVendeur() { // 🟢 Corrigé : 'async' au lieu de 'sync'
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
@@ -1655,7 +1655,7 @@ async function rafraichirEspaceVendeur() {
 
         // Étape C : Une boutique existe, on retire les formulaires d'accès/création
         if (formInsc) formInsc.classList.add('cache');
-        if (req) req.className = "cache";
+        if (req) req.classList.add('cache'); // 🟢 Corrigé : classList.add au lieu de className
 
         // Étape D : Gestion du Code PIN de sécurité du tableau de bord
         if (statut.estVerrouille) {
@@ -1685,7 +1685,7 @@ async function connexionDirecteVendeur(event) {
         const response = await fetch('/api/connexion', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, mdp }) // Déjà correct ici
+            body: JSON.stringify({ email, mdp })
         });
 
         const data = await response.json();
