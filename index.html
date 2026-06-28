@@ -1649,6 +1649,21 @@ function selectionnerModePaiement(mode) {
         btnPaypal.style.borderColor = "#D4AF37";
     }
 }
+function gererActionAuthentification() {
+    // On regarde quel onglet est actif pour savoir si l'utilisateur veut se connecter ou s'inscrire
+    const ongletLogin = document.getElementById('tab-login');
+    
+    if (ongletLogin && ongletLogin.classList.contains('actif')) {
+        // 1. Si l'onglet Connexion est actif, on lance la connexion
+        console.log("Déclenchement de la connexion...");
+        gererConnexionGlobale();
+    } else {
+        // 2. Sinon, c'est l'onglet Inscription qui est actif, on lance l'inscription
+        console.log("Déclenchement de l'inscription...");
+        gererInscriptionGlobale();
+    }
+}
+
 
 </script> </body>
 </html>
