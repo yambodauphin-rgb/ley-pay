@@ -1522,10 +1522,12 @@ async function gererConnexionGlobale() {
     const email = document.getElementById('auth-email').value; 
     const password = document.getElementById('auth-password').value; 
 
-    const payload = { email, password };
+    // On utilise "mdp" pour correspondre exactement à ce qu'attend ton serveur
+    const payload = { email, mdp: password };
 
     try {
-        const response = await fetch('/api/vendeurs/connexion', { 
+        // Changement de l'adresse pour pointer sur '/api/connexion'
+        const response = await fetch('/api/connexion', { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -1536,14 +1538,12 @@ async function gererConnexionGlobale() {
         if (data.success) {
             alert("🎉 Connexion réussie !");
 
-            // Sauvegarde de la session localement
             localStorage.setItem('lp_session', JSON.stringify({
                 email: data.user.email,
                 nom: data.user.nom,
-                boutiqueCreee: data.user.estVendeur
+                boutiqueCreee: data.user.boutiqueCreee
             }));
 
-            // Actualisation immédiate pour basculer l'affichage
             window.location.reload();
         } else {
             alert("Erreur : " + data.message);
@@ -1684,7 +1684,7 @@ async function connexionDirecteVendeur(event) {
         const response = await fetch('/api/connexion', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, mdp })
+            body: JSON.stringify({ email, mdp }) // Déjà correct ici
         });
 
         const data = await response.json();
