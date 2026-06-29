@@ -633,4 +633,12 @@ input:focus, select:focus {
     color: #a0aec0;
     text-align: center;
     margin-top: 20px;
+}
+.slot-photo-vide {
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.slot-photo-vide:hover {
+    border-color: #6c5ce7;
+    transform: scale(1.05);
 }    

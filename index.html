@@ -238,14 +238,32 @@
                 </div>
 
                 <label class="form-label">Photos du produit (4 maximum)</label>
-                <div class="zone-upload-images">
-                    <input type="file" id="p-images" accept="image/*" multiple onchange="gererApercuImages(this)">
-                    <div class="vignettes-apercu" id="conteneur-apercu-photos">
-                        <div class="slot-photo-vide">1</div>
-                        <div class="slot-photo-vide">2</div>
-                        <div class="slot-photo-vide">3</div>
-                        <div class="slot-photo-vide">4</div>
-                    </div>
+                <label class="form-label">Photos du produit (Cliquez sur chaque carré pour ajouter une image)</label>
+<div class="zone-upload-images">
+    <div class="vignettes-apercu" id="conteneur-apercu-photos">
+        
+        <div class="slot-photo-vide" id="slot-1" onclick="declencherInputPhoto(1)">
+            <span>+</span>
+            <input type="file" id="file-slot-1" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 1)">
+        </div>
+        
+        <div class="slot-photo-vide" id="slot-2" onclick="declencherInputPhoto(2)">
+            <span>+</span>
+            <input type="file" id="file-slot-2" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 2)">
+        </div>
+        
+        <div class="slot-photo-vide" id="slot-3" onclick="declencherInputPhoto(3)">
+            <span>+</span>
+            <input type="file" id="file-slot-3" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 3)">
+        </div>
+        
+        <div class="slot-photo-vide" id="slot-4" onclick="declencherInputPhoto(4)">
+            <span>+</span>
+            <input type="file" id="file-slot-4" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 4)">
+        </div>
+
+    </div>
+</div>
                 </div>
 
                 <button class="btn-boutique-vert" onclick="ajouterProduitVendeur()">🚀 Publier le produit</button>
@@ -446,34 +464,51 @@
         // Base de données simulée pour stocker les images lues en Base64
 let imagesProduitBase64 = [];
 
-// 1. Gérer la prévisualisation des 4 images importées
-function gererApercuImages(input) {
-    const conteneur = document.getElementById('conteneur-apercu-photos');
-    conteneur.innerHTML = ''; // Nettoyer les slots de base
-    imagesProduitBase64 = []; // Reset des fichiers
 
-    const fichiers = Array.from(input.files).slice(0, 4); // Bloquer à 4 fichiers maximum
+    // Tableau fixe pour stocker les 4 images individuellement
+let tableauImagesVendeur = [null, null, null, null];
 
-    fichiers.forEach((fichier, index) => {
-        const lecteur = new FileReader();
-        lecteur.onload = function (e) {
-            imagesProduitBase64.push(e.target.result);
-            
-            // Ajouter la vignette active avec l'image en fond
-            const div = document.createElement('div');
-            div.className = 'vignette-image-active';
-            div.style.backgroundImage = `url(${e.target.result})`;
-            conteneur.appendChild(div);
-        };
-        lecteur.readAsDataURL(fichier);
-    });
+// Déclencher le clic sur le bon input caché lorsqu'on clique sur son carré
+function declencherInputPhoto(indexSlot) {
+    document.getElementById(`file-slot-${indexSlot}`).click();
+}
 
-    // Si moins de 4 images, recréer des slots vides pour garder l'alignement
-    for (let i = fichiers.length; i < 4; i++) {
-        const slotVide = document.createElement('div');
-        slotVide.className = 'slot-photo-vide';
-        slotVide.textContent = i + 1;
-        conteneur.appendChild(slotVide);
+// Charger l'image sélectionnée pour un carré précis sans effacer les autres
+function chargerPhotoIndependante(input, indexSlot) {
+    const fichier = input.files[0];
+    if (!fichier) return;
+
+    const lecteur = new FileReader();
+    lecteur.onload = function (e) {
+        // Enregistrer l'image en Base64 dans notre tableau à l'index correspondant (0 à 3)
+        tableauImagesVendeur[indexSlot - 1] = e.target.result;
+        
+        // Mettre à jour l'aperçu visuel du carré cliqué
+        const slotDiv = document.getElementById(`slot-${indexSlot}`);
+        slotDiv.style.backgroundImage = `url(${e.target.result})`;
+        slotDiv.style.backgroundSize = 'cover';
+        slotDiv.style.backgroundPosition = 'center';
+        slotDiv.classList.add('vignette-image-active');
+        
+        // Masquer le texte "+" pour laisser place à la photo
+        if (slotDiv.querySelector('span')) {
+            slotDiv.querySelector('span').style.display = 'none';
+        }
+    };
+    lecteur.readAsDataURL(fichier);
+}
+
+// Fonction de réinitialisation après publication (à appeler dans ajouterProduitVendeur)
+function réinitialiserSlotsPhotos() {
+    tableauImagesVendeur = [null, null, null, null];
+    for (let i = 1; i <= 4; i++) {
+        const slotDiv = document.getElementById(`slot-${i}`);
+        slotDiv.style.backgroundImage = 'none';
+        slotDiv.classList.remove('vignette-image-active');
+        document.getElementById(`file-slot-${i}`).value = '';
+        if (slotDiv.querySelector('span')) {
+            slotDiv.querySelector('span').style.display = 'block';
+        }
     }
 }
 
