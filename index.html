@@ -501,34 +501,45 @@ function afficherCatalogue(items = produits) {
         // --- SYSTÈME DE NAVIGATION CORRECT (NETTOYAGE DU BLOC PIN) ---
 function basculerOnglet(nomOnglet) {
     // 1. On cache TOUTES les sections principales pour faire place nette
-    document.getElementById('section-produits')?.classList.add('cache');
-    document.getElementById('section-favoris')?.classList.add('cache');
-    document.getElementById('section-compte')?.classList.add('cache');
-    document.getElementById('section-vendeur')?.classList.add('cache');
-    document.getElementById('section-admin')?.classList.add('cache');
+    const sections = ['section-produits', 'section-favoris', 'section-compte', 'section-vendeur', 'section-admin'];
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
     
-    // 🔒 SÉCURITÉ CRITIQUE : On masque obligatoirement le bloc PIN et les formulaires vendeurs
-    document.getElementById('vendeur-verrouille-pin')?.classList.add('cache');
-    document.getElementById('formulaire-inscription-boutique')?.classList.add('cache');
-    document.getElementById('corps-espace-vendeur')?.classList.add('cache');
+    // 🔒 On réinitialise les sous-blocs vendeurs proprement sans forcer le display caché si on va dessus
+    if (nomOnglet !== 'vendeur') {
+        const sousBlocs = ['vendeur-verrouille-pin', 'formulaire-inscription-boutique', 'corps-espace-vendeur', 'vendeur-auth-requis'];
+        sousBlocs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
 
     // 2. On affiche uniquement l'onglet sur lequel l'utilisateur vient de cliquer
     if (nomOnglet === 'vendeur') {
-        document.getElementById('section-vendeur')?.classList.remove('cache');
-        // On laisse la fonction dédiée décider si on montre le formulaire d'inscription ou le PIN
-        if (typeof rafraichirEspaceVendeur === 'function') rafraichirEspaceVendeur(); 
+        const sv = document.getElementById('section-vendeur');
+        if (sv) sv.style.display = 'block';
+        
+        // On laisse la fonction dédiée décider dynamiquement de ce qu'elle affiche
+        if (typeof rafraichirEspaceVendeur === 'function') {
+            rafraichirEspaceVendeur(); 
+        }
     } else if (nomOnglet === 'accueil' || nomOnglet === 'boutique') {
-        document.getElementById('section-produits')?.classList.remove('cache');
+        const sp = document.getElementById('section-produits');
+        if (sp) sp.style.display = 'block';
     } else if (nomOnglet === 'compte' || nomOnglet === 'profil') {
-        document.getElementById('section-compte')?.classList.remove('cache');
+        const sc = document.getElementById('section-compte');
+        if (sc) sc.style.display = 'block';
         if (typeof rafraichirProfilClient === 'function') rafraichirProfilClient();
     } else if (nomOnglet === 'favoris') {
-        document.getElementById('section-favoris')?.classList.remove('cache');
+        const sf = document.getElementById('section-favoris');
+        if (sf) sf.style.display = 'block';
     } else if (nomOnglet === 'admin') {
-        document.getElementById('section-admin')?.classList.remove('cache');
+        const sa = document.getElementById('section-admin');
+        if (sa) sa.style.display = 'block';
     }
 }
-
 // GESTION AUTHENTIFICATION (INSCRIPTION & CONNEXION)
 function basculerOngletAuth(mode) {
     const tabLogin = document.getElementById('tab-login');
@@ -550,7 +561,7 @@ function basculerOngletAuth(mode) {
         champsInscription.forEach(el => el.classList.remove('cache'));
     } else {
         // Mode Connexion (Inspiré de image_99d582.png)
-        tabLogin.add('actif');
+        tabLogin.classList.add('actif');
         tabRegister.classList.remove('actif');
         btnTexte.innerText = "Se connecter";
         titreInterne.innerText = "Connexion";
@@ -576,7 +587,7 @@ function executerDeconnexion() {
     lancerNotification("Vous êtes maintenant déconnecté.");
 }
 
-function rafraifchirProfilClient() {
+function rafraichirProfilClient() {
     // =========================================================================
     // 🟢 ALIGNEMENT SUR NOTRE NOUVELLE LOGIQUE
     // Récupération de l'utilisateur connecté via la nouvelle clé 'lp_session'
