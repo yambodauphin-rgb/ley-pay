@@ -294,4 +294,176 @@ input:focus, select:focus {
 
 .lien-orange:hover {
     text-decoration: underline
+}
+/* =========================================================================
+   STYLE DE L'ESPACE VENDEUR & FORMULAIRE MULTI-ÉTAPES (Thème Violet)
+   ========================================================================= */
+
+/* Conteneur global du formulaire de création de boutique */
+.formulaire-boutique-design {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(108, 92, 231, 0.05);
+    border: 1px solid #e2e8f0;
+    max-width: 650px;
+    margin: 20px auto;
+}
+
+/* Blocs d'étapes (Cartes intérieures) */
+.etape-formulaire {
+    background: #fdfcff;
+    border: 1px solid #efeaff;
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    text-align: left;
+}
+
+/* Badge numérique de l'étape (1, 4, 5, 6) */
+.etape-badge {
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background: #6c5ce7; /* Violet Ley Pay */
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+}
+
+/* Titre de l'étape */
+.etape-titre {
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    padding-left: 5px;
+}
+
+/* Libellés des champs (Labels) */
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+    margin-top: 14px;
+}
+
+/* Entrées et sélections du formulaire */
+.formulaire-boutique-design input[type="text"],
+.formulaire-boutique-design input[type="email"],
+.formulaire-boutique-design input[type="password"],
+.formulaire-boutique-design input[type="tel"],
+.formulaire-boutique-design select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dcd6f7;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #2d3748;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* Focus sur les inputs (Effet violet brillant) */
+.formulaire-boutique-design input:focus,
+.formulaire-boutique-design select:focus {
+    outline: none;
+    border-color: #a29bfe;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+/* Alignements en ligne (Téléphone, Pays/Ville) */
+.telephone-row, .row-pays-ville {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+/* Flexbox pour la sélection des moyens de paiement */
+.moyens-paiement-flex {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Boutons de sélection du mode de paiement */
+.btn-moyen {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-moyen:hover {
+    border-color: #a29bfe;
+    background-color: #f8f7ff;
+}
+
+/* État actif du moyen de paiement sélectionné */
+.btn-moyen.actif {
+    border-color: #6c5ce7;
+    background-color: #f1edff;
+    color: #6c5ce7;
+    box-shadow: 0 2px 6px rgba(108, 92, 231, 0.1);
+}
+
+/* Encadré gris/violet des détails de paiement */
+.details-paiement-box {
+    background-color: #f8f7ff;
+    border: 1px dashed #dcd6f7;
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 10px;
+}
+
+/* Bouton final vert "Créer ma boutique" (Conforme à l'image) */
+.btn-boutique-vert {
+    background-color: #00b894 !important; /* Vert émeraude de validation */
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
+    transition: all 0.2s ease;
+    margin-top: 15px;
+}
+
+.btn-boutique-vert:hover {
+    background-color: #00a887 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 184, 148, 0.3);
+}
+
+/* Boîte d'accès restreint si non connecté */
+.box-vendeur {
+    max-width: 550px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }    
