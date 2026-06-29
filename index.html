@@ -1624,12 +1624,21 @@ async function gererInscriptionGlobale() {
 // =========================================================================
 
 async function rafraichirEspaceVendeur() {
+    // 🟢 On cible la section parente globale
+    const sectionVendeur = document.getElementById('section-vendeur');
+    
     const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
     const req = document.getElementById('vendeur-auth-requis');
 
     let localUser = JSON.parse(localStorage.getItem('lp_session'));
+
+    // On s'assure d'abord que l'onglet général du vendeur est bien visible
+    if (sectionVendeur) {
+        sectionVendeur.classList.remove('cache');
+        sectionVendeur.style.display = 'block';
+    }
 
     // Étape A : Si pas connecté globalement
     if (!localUser) {
@@ -1668,17 +1677,15 @@ async function rafraichirEspaceVendeur() {
         } else {
             if (blocPin) { blocPin.classList.add('cache'); blocPin.style.display = 'none'; }
             
-            // 🟢 FORCE L'AFFICHAGE DU TABLEAU DE BORD ICI
+            // 🟢 ICI : On force l'affichage du tableau interne enfin débloqué !
             if (corp) { 
                 corp.classList.remove('cache'); 
                 corp.style.display = 'block'; 
-                console.log("Le tableau de bord vendeur est maintenant visible !");
             }
         }
 
     } catch (error) {
         console.error("Erreur de statut vendeur :", error);
-        // Mode de secours si le serveur ne répond pas
         if (corp) { corp.classList.remove('cache'); corp.style.display = 'block'; }
     }
 }
