@@ -223,18 +223,26 @@
                 <input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
 
                 <div class="row-pays-ville">
-                    <div style="width: 48%;">
-                        <label class="form-label">Prix ($)</label>
-                        <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
-                    </div>
-                    <div style="width: 48%;">
-                        <label class="form-label">Catégorie</label>
-                        <select id="p-categorie">
-                            <option value="Électronique">Électronique 📱</option>
-                            <option value="Mode">Mode & Vêtements 👕</option>
-                            <option value="Maison">Maison & Cuisine 🍳</option>
-                            <option value="Beauté">Beauté & Santé 🧴</option>
-                        </select>
+    <div style="width: 48%;">
+        <label class="form-label">Prix ($)</label>
+        <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
+    </div>
+    <div style="width: 48%;">
+        <label class="form-label">Catégorie</label>
+        <select id="p-categorie">
+            <option value="Électronique">Électronique 📱</option>
+            <option value="Mode">Mode & Vêtements 👕</option>
+            <option value="Maison">Maison & Cuisine 🍳</option>
+            <option value="Beauté">Beauté & Santé 🧴</option>
+        </select>
+    </div>
+</div>
+
+<label class="form-label">Mode de service Ley Pay</label>
+<select id="p-mode-service" onchange="calculerFraisVendeur()">
+    <option value="FMM">Mode FMM (5% de frais plateforme) ⚡</option>
+    <option value="FMA" selected>Mode FMA (10% de frais plateforme) 🚀</option>
+</select>
                     </div>
                 </div>
 
@@ -518,11 +526,21 @@ function réinitialiserSlotsPhotos() {
 // 2. Simulation dynamique du tableau de calcul des gains
 function calculerFraisVendeur() {
     const prix = parseFloat(document.getElementById('p-prix').value) || 0;
-    const frais = prix * 0.10; // 10% plateforme
+    const modeService = document.getElementById('p-mode-service').value;
+    
+    // Détermination du taux de commission selon le mode sélectionné
+    let tauxCommission = 0.10; // Par défaut FMA (10%)
+    if (modeService === 'FMM') {
+        tauxCommission = 0.05; // FMM (5%)
+    }
+
+    const pourcentageAffiche = tauxCommission * 100;
+    const frais = prix * tauxCommission;
     const soldeNet = prix - frais;
 
+    // Mise à jour des textes du tableau de bord de revenus
     document.getElementById('stat-total-ventes').textContent = `${prix.toFixed(2)} $`;
-    document.getElementById('stat-frais-plateforme').textContent = `${frais.toFixed(2)} $`;
+    document.getElementById('stat-frais-plateforme').textContent = `${frais.toFixed(2)} $ (${pourcentageAffiche}%)`;
     document.getElementById('stat-solde-net').textContent = `${soldeNet.toFixed(2)} $`;
 }
 
@@ -545,14 +563,14 @@ function ajouterProduitVendeur() {
     let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
 
     // Création de l'objet produit unique
-    const nouveauProduit = {
-        id: Date.now(),
-        nom: nom,
-        prix: parseFloat(prix).toFixed(2),
-        categorie: categorie,
-        image: imagePrincipale
-    };
-
+   const nouveauProduit = {
+    id: Date.now(),
+    nom: nom,
+    prix: parseFloat(prix).toFixed(2),
+    categorie: categorie,
+    modeService: document.getElementById('p-mode-service').value, // Enregistre si c'est FMM ou FMA
+    image: imagePrincipale
+};
     // Sauvegarder dans le stockage local pour que l'accueil et le catalogue y aient accès
     listeProduitsGlobale.push(nouveauProduit);
     localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
