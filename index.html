@@ -3,1685 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ley Pay - Marketplace Révolutionnaire</title>
+    <title>Ley Pay - Marketplace</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <div class="header-top">
-            <div class="logo-conteneur" id="retour-accueil" title="Retour à l'accueil Ley Pay">
-                <img src="image_cef08b.jpg.png" alt="Ley Pay Logo" class="site-logo">
-                <span class="logo">Ley Pay</span>
-            </div>
-            
-            <div class="barre-recherche-box">
-                <input type="text" id="barre-recherche" placeholder="Rechercher un produit ou une marque sur Ley Pay..." oninput="moteurDeRechercheDynamique()">
-                <button>🔍</button>
-            </div>
+    <nav class="menu-nav">
+        <button onclick="basculerOnglet('accueil')" id="btn-nav-accueil" class="actif">BOUTIQUE 🛍️</button>
+        <button onclick="basculerOnglet('profil')" id="btn-nav-profil">MON PROFIL 👤</button>
+        <button onclick="basculerOnglet('vendeur')" id="btn-nav-vendeur">ESPACE VENDEUR 🚀</button>
+    </nav>
 
-            <nav>
-                <a href="#" id="lien-accueil" class="nav-actif">Boutique</a>
-                <a href="#" id="lien-favoris">Favoris ❤️ <span id="fav-badge-count">0</span></a>
-                <a href="#" id="lien-compte">Mon Profil 👤</a>
-                <a href="#" id="lien-boutique">Espace Vendeur 🚀</a>
-                <a href="#" id="lien-admin" style="color:#ff6666; font-weight: bold;">Admin 👑</a>
-            </nav>
-        </div>
-    </header>
-
-    <div class="barre-outils-amazon">
-        <div>
-            <button class="btn-filtre actif" onclick="filtrerCategorie('tous')">Tout parcourir</button>
-            <button class="btn-filtre" onclick="filtrerCategorie('Habit')">Mode & Vêtements</button>
-            <button class="btn-filtre" onclick="filtrerCategorie('Tech')">High-Tech</button>
-            <button class="btn-filtre" onclick="filtrerCategorie('Maison')">Maison & Déco</button>
-        </div>
-        <div>
-            <a href="https://wa.me/243995833825" target="_blank" style="color: #25D366; text-decoration: none; margin-right: 15px; font-weight: bold;">💬 WhatsApp Admin</a>
-            <a href="tel:+243995833825" style="color: var(--lp-gold); text-decoration: none; font-weight: bold;">📞 Appeler Ley Pay</a>
-        </div>
-    </div>
-
-    <main>
-        <div id="toast-notif" class="notification-toast cache">
-            <span id="toast-texte">Nouvelle notification</span>
-            <button onclick="this.parentElement.classList.add('cache')" style="background:none; border:none; color:black; cursor:pointer; font-weight:bold; font-size:16px;">×</button>
-        </div>
+    <main class="conteneur-principal">
 
         <section id="section-produits">
-            <div class="hero-banner">
-                <div class="hero-contenu">
-                    <h2>Découvrez l'excellence Ley Pay</h2>
-                    <p>Expédition ultra-rapide Certifiée FBA ou livraison directe par vos marchands locaux préférés.</p>
-                </div>
-            </div>
-
-            <h2 class="titre-section">Explorez nos Univers</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 0 40px; margin-bottom: 30px;">
-                <div class="carte-profil-gauche text-center" style="cursor:pointer;" onclick="filtrerCategorie('Tech')">
-                    <h3 style="margin:0;">💻 High-Tech</h3>
-                    <p style="font-size:12px; color:var(--lp-gold); margin-top:5px;">Voir les articles</p>
-                </div>
-                <div class="carte-profil-gauche text-center" style="cursor:pointer;" onclick="filtrerCategorie('Habit')">
-                    <h3 style="margin:0;">🧥 Mode & Style</h3>
-                    <p style="font-size:12px; color:var(--lp-gold); margin-top:5px;">Voir les articles</p>
-                </div>
-                <div class="carte-profil-gauche text-center" style="cursor:pointer;" onclick="filtrerCategorie('Maison')">
-                    <h3 style="margin:0;">🏠 Maison</h3>
-                    <p style="font-size:12px; color:var(--lp-gold); margin-top:5px;">Voir les articles</p>
-                </div>
-            </div>
-
-            <h2 class="titre-section" id="titre-catalogue-dynamique">Tous nos articles disponibles</h2>
-            <div class="zone-produits" id="grille-produits"></div>
-        </section>
-
-        <section id="section-favoris" class="cache">
-            <h2 class="titre-section">❤️ Votre Liste de Souhaits</h2>
-            <div class="zone-produits" id="grille-favoris"></div>
-        </section>
+            <h2>Bienvenue sur Ley Pay</h2>
+            <p>Découvrez nos articles disponibles.</p>
+            </section>
 
         <section id="section-compte" class="cache">
-            <div id="bloc-authentification" class="auth-box">
-                <div class="auth-onglets">
-                    <button class="onglet-btn actif" id="tab-login" onclick="basculerOngletAuth('login')">Connexion</button>
-                    <button class="onglet-btn" id="tab-register" onclick="basculerOngletAuth('register')">Inscription</button>
-                </div>
-
-               <form id="formulaire-auth" onsubmit="event.preventDefault(); gererActionAuthentification();">
+            <div id="bloc-authentification" class="box-auth">
+                <h3 id="auth-titre-interne">Connexion</h3>
+                <p id="auth-sous-titre">Bon retour ! Connectez-vous à votre compte.</p>
                 
-                <div style="margin-bottom: 20px;">
-                    <h2 id="auth-titre-interne" style="color: #fff; margin: 0 0 5px 0; font-size: 1.5em;">Connexion</h2>
-                    <p id="auth-sous-titre" style="color: #aaa; margin: 0; font-size: 0.9em;">Bon retour ! Connectez-vous à votre compte client.</p>
-                </div>
+                <input type="email" id="auth-email" placeholder="Votre adresse email">
+                <input type="password" id="auth-password" placeholder="Votre mot de passe">
+                
+                <button class="btn-or" onclick="gererConnexionGlobale()">Se connecter</button>
+                <p class="texte-aide">
+                    Pas de compte ? Simulez une connexion en entrant un email.
+                </p>
+            </div>
 
-                <div class="champ id-complet-reg cache" style="margin-bottom: 15px;">
-                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Nom complet :</label>
-                    <input type="text" id="auth-nom" placeholder="Entrez votre nom complet" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                </div>
-
-                <div class="champ" style="margin-bottom: 15px;">
-                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Adresse E-mail :</label>
-                    <input type="email" id="auth-email" placeholder="Entrez votre e-mail" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                </div>
-
-                <div class="champ" style="margin-bottom: 15px;">
-                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Mot de passe :</label>
-                    <input type="password" id="auth-password" placeholder="Entrez votre mot de passe" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                </div>
-
-                <div class="champ id-complet-reg cache" style="margin-bottom: 15px;">
-                    <label style="display: block; color: #D4AF37; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em;">Confirmer le mot de passe :</label>
-                    <input type="password" id="auth-password-conf" placeholder="Confirmez votre mot de passe" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                </div>
-
-                <div class="champ id-complet-reg cache" style="margin: 15px 0; background: #1a1a1a; padding: 12px; border-radius: 5px; border-left: 3px solid #D4AF37;">
-                    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; color: #fff; margin: 0;">
-                        <input type="checkbox" id="choix-devenir-vendeur" onchange="basculerChampsBoutique()" style="width: auto; margin: 0;"> 
-                        <span style="font-size: 0.9em;">Je souhaite également devenir vendeur et créer ma boutique</span>
-                    </label>
-                </div>
-
-                <div id="bloc-champs-boutique-optionnel" class="cache" style="border-left: 3px solid #D4AF37; padding-left: 15px; margin-bottom: 15px;">
-                    <p style="color: #e67e22; font-size: 0.85em; margin-bottom: 15px;">
-                        💡 <strong>Note :</strong> Le mot de passe configuré ci-dessus déverrouillera votre Espace Vendeur.
-                    </p>
-                    
-                    <div class="champ" style="margin-bottom: 12px;">
-                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Nom de la boutique :</label>
-                        <input type="text" id="boutique-nom" placeholder="Nom de votre boutique" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                    </div>
-
-                    <div class="champ" style="margin-bottom: 12px; width: 100% !important; display: block !important;">
-    <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Numéro de téléphone :</label>
-    <div style="display: flex !important; gap: 10px !important; width: 100% !important; box-sizing: border-box !important;">
-        <select id="vendeur-pays" style="width: 120px !important; min-width: 120px !important; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; font-weight: bold; height: 42px; box-sizing: border-box !important;">
-            <option value="+243">+243 (RDC)</option>
-        </select>
-        <input type="text" id="vendeur-tel" placeholder="Numéro de téléphone" style="flex: 1 !important; width: 100% !important; min-width: 0 !important; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; height: 42px; box-sizing: border-box !important;">
-    </div>
-</div>
-
-                    <div class="champ" style="margin-bottom: 12px;">
-                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Votre ville :</label>
-                        <input type="text" id="vendeur-ville" placeholder="Ex: Kinshasa" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                    </div>
-
-                    <div class="champ" style="margin-top: 15px;">
-                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Moyen de réception de vos revenus :</label>
-                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                            <button type="button" onclick="selectionnerModePaiement('mobile')" id="btn-pay-mobile" style="flex: 1; padding: 8px; border: 2px solid #D4AF37; background: #222; color: #fff; cursor: pointer; border-radius: 4px;">📱 Mobile Money</button>
-                            <button type="button" onclick="selectionnerModePaiement('banque')" id="btn-pay-banque" style="flex: 1; padding: 8px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer; border-radius: 4px;">🏦 Banque</button>
-                            <button type="button" onclick="selectionnerModePaiement('paypal')" id="btn-pay-paypal" style="flex: 1; padding: 8px; border: 1px solid #444; background: #222; color: #fff; cursor: pointer; border-radius: 4px;">🅿️ PayPal</button>
-                        </div>
-                    </div>
-
-                    <div class="champ" style="margin-bottom: 12px;">
-                        <label style="display: block; color: #fff; font-size: 0.9em; margin-bottom: 5px;">Nom du titulaire du compte :</label>
-                        <input type="text" id="paiement-titulaire" placeholder="Nom du titulaire" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                    </div>
-
-                    <div id="details-paiement-mobile">
-                        <div class="champ" style="margin-bottom: 12px;">
-                            <input type="text" id="paiement-reseau" placeholder="Réseau (M-Pesa, Orange, Airtel...)" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                        </div>
-                        <div class="champ">
-                            <input type="text" id="paiement-numero" placeholder="Numéro Mobile Money" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
-                        </div>
-                    </div>
-
-                    <div id="details-paiement-banque" class="cache">
-                        <div class="champ" style="margin-bottom: 12px;"><input type="text" id="paiement-banque-nom" placeholder="Nom de la banque" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
-                        <div class="champ" style="margin-bottom: 12px;"><input type="text" id="paiement-iban" placeholder="Numéro de compte / IBAN" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
-                        <div class="champ"><input type="text" id="paiement-swift" placeholder="Code SWIFT / BIC" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
-                    </div>
-
-                    <div id="details-paiement-paypal" class="cache">
-                        <div class="champ"><input type="email" id="paiement-paypal-email" placeholder="E-mail PayPal" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;"></div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-principal" id="btn-texte-auth" style="margin-top: 15px; width: 100%;">Se connecter</button>
-
-            </form>
-            <div id="info-profil-connecte" class="cache profil-container">
-                <div class="carte-profil-gauche">
-                    <h3>Mon Compte Client</h3>
-                    <p>Bienvenue, <strong id="txt-nom-client">...</strong> !</p>
-                    <br>
-                    <div class="champ">
-                        <label>Adresse de livraison par défaut :</label>
-                        <input type="text" id="adresse-livraison-input" value="Gombe, Kinshasa, RDC" onchange="sauvegarderProfilClient()">
-                    </div>
-                    <div class="champ">
-                        <label>Réseau Mobile Money préféré :</label>
-                        <select id="paiement-pref-input" onchange="sauvegarderProfilClient()">
-                            <option value="M-Pesa">M-Pesa 📱</option>
-                            <option value="Orange Money">Orange Money 🟠</option>
-                            <option value="Airtel Money">Airtel Money 🔴</option>
-                        </select>
-                    </div>
-                    <button onclick="executerDeconnexion()" class="btn-deconnexion">Déconnexion</button>
-                </div>
-                <div class="carte-profil-droite">
-                    <h3>📦 Vos commandes récentes & Statuts de livraison</h3>
-                    <div id="liste-commandes-client"></div>
-                </div>
+            <div id="info-profil-connecte" class="box-auth cache">
+                <h3>Mon Account</h3>
+                <p>Bonjour, <span id="txt-nom-client" class="nom-mise-en-avant">Client</span> !</p>
+                <button class="btn-or btn-espace-vendeur" id="btn-mettre-en-vente-client">🚀 Ouvrir mon Espace Vendeur</button>
+                <button class="btn-deconnexion" onclick="executerDeconnexion()">Se déconnecter</button>
             </div>
         </section>
+
         <section id="section-vendeur" class="cache">
-
-    <div id="vendeur-auth-requis" class="auth-box text-center cache" style="max-width: 500px; margin: 40px auto; padding: 30px;">
-        <h3>👋 Bienvenue sur Ley Pay Business</h3>
-        <p style="margin-bottom: 20px; color: #ccc;">Connectez-vous ou créez un compte client pour ouvrir votre boutique.</p>
-        
-        <form onsubmit="connexionDirecteVendeur(event)" style="margin-bottom: 20px; text-align: left;">
-            <div style="margin-bottom: 10px;">
-                <label style="display:block; font-size:12px; color:#aaa;">Adresse E-mail</label>
-                <input type="email" id="auth-vendeur-email" required style="width:100%; padding:10px; background:#222; border:1px solid #444; color:#fff;">
+            
+            <div id="vendeur-auth-requis" class="box-vendeur">
+                <h3>🔒 Accès Restreint</h3>
+                <p>Veuillez vous connecter à votre compte client dans l'onglet <strong>Mon Profil</strong> pour accéder à cette interface.</p>
+                <button class="btn-or" onclick="basculerOnglet('profil')">Aller à la connexion</button>
             </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; font-size:12px; color:#aaa;">Mot de passe</label>
-                <input type="password" id="auth-vendeur-mdp" required style="width:100%; padding:10px; background:#222; border:1px solid #444; color:#fff;">
+
+            <div id="formulaire-inscription-boutique" class="box-vendeur cache">
+                <h3>Création de votre Boutique</h3>
+                <p>Remplissez les informations pour activer votre profil commercial.</p>
+                <input type="text" id="vendeur-boutique-nom" placeholder="Nom de votre boutique">
+                <select id="boutique-categorie-input">
+                    <option value="High-Tech">High-Tech</option>
+                    <option value="Mode">Mode & Vêtements</option>
+                </select>
+                <button class="btn-or" onclick="creerBoutiqueRapideManuel()">Activer ma boutique</button>
             </div>
-            <button type="submit" style="background: var(--lp-gold, #D4AF37); color: #111; border: none; padding: 12px; font-weight: bold; width: 100%; cursor: pointer;">
-                Se connecter au compte
-            </button>
-        </form>
-    </div>
 
-                <div id="corps-espace-vendeur" class="cache">
-                <div class="hero-banner-vendeur">
-                    <h2>Central Vendeur Ley Pay</h2>
-                    <p>Gérez vos stocks, optimisez vos profits et choisissez votre mode logistique.</p>
-                </div>
+            <div id="vendeur-verrouille-pin" class="box-vendeur cache">
+                <h3>🔑 Code PIN Requis</h3>
+                <p>Entrez votre code de sécurité pour ouvrir le Tableau de Bord.</p>
+                <input type="password" id="input-pin-connexion" placeholder="Code PIN à 6 chiffres" maxlength="6">
+                <button class="btn-or" onclick="verifierPinVendeur()">Déverrouiller l'espace</button>
+            </div>
 
-                <div class="vendeur-kpi-container">
-                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-brut">0.00 $</div><div>Ventes Brutes</div></div>
-                    <div class="kpi-box"><div class="kpi-val" id="v-kpi-solde">0.00 $</div><div>Votre Solde Retirable</div></div>
-                </div>
-
-                <div class="profil-container">
-                    <div class="carte-profil-gauche">
-                        <h3>📦 Publier un nouvel article</h3>
-                        <form onsubmit="vendeurAjouterProduit(event)">
-                            <div class="champ"><label>Nom du produit :</label><input type="text" id="p-nom" required></div>
-                            <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="p-prix" required></div>
-                            <div class="champ"><label>Stock disponible :</label><input type="number" id="p-stock" value="10" required></div>
-                            <div class="champ">
-                                <label>Catégorie :</label>
-                                <select id="p-cat">
-                                    <option value="Tech">High-Tech</option>
-                                    <option value="Habit">Mode</option>
-                                    <option value="Maison">Maison</option>
-                                </select>
-                            </div>
-                            <div class="champ">
-                                <label>Mode Logistique :</label>
-                                <select id="p-logistique">
-                                    <option value="FBM">FBM (Fulfillment by Merchant) - Comm: 5%</option>
-                                    <option value="FBA">FBA (Fulfillment by Ley Pay) - Comm: 10%</option>
-                                </select>
-                            </div>
-                            <div class="champ"><label for="p-image1">Photo Principale :</label><input type="file" id="p-image1" accept="image/*" required></div>
-                            <div class="champ"><label for="p-image2">Photo Détail 1 :</label><input type="file" id="p-image2" accept="image/*" required></div>
-                            <div class="champ"><label for="p-image3">Photo Détail 2 :</label><input type="file" id="p-image3" accept="image/*" required></div>
-                            <div class="champ"><label for="p-image4">Photo Détail 3 :</label><input type="file" id="p-image4" accept="image/*" required></div>
-                            
-                            <button type="submit" class="btn-auth-soumettre">Mettre en vente</button>
-                        </form>
-                        
-                        <h3 style="margin-top:30px;">💸 Demander un versement</h3>
-                        <form onsubmit="vendeurSoumettreRetrait(event)">
-                            <div class="champ"><label>Montant du retrait ($) :</label><input type="number" id="r-montant" min="1" required></div>
-                            <div class="champ"><label>Numéro Mobile Money :</label><input type="text" id="r-tel" placeholder="Ex: 0812345678" required></div>
-                            <button type="submit" class="btn-auth-soumettre" style="background:#10b981; color:white;">Valider la demande</button>
-                        </form>
-                    </div>
-
-                    <div class="carte-profil-droite">
-                        <h3>📊 Suivi de vos stocks</h3>
-                        <table class="table-custom">
-                            <thead><tr><th>Article</th><th>Type</th><th>Prix</th><th>Stock</th><th>Statut</th><th>Action</th></tr></thead>
-                            <tbody id="vendeur-table-stocks"></tbody>
-                        </table>
-
-                        <h3 style="margin-top:30px;">📜 Historique des retraits</h3>
-                        <table class="table-custom">
-                            <thead><tr><th>ID</th><th>Montant</th><th>Numéro</th><th>Statut</th></tr></thead>
-                            <tbody id="vendeur-table-retraits"></tbody>
-                        </table>
-                    </div>
+            <div id="corps-espace-vendeur" class="box-vendeur cache corps-large">
+                <h2>📊 Central Vendeur - Ley Pay Business</h2>
+                <p>Félicitations, vous êtes dans votre espace de gestion commerciale.</p>
+                <div class="statut-boutique-box">
+                    <strong>Statut de la boutique :</strong> En ligne et Actif <br>
+                    <strong>Solde actuel :</strong> 0.00 $
                 </div>
             </div>
+
         </section>
 
-        <section id="section-admin" class="cache">
-            <div id="admin-verrou-box" class="auth-box text-center">
-                <h3 class="titre-vendeur-verrou">Accès Hautement Sécurisé</h3>
-                <p class="desc-vendeur-verrou">Cette zone n'est accessible que sur l'ordinateur du propriétaire de la plateforme.</p>
-                <div class="champ">
-                    <label>Entrez le code secret Administrateur :</label>
-                    <input type="password" id="admin-secret-key" placeholder="••••••••">
-                </div>
-                <button class="btn-auth-soumettre" onclick="verifierCodeAdmin()">Déverrouiller le Panel</button>
-            </div>
-
-            <div id="admin-corps" class="cache">
-                <h2 class="admin-main-titre">👑 Administration Globale & Coffre-Fort de Ley Pay</h2>
-                
-                <div class="vendeur-kpi-container">
-                    <div class="kpi-box"><div class="kpi-val" id="admin-revenu-total">0.00 $</div><div>Revenu Net Cumulé de la Plateforme (Commissions)</div></div>
-                </div>
-
-                <div class="profil-container">
-                    <div class="carte-profil-gauche">
-                        <h3>🛍️ Mettre en vente mes propres produits (Ley Pay)</h3>
-                        <form onsubmit="adminAjouterPropreProduit(event)">
-                            <div class="champ"><label>Nom du produit :</label><input type="text" id="a-nom" required></div>
-                            <div class="champ"><label>Prix de vente ($) :</label><input type="number" id="a-prix" required></div>
-                            <div class="champ"><label>Stock initial :</label><input type="number" id="a-stock" value="50" required></div>
-                            <div class="champ">
-                                <label>Catégorie :</label>
-                                <select id="a-cat"><option value="Tech">High-Tech</option><option value="Habit">Mode</option><option value="Maison">Maison</option></select>
-                            </div>
-                            <div class="champ"><label>Photo Principale :</label><input type="text" id="a-img" value="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"></div>
-                            <div class="champ"><label>Photo Détail 1 :</label><input type="text" id="a-img2" placeholder="Lien URL d'une autre vue"></div>
-                            <div class="champ"><label>Vidéo du produit :</label><input type="text" id="a-video" placeholder="Lien URL Vidéo"></div>
-                            <button type="submit" class="btn-auth-soumettre" style="background:var(--lp-gold);">Publier en tant que Ley Pay</button>
-                        </form>
-                    </div>
-
-                    <div class="carte-profil-droite">
-                        <h3>🛠️ Modération & Droit de Suppression absolue</h3>
-                        <div id="admin-liste-tous-produits" style="margin-bottom:25px;"></div>
-
-                        <h3>💰 Demandes de retraits Mobile Money en attente</h3>
-                        <div id="admin-liste-retraits-validation"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <div class="panier-fenetre" id="panier-lateral">
-            <div class="panier-entete"><h3>Votre Panier 🛒</h3><button class="panier-fermer" onclick="basculerPanier()">×</button></div>
-            <div class="liste-panier" id="panier-items"></div>
-            <div style="padding:20px 0; border-top:1px solid var(--lp-gray-dark);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
-                    <span>Total à régler :</span><span id="panier-total-prix" style="color:var(--lp-gold); font-size:18px;">0.00 $</span>
-                </div>
-                <div style="display:flex; gap:10px; margin-bottom:10px;">
-                    <button class="btn-auth-soumettre" onclick="validerCommandeGlobale()" style="flex:2;">Passer la commande</button>
-                    <button class="btn-auth-soumettre" onclick="viderToutLePanier()" style="flex:1; background:#ef4444; color:white;">Vider 🗑️</button>
-                </div>
-            </div>
-        </div>
-        <div class="chat-boite cache" id="chat-vendeur-box">
-            <div class="chat-header" onclick="fermerChat()"><span>💬 Chat Direct Marchand</span><span>×</span></div>
-            <div class="chat-messages" id="chat-messages-corps"></div>
-            <div class="chat-input-box">
-                <input type="text" id="chat-input-texte" placeholder="Discuter de la livraison ou de la taille...">
-                <button onclick="envoyerMessageChat()">Envoyer</button>
-            </div>
-        </div>
-
-        <div class="panier-flottant-wrapper">
-            <button id="btn-flottant" onclick="basculerPanier()">🛒<span class="badge-compteur" id="panier-badge">0</span></button>
-        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Ley Pay Corporation - Tous droits réservés. Performance et transactions garanties.</p>
-    </footer>
-
     <script>
-        let utilisateurABoutique = false;
-        let sessionUser = JSON.parse(localStorage.getItem('lp_session')) || null;
-        let produits = JSON.parse(localStorage.getItem('lp_prods')) || [];
-        let commandes = JSON.parse(localStorage.getItem('lp_cmds')) || [];
-        let retraits = JSON.parse(localStorage.getItem('lp_retrs')) || [];
-        let favoris = JSON.parse(localStorage.getItem('lp_favs')) || [];
-        let panier = [];
-        let modeAuthActuel = 'login';
-        let interlocuteurChatActuel = '';
-
-        // Initialisation de produits exemples si vide
-        if(produits.length === 0) {
-            produits = [
-                { id: 201, nom: "Écouteurs Sans Fil Pro", prix: 80, stock: 12, cat: "Tech", logistique: "FBA", commission_taux: 0.10, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400", img2: "", video: "", vendeur: "vendeur@demo.com", valide: true, note: 4.8 },
-                { id: 202, nom: "Chaussure Air Sport", prix: 150, stock: 5, cat: "Habit", logistique: "FBM", commission_taux: 0.05, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", img2: "", video: "", vendeur: "vendeur@demo.com", valide: true, note: 4.5 }
-            ];
-            localStorage.setItem('lp_prods', JSON.stringify(produits));
-        }
-
-        // Système de routage entre onglets de navigation
-        const sections = {
-            'lien-accueil': document.getElementById('section-produits'),
-            'lien-favoris': document.getElementById('section-favoris'),
-            'lien-compte': document.getElementById('section-compte'),
-            'lien-boutique': document.getElementById('section-vendeur'),
-            'lien-admin': document.getElementById('section-admin')
-        };
-
-        Object.keys(sections).forEach(id => {
-            document.getElementById(id).onclick = function(e) {
-                e.preventDefault();
-                Object.values(sections).forEach(s => s.classList.add('cache'));
-                Object.keys(sections).forEach(k => document.getElementById(k).classList.remove('nav-actif'));
-                
-                sections[id].classList.remove('cache');
-                this.classList.add('nav-actif');
-                
-                if(id === 'lien-compte') rafraichirProfilClient();
-                if(id === 'lien-boutique') rafraichirEspaceVendeur();
-                if(id === 'lien-admin') {
-                    document.getElementById('admin-verrou-box').classList.remove('cache');
-                    document.getElementById('admin-corps').classList.add('cache');
-                }
-                if(id === 'lien-favoris') rafraichirFavorisVisual();
-            };
-        });
-        document.getElementById('retour-accueil').onclick = () => document.getElementById('lien-accueil').click();
-
-        function lancerNotification(texte) {
-            const toast = document.getElementById('toast-notif');
-            document.getElementById('toast-texte').textContent = texte;
-            toast.classList.remove('cache');
-            setTimeout(() => toast.classList.add('cache'), 4000);
-        }
-
-       
-           // Moteur d'affichage dynamique de la boutique Ley Pay
-function afficherCatalogue(items = produits) {
-    const grille = document.getElementById('grille-produits');
-    grille.innerHTML = "";
-    
-    // Modification ici : accepte les produits qui n'ont pas explicitement "valide = false"
-    let itemsActifs = items.filter(p => p.valide !== false);
-
-    if (itemsActifs.length === 0) {
-        grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
-        return;
-    }
-
-    itemsActifs.forEach(p => {
-        let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
-        let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
-        
-        grille.innerHTML += `
-            <div class="produit">
-                <span class="badge-categorie">${p.cat}</span>
-                <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
-                <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
-                
-                <div class="produit-info">
-                    <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
-                    <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
-                    ${badgeFulfillment}
-                    <div class="prix" style="margin-top:10px;">${p.prix.toFixed(2)} $</div>
-                    <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
-                </div>
-
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
-                    <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
-                </div>
-            </div>
-        `;
-    });
-}
-
-        function filtrerCategorie(cat) {
-            document.querySelectorAll('.btn-filtre').forEach(b => b.classList.remove('actif'));
-            if(cat === 'tous') {
-                document.getElementById('titre-catalogue-dynamique').textContent = "Tous nos articles disponibles";
-                afficherCatalogue(produits);
-            } else {
-                document.getElementById('titre-catalogue-dynamique').textContent = "Catégorie : " + cat;
-                afficherCatalogue(produits.filter(p => p.cat === cat));
-            }
-        }
-
-        function moteurDeRechercheDynamique() {
-            let val = document.getElementById('barre-recherche').value.toLowerCase();
-            let filtres = produits.filter(p => p.nom.toLowerCase().includes(val) || p.cat.toLowerCase().includes(val));
-            afficherCatalogue(filtres);
-        }
-
-        function voirDetailsFiche(id) {
-            let p = produits.find(prod => prod.id === id);
-            if(!p) return;
-            let infoMedia = `Fiche Produit : ${p.nom}\n\n`;
-            if(p.img2) infoMedia += `Image secondaire disponible : ${p.img2}\n`;
-            if(p.video) infoMedia += `Vidéo démonstrative reliée : ${p.video}\n`;
-            alert(infoMedia + `Prix : ${p.prix} $\nLogistique : ${p.logistique}\nStock : ${p.stock} pièces restantes.`);
-        }
-
-        // --- SYSTÈME DE NAVIGATION CORRECT (NETTOYAGE DU BLOC PIN) ---
-function basculerOnglet(nomOnglet) {
-    // 1. On cache TOUTES les sections principales pour faire place nette
-    const sections = ['section-produits', 'section-favoris', 'section-compte', 'section-vendeur', 'section-admin'];
-    sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-    
-    // 🔒 On réinitialise les sous-blocs vendeurs proprement sans forcer le display caché si on va dessus
-    if (nomOnglet !== 'vendeur') {
-        const sousBlocs = ['vendeur-verrouille-pin', 'formulaire-inscription-boutique', 'corps-espace-vendeur', 'vendeur-auth-requis'];
-        sousBlocs.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = 'none';
-        });
-    }
-
-    // 2. On affiche uniquement l'onglet sur lequel l'utilisateur vient de cliquer
-    if (nomOnglet === 'vendeur') {
-        const sv = document.getElementById('section-vendeur');
-        if (sv) sv.style.display = 'block';
-        
-        // On laisse la fonction dédiée décider dynamiquement de ce qu'elle affiche
-        if (typeof rafraichirEspaceVendeur === 'function') {
-            rafraichirEspaceVendeur(); 
-        }
-    } else if (nomOnglet === 'accueil' || nomOnglet === 'boutique') {
-        const sp = document.getElementById('section-produits');
-        if (sp) sp.style.display = 'block';
-    } else if (nomOnglet === 'compte' || nomOnglet === 'profil') {
-        const sc = document.getElementById('section-compte');
-        if (sc) sc.style.display = 'block';
-        if (typeof rafraichirProfilClient === 'function') rafraichirProfilClient();
-    } else if (nomOnglet === 'favoris') {
-        const sf = document.getElementById('section-favoris');
-        if (sf) sf.style.display = 'block';
-    } else if (nomOnglet === 'admin') {
-        const sa = document.getElementById('section-admin');
-        if (sa) sa.style.display = 'block';
-    }
-}
-// GESTION AUTHENTIFICATION (INSCRIPTION & CONNEXION)
-function basculerOngletAuth(mode) {
-    const tabLogin = document.getElementById('tab-login');
-    const tabRegister = document.getElementById('tab-register');
-    const champsInscription = document.querySelectorAll('.id-complet-reg');
-    const btnTexte = document.getElementById('btn-texte-auth');
-    const titreInterne = document.getElementById('auth-titre-interne');
-    const sousTitre = document.getElementById('auth-sous-titre');
-
-    if (mode === 'register') {
-        // Mode Inscription (Inspiré de M.png)
-        tabLogin.classList.remove('actif');
-        tabRegister.classList.add('actif');
-        btnTexte.innerText = "Créer mon compte";
-        titreInterne.innerText = "Créer un compte";
-        sousTitre.innerText = "Rejoignez-nous et commencez à vendre ou à acheter dès maintenant.";
-        
-        // Afficher les champs d'inscription et la proposition vendeur
-        champsInscription.forEach(el => el.classList.remove('cache'));
-    } else {
-        // Mode Connexion (Inspiré de image_99d582.png)
-        tabLogin.classList.add('actif');
-        tabRegister.classList.remove('actif');
-        btnTexte.innerText = "Se connecter";
-        titreInterne.innerText = "Connexion";
-        sousTitre.innerText = "Bon retour ! Connectez-vous à votre compte client.";
-        
-        // Cacher les champs d'inscription et le bloc boutique si ouvert
-        champsInscription.forEach(el => el.classList.add('cache'));
-        document.getElementById('bloc-champs-boutique-optionnel').classList.add('cache');
-        document.getElementById('choix-devenir-vendeur').checked = false;
-    }
-}
-
-
-
-
-function executerDeconnexion() {
-    sessionUser = null;
-    localStorage.removeItem('lp_session');
-    panier = [];
-    calculerPanierTotaux();
-    rafraichirProfilClient();
-    rafraichirEspaceVendeur();
-    lancerNotification("Vous êtes maintenant déconnecté.");
-}
-
-function rafraichirProfilClient() {
-    // =========================================================================
-    // 🟢 ALIGNEMENT SUR NOTRE NOUVELLE LOGIQUE
-    // Récupération de l'utilisateur connecté via la nouvelle clé 'lp_session'
-    // =========================================================================
-    let sessionUser = JSON.parse(localStorage.getItem('lp_session'));
-
-    if(sessionUser) {
-        document.getElementById('bloc-authentification').classList.add('cache');
-        document.getElementById('info-profil-connecte').classList.remove('cache');
-        
-        // Affiche le nom (ou l'email s'il n'y a pas de nom dans le payload de session)
-        document.getElementById('txt-nom-client').textContent = sessionUser.nom || sessionUser.email;
-        
-        const corps = document.getElementById('liste-commandes-client');
-        if(corps) {
-            corps.innerHTML = "";
-            let mesCmds = commandes.filter(c => c.client === sessionUser.email);
+        function basculerOnglet(nomOnglet) {
+            console.log("Navigation vers : " + nomOnglet);
             
-            if(mesCmds.length === 0) {
-                corps.innerHTML = "<p style='color:#888;'>Aucune commande passée pour l'instant.</p>";
-            }
-            mesCmds.reverse().forEach(c => {
-                corps.innerHTML += `
-                    <div class="bloc-amazon-profil">
-                        <strong>Commande ID : ${c.id}</strong><br>
-                        Article : ${c.produit} <br>
-                        Montant Payé : ${c.montant} $ | Statut : <span style="color:var(--lp-gold); font-weight:bold;">${c.statut}</span>
-                    </div>
-                `;
-            });
-        }
+            document.getElementById('section-produits').style.display = 'none';
+            document.getElementById('section-compte').style.display = 'none';
+            document.getElementById('section-vendeur').style.display = 'none';
 
-        // =========================================================================
-        // 🔒 ZONE DE SÉCURITÉ CONSERVÉE & ACTION DU BOUTON ACTIVÉE
-        // =========================================================================
-        const btnMettreEnVente = document.getElementById('btn-mettre-en-vente-client'); 
-        if (btnMettreEnVente) {
-            btnMettreEnVente.classList.remove('cache');
+            document.getElementById('btn-nav-accueil').classList.remove('actif');
+            document.getElementById('btn-nav-profil').classList.remove('actif');
+            document.getElementById('btn-nav-vendeur').classList.remove('actif');
 
-            // ⚡ AJOUT DE L'ACTION DE CLIC ICI :
-            btnMettreEnVente.onclick = function(event) {
-                event.preventDefault(); // Évite un rechargement de page inutile
-                
-                // 1. Masquer la section profil
-                const sectionProfil = document.getElementById('section-profil-client') || document.getElementById('info-profil-connecte');
-                if (sectionProfil) sectionProfil.classList.add('cache');
-
-                // 2. Afficher la section vendeur
-                const sectionVendeur = document.getElementById('section-vendeur');
-                if (sectionVendeur) {
-                    sectionVendeur.classList.remove('cache');
-                    
-                    // 3. Lancer le routage central du vendeur qu'on a créé ensemble
-                    rafraichirEspaceVendeur();
-                }
-            };
-        }
-    } else {
-        document.getElementById('bloc-authentification').classList.remove('cache');
-        document.getElementById('info-profil-connecte').classList.add('cache');
-    }
-}
-
-// LOGIQUE COMPLÈTE DU PANIER FLOTTANT
-function basculerPanier() { document.getElementById('panier-lateral').classList.toggle('ouvert'); }
-
-function ajouterPanier(id) {
-    let prod = produits.find(p => p.id === id);
-    if(prod.stock <= 0) { alert("Désolé, rupture de stock critique pour ce produit !"); return; }
-    
-    let exist = panier.find(item => item.id === id);
-    if(exist) exist.qty++; else panier.push({ ...prod, qty: 1 });
-    
-    lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
-    calculerPanierTotaux();
-}
-
-// Correction du doublon de frappe qui créait une boucle infinie
-function calcularPanierTotaux() { calculerPanierTotaux(); }
-
-function calculerPanierTotaux() {
-    let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
-    document.getElementById('panier-total-prix').textContent = total.toFixed(2) + " $";
-    document.getElementById('panier-badge').textContent = panier.reduce((sum, i) => sum + i.qty, 0);
-    
-    const corps = document.getElementById('panier-items');
-    if(corps) {
-        corps.innerHTML = "";
-        panier.forEach(item => {
-            corps.innerHTML += `
-                <div class="item-panier">
-                    <div>
-                        <strong>${item.nom}</strong><br>
-                        <span style="font-size:12px; color:var(--lp-gold);">${item.prix} $ x ${item.qty}</span>
-                    </div>
-                    <div>${(item.prix * item.qty).toFixed(2)} $</div>
-                </div>
-            `;
-        });
-    }
-}
-
-function validerCommandeGlobale() {
-    let sessionUser = JSON.parse(localStorage.getItem('lp_session'));
-    if(!sessionUser) {
-        alert("Veuillez vous inscrire ou vous connecter dans l'onglet 'Mon Profil' avant de payer.");
-        document.getElementById('lien-compte').click();
-        return;
-    }
-    if(panier.length === 0) return;
-
-    panier.forEach(item => {
-        let brut = item.prix * item.qty;
-        let commissionTaux = item.logistique === 'FBA' ? 0.10 : 0.05;
-        let commMontant = brut * commissionTaux;
-        
-        commandes.push({
-            id: "CMD-" + Math.floor(Math.random()*1000000),
-            client: sessionUser.email,
-            vendeur: item.vendeur,
-            produit: item.nom + ` (x${item.qty})`,
-            montant: brut,
-            commission: commMontant,
-            statut: "Payé - En attente d'expédition"
-        });
-
-        let original = produits.find(p => p.id === item.id);
-        if(original) original.stock -= item.qty;
-    });
-
-    localStorage.setItem('lp_cmds', JSON.stringify(commandes));
-    localStorage.setItem('lp_prods', JSON.stringify(produits));
-    
-    panier = [];
-    calculerPanierTotaux();
-    basculerPanier();
-    lancerNotification("Paiement reçu avec succès ! Répartition automatique validée.");
-    afficherCatalogue();
-}
-
-function afficherExplicationLogistique() {
-    const choix = document.getElementById('p-logistique').value;
-    const explication = document.getElementById('explication-logistique');
-    if(choix === 'FBA') {
-        explication.textContent = "FBA : Ley Pay stocke, emballe et livre votre colis. Commission de 10%. Vos ventes augmentent de 40% !";
-    } else {
-        explication.textContent = "FBM : Vous gérez vous-même l'expédition et le colis. Commission réduite à 5%.";
-    }
-}
-
-// =========================================================================
-// 1. LA FONCTION DE ROUTAGE DU CENTRAL VENDEUR
-// =========================================================================
-
-// =========================================================================
-// 4. OUTILS DIVERS (SUPPRESSION ET ENCODAGE)
-// =========================================================================
-async function supprimerPropreProduit(id) {
-    if (confirm("Voulez-vous vraiment supprimer définitivement cet article de la plateforme Ley Pay ?")) {
-        try {
-            const response = await fetch(`/api/produits/${id}`, {
-                method: 'DELETE'
-            });
-            
-            const resultat = await response.json();
-            
-            if (resultat.success) {
-                alert(resultat.message);
-                produits = produits.filter(p => p._id !== id);
-                localStorage.setItem('lp_prods', JSON.stringify(produits));
-                
-                if (typeof afficherCatalogue === "function") afficherCatalogue();
+            if (nomOnglet === 'accueil') {
+                document.getElementById('section-produits').style.display = 'block';
+                document.getElementById('btn-nav-accueil').classList.add('actif');
+            } else if (nomOnglet === 'profil') {
+                document.getElementById('section-compte').style.display = 'block';
+                document.getElementById('btn-nav-profil').classList.add('actif');
+                rafraichirProfilClient();
+            } else if (nomOnglet === 'vendeur') {
+                document.getElementById('section-vendeur').style.display = 'block';
+                document.getElementById('btn-nav-vendeur').classList.add('actif');
                 rafraichirEspaceVendeur();
-            } else {
-                alert("Erreur du serveur : " + resultat.message);
             }
-        } catch (error) {
-            console.error("Erreur :", error);
-            alert("Impossible de joindre le serveur.");
         }
-    }
-}
 
-function convertirFichierEnBase64(fichier) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                try {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    let width = img.width;
-                    let height = img.height;
+        function gererConnexionGlobale() {
+            const email = document.getElementById('auth-email').value.trim();
+            if(!email) { alert("Veuillez entrer une adresse email."); return; }
 
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-                    resolve(dataUrl);
-                } catch (err) {
-                    resolve(event.target.result);
-                }
+            const sessionData = {
+                email: email,
+                nom: email.split('@')[0],
+                boutiqueCreee: false
             };
-            img.onerror = () => {
-                resolve(event.target.result);
-            };
-            img.src = event.target.result;
-        };
-        reader.onerror = () => resolve(""); 
-        reader.readAsDataURL(fichier);
-    });
-}
-    
-async function vendeurAjouterProduit(e) {
-    if (e && typeof e.preventDefault === "function") {
-        e.preventDefault();
-    }
-
-    const elLogistique = document.getElementById('p-logistique');
-    const elNom = document.getElementById('p-nom');
-    const elPrix = document.getElementById('p-prix');
-    const elStock = document.getElementById('p-stock');
-    const elCat = document.getElementById('p-cat');
-    const elImg1 = document.getElementById('p-image1');
-    const elImg2 = document.getElementById('p-image2');
-    const elImg3 = document.getElementById('p-image3');
-    const elImg4 = document.getElementById('p-image4');
-
-    if (!elLogistique || !elNom || !elPrix || !elStock || !elCat || !elImg1 || !elImg2 || !elImg3 || !elImg4) {
-        alert("⚠️ Erreur technique : Un ou plusieurs champs du formulaire sont introuvables.");
-        return;
-    }
-
-    // Vérification de sécurité autonome
-    const boutiqueActiveLocale = localStorage.getItem('lp_vendeur_active') === 'true';
-
-    if (!boutiqueActiveLocale) {
-        alert("⚠️ Accès refusé : Vous devez d'abord remplir le formulaire d'inscription dans l'onglet 'ESPACE VENDEUR' pour pouvoir mettre un produit en vente.");
-        basculerOnglet('vendeur');
-        return; 
-    }
-
-    let modeLog = elLogistique.value;
-    let taux = modeLog === 'FBA' ? 0.10 : 0.05;
-
-    const file1 = elImg1.files[0];
-    const file2 = elImg2.files[0];
-    const file3 = elImg3.files[0];
-    const file4 = elImg4.files[0];
-
-    if (!file1 || !file2 || !file3 || !file4) {
-        alert("Veuillez sélectionner les 4 photos obligatoires avant de valider.");
-        return;
-    }
-
-    let nouveauProduit = null;
-    let emailVendeurActuel = localStorage.getItem('lp_vendeur_email') || "vendeur_independant@leypay.com";
-
-    try {
-        const [base64Img1, base64Img2, base64Img3, base64Img4] = await Promise.all([
-            convertirFichierEnBase64(file1),
-            convertirFichierEnBase64(file2),
-            convertirFichierEnBase64(file3),
-            convertirFichierEnBase64(file4)
-        ]);
-
-        nouveauProduit = {
-            id: Date.now(),
-            nom: elNom.value,
-            prix: parseFloat(elPrix.value),
-            stock: parseInt(elStock.value),
-            cat: elCat.value,
-            logistique: modeLog,
-            commission_taux: taux,
-            img: base64Img1,
-            img_detail1: base64Img2,
-            img_detail2: base64Img3,
-            img_detail3: base64Img4,
-            vendeur: emailVendeurActuel,
-            valide: true
-        };
-
-        const reponse = await fetch('/api/produits', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(nouveauProduit)
-        });
-
-        if (!reponse.ok) {
-            throw new Error("Le serveur en ligne n'a pas pu valider l'enregistrement.");
+            localStorage.setItem('lp_session', JSON.stringify(sessionData));
+            alert("🎉 Connexion réussie !");
+            rafraichirProfilClient();
         }
 
-        if (typeof chargerProduitsDepuisBDD === "function") {
-            await chargerProduitsDepuisBDD();
-        } else {
-            let produitsLocaux = JSON.parse(localStorage.getItem('lp_prods')) || [];
-            produitsLocaux.push(nouveauProduit);
-            localStorage.setItem('lp_prods', JSON.stringify(produitsLocaux));
-            if (typeof afficherCatalogue === "function") afficherCatalogue();
-        }
-        
-        if (e.target && typeof e.target.reset === "function") {
-            e.target.reset();
-        }
-        if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
-        
-        alert("🎉 Succès ! Votre produit est officiellement publié sur la base de données globale de Ley Pay !");
-
-    } catch (erreur) {
-        console.error("Détail de l'erreur détectée :", erreur);
-        let produitsLocaux = JSON.parse(localStorage.getItem('lp_prods')) || [];
-        if (nouveauProduit) {
-            produitsLocaux.push(nouveauProduit);
-            localStorage.setItem('lp_prods', JSON.stringify(produitsLocaux));
-        }
-        
-        if (e.target && typeof e.target.reset === "function") {
-            e.target.reset();
-        }
-        if (typeof afficherCatalogue === "function") afficherCatalogue();
-        if (typeof rafraichirEspaceVendeur === "function") rafraichirEspaceVendeur();
-        
-        alert("⚠️ Note : Enregistré localement sur cet ordinateur car la base de données réseau est momentanément inaccessible.");
-    }
-}
-window.vendeurAjouterProduit = vendeurAjouterProduit;
-        // PANEL ADMINISTRATEUR ROYAL ET SECURISÉ (MOT DE PASSE COMPLET)
-        function verifierCodeAdmin() {
-            let mdp = document.getElementById('admin-secret-key').value;
-            if(mdp === "YDPLATEFORME2026") {
-                document.getElementById('admin-verrou-box').classList.add('cache');
-                document.getElementById('admin-corps').classList.remove('cache');
-                rafraichirEspaceAdmin();
-            } else {
-                alert("Code secret d'administration erroné. Accès refusé ! Only Admin computer allowed.");
-            }
+        function executerDeconnexion() {
+            localStorage.removeItem('lp_session');
+            alert("Vous êtes déconnecté.");
+            basculerOnglet('accueil');
         }
 
-        function rafraichirEspaceAdmin() {
-            // Calcul global des commissions perçues de Ley Pay (Revenu plateforme)
-            let totalRevenuPlateforme = commandes.reduce((sum, c) => sum + c.commission, 0);
-            document.getElementById('admin-revenu-total').textContent = totalRevenuPlateforme.toFixed(2) + " $";
-
-            // Liste de modération avec droit de suppression absolue
-            const listeMod = document.getElementById('admin-liste-tous-produits');
-            listeMod.innerHTML = "";
-            produits.forEach(p => {
-                listeMod.innerHTML += `
-                    <div class="bloc-amazon-profil" style="display:flex; justify-content:space-between; align-items:center;">
-                        <div><strong>${p.nom}</strong> (${p.prix} $) - Vendeur : ${p.vendeur}</div>
-                        <button onclick="adminSupprimerNimporteQuoi(${p.id})" style="background:#cc0c39; color:white; border:none; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">Supprimer ❌</button>
-                    </div>
-                `;
-            });
-
-            // Approbation directe des virements vers Mobile Money
-            const listeRetraits = document.getElementById('admin-liste-retraits-validation');
-            listeRetraits.innerHTML = "";
-            let enAttente = retraits.filter(r => r.statut === "En attente");
-            
-            if(enAttente.length === 0) {
-                listeRetraits.innerHTML = "<p style='color:#888;'>Aucune demande de versement en suspens.</p>";
-            }
-            enAttente.forEach(r => {
-                listeRetraits.innerHTML += `
-                    <div class="bloc-amazon-profil">
-                        Marchand : ${r.vendeur} <br>
-                        Fonds demandés : <strong>${r.montant} $</strong> via ${r.telephone} <br><br>
-                        <button onclick="adminApprouverRetrait('${r.id}')" style="background:#10b981; color:white; border:none; padding:5px 10px; cursor:pointer; font-weight:bold; border-radius:3px;">Confirmer le Transfert Mobile Money ✅</button>
-                    </div>
-                `;
-            });
-        }
-
-        function adminAjouterPropreProduit(e) {
-            e.preventDefault();
-            produits.push({
-                id: Date.now(),
-                nom: "[Ley Pay Officiel] " + document.getElementById('a-nom').value,
-                prix: parseFloat(document.getElementById('a-prix').value),
-                stock: parseInt(document.getElementById('a-stock').value),
-                cat: document.getElementById('a-cat').value,
-                logistique: "FBA",
-                commission_taux: 0.10, // Revenu direct
-                img: document.getElementById('a-img').value,
-                img2: document.getElementById('a-img2').value || "",
-                video: document.getElementById('a-video').value || "",
-                vendeur: "admin@leypay.com", // Votre compte propre
-                valide: true,
-                note: 5.0
-            });
-            localStorage.setItem('lp_prods', JSON.stringify(produits));
-            lancerNotification("Votre propre produit est publié sur la plateforme !");
-            rafraichirEspaceAdmin();
-            afficherCatalogue();
-        }
-
-        function adminSupprimerNimporteQuoi(id) {
-            if(confirm("Confirmez-vous la suppression immédiate et irréversible de cet élément ?")) {
-                produits = produits.filter(p => p.id !== id);
-                localStorage.setItem('lp_prods', JSON.stringify(produits));
-                rafraichirEspaceAdmin();
-                afficherCatalogue();
-                lancerNotification("L'élément a été supprimé de tout le site.");
-            }
-        }
-
-        function adminApprouverRetrait(id) {
-            let r = retraits.find(ret => ret.id === id);
-            if(r) r.statut = "Validé";
-            localStorage.setItem('lp_retrs', JSON.stringify(retraits));
-            rafraichirEspaceAdmin();
-            lancerNotification("Virement validé, le solde du vendeur a été mis à jour.");
-        }
-
-        // MESSAGERIE INTERACTIVE CLIENT/VENDEUR
-        function ouvrirChat(vendeurEmail) {
-            interlocuteurChatActuel = vendeurEmail;
-            document.getElementById('chat-vendeur-box').classList.remove('cache');
-            const corps = document.getElementById('chat-messages-corps');
-            corps.innerHTML = `<p style="color:#888; font-size:11px; text-align:center;">Canal Ley Pay chiffré ouvert avec ${vendeurEmail}</p>`;
-        }
-        function fermerChat() { document.getElementById('chat-vendeur-box').classList.add('cache'); }
-        
-        function envoyerMessageChat() {
-            const input = document.getElementById('chat-input-texte');
-            if(!input.value) return;
-            const corps = document.getElementById('chat-messages-corps');
-            corps.innerHTML += `<p style="margin:5px 0; text-align:right;"><strong>Moi:</strong> ${input.value}</p>`;
-            
-            setTimeout(() => {
-                corps.innerHTML += `<p style="margin:5px 0; color:var(--lp-gold);"><strong>${interlocuteurChatActuel}:</strong> Bien reçu ! Nous planifions la livraison au hub Ley Pay.</p>`;
-                corps.scrollTop = corps.scrollHeight;
-            }, 1000);
-            input.value = "";
-        }
-
-        function basculerFavori(id) {
-            if(favoris.includes(id)) favoris = favoris.filter(f => f !== id);
-            else favoris.push(id);
-            localStorage.setItem('lp_favs', JSON.stringify(favoris));
-            document.getElementById('fav-badge-count').textContent = favoris.length;
-            afficherCatalogue();
-        }
-
-        function rafraichirFavorisVisual() {
-            const grille = document.getElementById('grille-favoris');
-            grille.innerHTML = "";
-            let mesFavs = produits.filter(p => favoris.includes(p.id));
-            if(mesFavs.length === 0) { grille.innerHTML = "<p style='padding:0 40px;'>Votre liste de favoris est actuellement vide.</p>"; return; }
-            afficherCatalogue(mesFavs);
-        }
-        // Nouvelle fonction pour récupérer les produits depuis l'API MySQL avec secours LocalStorage
-async function chargerProduitsDepuisBDD() {
-    try {
-        const reponse = await fetch('/api/produits');
-        if (!reponse.ok) throw new Error("Erreur réseau lors du chargement");
-        
-        // On remplace la variable locale par les vraies données de ta table MySQL
-        produits = await reponse.json(); 
-        localStorage.setItem('lp_prods', JSON.stringify(produits));
-    } catch (erreur) {
-        console.warn("❌ Impossible de charger depuis MySQL. Passage sur le stockage local :", erreur);
-        
-        // Système de secours : Si MySQL échoue, on charge les produits locaux
-        produits = JSON.parse(localStorage.getItem('lp_prods')) || produits;
-    } finally {
-        // Quoi qu'il arrive (succès ou échec réseau), on force l'affichage du catalogue
-        afficherCatalogue(); 
-    }
-}
-
-// 1. Affichage du catalogue avec la quantité (Stock restant)
-function afficherCatalogue(items = produits) {
-    const grille = document.getElementById('grille-produits');
-    grille.innerHTML = "";
-    
-    // Correction ici : accepte les produits créés localement (qui n'ont pas p.valide = false)
-    let itemsActifs = items.filter(p => p.valide !== false);
-
-    if (itemsActifs.length === 0) {
-        grille.innerHTML = "<p>Aucun article trouvé dans cette sélection.</p>";
-        return;
-    }
-
-    itemsActifs.forEach(p => {
-        let estFav = favoris.includes(p.id) ? '❤️' : '🤍';
-        let badgeFulfillment = p.logistique === 'FBA' ? '<span class="badge-fulfillment badge-fba">📦 Certifié Ley Pay (FBA)</span>' : '<span class="badge-fulfillment" style="background:#555; color:#fff;">🚛 Vendeur Expédie (FBM)</span>';
-        
-        // Gestion de l'affichage textuel du stock
-        let texteStock = p.stock > 0 ? `En stock : ${p.stock} unités` : `<span style="color:#ef4444; font-weight:bold;">Rupture de stock</span>`;
-
-        grille.innerHTML += `
-            <div class="produit">
-                <span class="badge-categorie">${p.cat}</span>
-                <button class="badge-favoris" onclick="basculerFavori(${p.id})">${estFav}</button>
-                <img src="${p.img}" class="img-produit" onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;" title="Cliquez pour zoomer">
+        function rafraichirProfilClient() {
+            const user = JSON.parse(localStorage.getItem('lp_session'));
+            if(user) {
+                document.getElementById('bloc-authentification').style.display = 'none';
+                document.getElementById('info-profil-connecte').style.display = 'block';
+                document.getElementById('txt-nom-client').textContent = user.nom;
                 
-                <div class="produit-info">
-                    <h3 onclick="voirDetailsFiche(${p.id})" style="cursor:pointer;">${p.nom}</h3>
-                    <p style="margin: 3px 0; font-size:12px; color:#aa8413;">⭐ ${p.note || '5.0'} / 5</p>
-                    ${badgeFulfillment}
-                    <p style="margin: 5px 0; font-size:13px; color:#666; font-weight:bold;">${texteStock}</p>
-                    <div class="prix" style="margin-top:5px;">${p.prix.toFixed(2)} $</div>
-                    <div class="vendeur-nom-label">Par : ${p.vendeur === 'admin@leypay.com' ? 'Ley Pay (Officiel)' : p.vendeur}</div>
-                </div>
+                document.getElementById('btn-mettre-en-vente-client').onclick = () => {
+                    basculerOnglet('vendeur');
+                };
+            } else {
+                document.getElementById('bloc-authentification').style.display = 'block';
+                document.getElementById('info-profil-connecte').style.display = 'none';
+            }
+        }
 
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <button class="btn-acheter" style="flex:2;" onclick="ajouterPanier(${p.id})">Panier 🛒</button>
-                    <button class="btn-acheter" style="flex:1; background:#111; border:1px solid var(--lp-gold); color:white;" onclick="ouvrirChat('${p.vendeur}')">💬</button>
-                </div>
-            </div>
-        `;
-    });
-}
-
-// 2. Contrôle des stocks lors de l'ajout
-function ajouterPanier(id) {
-    let prod = produits.find(p => p.id === id);
-    if (!prod) return;
-    
-    // On vérifie ce qui est déjà dans le panier pour ne pas dépasser le stock réel
-    let dansPanier = panier.find(item => item.id === id);
-    let quantiteActuelleDansPanier = dansPanier ? dansPanier.qty : 0;
-
-    if (prod.stock <= quantiteActuelleDansPanier) { 
-        alert(`Désolé, impossible d'ajouter plus d'unités. Stock maximal atteint (${prod.stock}).`); 
-        return; 
-    }
-    
-    if (dansPanier) dansPanier.qty++; else panier.push({ ...prod, qty: 1 });
-    
-    lancerNotification(`"${prod.nom}" ajouté à votre panier.`);
-    calculerPanierTotaux();
-}
-        // 3. Calcul des totaux et affichage dynamique du panier avec bouton de suppression unitaire
-        function calculerPanierTotaux() {
-            let total = panier.reduce((sum, item) => sum + (item.prix * item.qty), 0);
-            document.getElementById('panier-total-prix').textContent = total.toFixed(2) + " $";
-            document.getElementById('panier-badge').textContent = panier.reduce((sum, i) => sum + i.qty, 0);
+        function rafraichirEspaceVendeur() {
+            const user = JSON.parse(localStorage.getItem('lp_session'));
             
-            const corps = document.getElementById('panier-items');
-            corps.innerHTML = "";
-            
-            if(panier.length === 0) {
-                corps.innerHTML = "<p style='text-align:center; color:#888; margin-top:20px;'>Votre panier est vide.</p>";
+            const blocAuthReq = document.getElementById('vendeur-auth-requis');
+            const blocFormInsc = document.getElementById('formulaire-inscription-boutique');
+            const blocPin = document.getElementById('vendeur-verrouille-pin');
+            const corpsVendeur = document.getElementById('corps-espace-vendeur');
+
+            blocAuthReq.style.display = 'none';
+            blocFormInsc.style.display = 'none';
+            blocPin.style.display = 'none';
+            corpsVendeur.style.display = 'none';
+
+            if (!user) {
+                blocAuthReq.style.display = 'block';
                 return;
             }
 
-            panier.forEach(item => {
-                corps.innerHTML += `
-                    <div class="item-panier" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed #eee;">
-                        <div>
-                            <strong>${item.nom}</strong><br>
-                            <span style="font-size:12px; color:var(--lp-gold);">${item.prix} $ x ${item.qty}</span>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-weight:bold;">${(item.prix * item.qty).toFixed(2)} $</span>
-                            <button onclick="retirerUnProduit(${item.id})" style="background:#f3f4f6; border:1px solid #ccc; border-radius:4px; width:25px; height:25px; cursor:pointer; font-weight:bold;" title="Retirer 1 unité">-</button>
-                        </div>
-                    </div>
-                `;
-            });
+            if (!user.boutiqueCreee) {
+                blocFormInsc.style.display = 'block';
+                return;
+            }
+
+            blocPin.style.display = 'block';
         }
 
-        // 4. NOUVEAUTÉ : Retirer une seule unité d'un produit du panier
-        function retirerUnProduit(id) {
-            let itemIndex = panier.findIndex(item => item.id === id);
-            if(itemIndex === -1) return;
+        function crearBoutiqueRapideManuel() {
+            const nomB = document.getElementById('vendeur-boutique-nom').value.trim();
+            if(!nomB) { alert("Donnez un nom à votre boutique."); return; }
 
-            if(panier[itemIndex].qty > 1) {
-                panier[itemIndex].qty--; // On baisse la quantité de 1
-                lancerNotification("Une unité a été retirée.");
+            const user = JSON.parse(localStorage.getItem('lp_session'));
+            if(user) {
+                user.boutiqueCreee = true;
+                localStorage.setItem('lp_session', JSON.stringify(user));
+                alert("🎉 Boutique '" + nomB + "' créée ! Étape de sécurité requise.");
+                rafraichirEspaceVendeur();
+            }
+        }
+
+        function verifierPinVendeur() {
+            const pin = document.getElementById('input-pin-connexion').value;
+            if(pin.length === 6) {
+                document.getElementById('vendeur-verrouille-pin').style.display = 'none';
+                document.getElementById('corps-espace-vendeur').style.display = 'block';
             } else {
-                panier.splice(itemIndex, 1); // Si la quantité tombe à 0, on enlève complètement le produit du tableau
-                lancerNotification("Produit retiré du panier.");
-            }
-            calculerPanierTotaux();
-        }
-
-        // 5. NOUVEAUTÉ : Vider entièrement le panier d'un coup
-        function viderToutLePanier() {
-            if(panier.length === 0) return;
-            if(confirm("Voulez-vous vraiment vider tout votre panier ?")) {
-                panier = [];
-                calculerPanierTotaux();
-                lancerNotification("Le panier a été vidé.");
+                alert("Veuillez saisir un code PIN valide à 6 chiffres.");
             }
         }
 
-        // Lancement initial du catalogue général
-        chargerProduitsDepuisBDD();
-        document.getElementById('fav-badge-count').textContent = favoris.length;
-        // =========================================================================
-// GESTION DYNAMIQUE DE L'INSCRIPTION ET DE L'ESPACE VENDEUR (LEY BUSINESS)
-// =========================================================================
-
-/**
- * Étape 3 : Sélection dynamique de la catégorie de la boutique
- */
-function selectionnerCategorieForm(categorie) {
-    // Supprime la classe active de tous les boutons de catégorie
-    document.querySelectorAll('.btn-cat-select').forEach(btn => btn.classList.remove('active'));
-    
-    // Ajoute la classe active au bouton cliqué
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
-    
-    // Stocke la valeur choisie dans le champ masqué pour l'envoi du formulaire
-    document.getElementById('boutique-categorie-input').value = categorie;
-    console.log("Catégorie sélectionnée :", categorie);
-}
-
-/**
- * Étape 4 : Basculement des modes de paiement avec affichage contextuel de Mobile Money
- */
-function changerMethodePaiement(methode) {
-    // Modifie le style actif sur les boutons
-    document.querySelectorAll('.btn-pay-methode').forEach(btn => btn.classList.remove('active'));
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
-    
-    // Met à jour la valeur finale
-    document.getElementById('paiement-methode-input').value = methode;
-    
-    // Affiche ou masque dynamiquement le sous-formulaire Mobile Money
-    const momoBloc = document.getElementById('details-momo-bloc');
-    if (methode === 'Mobile Money') {
-        momoBloc.style.display = 'block';
-        // Rendre les champs internes requis si Mobile Money est choisi
-        momoBloc.querySelectorAll('input[type="tel"]').forEach(input => input.required = true);
-    } else {
-        momoBloc.style.display = 'none';
-        momoBloc.querySelectorAll('input[type="tel"]').forEach(input => input.required = false);
-    }
-    console.log("Moyen de paiement configuré sur :", methode);
-}
-
-/**
- * Étape 5 : Gestion intelligente de la saisie fluide du Code PIN (6 chiffres distincts)
- */
-document.querySelectorAll('.pin-digit').forEach((input, index, listeChamps) => {
-    // Événement d'écriture : passe automatiquement au champ suivant
-    input.addEventListener('input', () => {
-        if (input.value.length === 1 && index < listeChamps.length - 1) {
-            listeChamps[index + 1].focus();
-        }
-        
-        // Calcule en temps réel le code PIN concaténé complet
-        let codePinConcatene = "";
-        listeChamps.forEach(champ => codePinConcatene += champ.value);
-        document.getElementById('secure-pin-final').value = codePinConcatene;
-    });
-
-    // Événement de retour arrière : retourne au champ précédent si vide
-    input.addEventListener('keydown', (e) => {
-        if (e.key === "Backspace" && input.value.length === 0 && index > 0) {
-            listeChamps[index - 1].focus();
-        }
-    });
-});
-
-/**
- * Étape 6 : Interception de la soumission du formulaire et validation stricte
- */
-function gererInscriptionVendeur(event) {
-    event.preventDefault(); // Empêche le rechargement forcé de la page
-
-    // Validation de sécurité : Vérification de la longueur du code PIN à 6 chiffres
-    const codePinFinal = document.getElementById('secure-pin-final').value;
-    if (!codePinFinal || codePinFinal.length !== 6) {
-        alert("⚠️ Erreur de sécurité : Veuillez saisir un code PIN complet à 6 chiffres.");
-        return;
-    }
-
-    // Récupération des données pour simulation ou envoi API
-    const nomBoutique = document.querySelector('input[placeholder="Entrez le nom de votre boutique"]').value;
-    const categorie = document.getElementById('boutique-categorie-input').value;
-    const paiement = document.getElementById('paiement-methode-input').value;
-
-    // Notification de succès éclatante
-    alert("🎉 Félicitations ! Votre boutique '" + nomBoutique + "' (" + categorie + ") a été créée avec succès sur LEY Business.\nMode de versement configuré : " + paiement);
-    
-    // Transition d'affichage vers l'Espace Vendeur en direct
-    const formulaireSection = document.getElementById('formulaire-inscription-boutique');
-    const espaceVendeurSection = document.getElementById('corps-espace-vendeur'); 
-    
-    if(formulaireSection && espaceVendeurSection) {
-        formulaireSection.style.display = 'none';
-        espaceVendeurSection.style.display = 'block'; // Affiche votre tableau de bord
-    }
-}
-// ==========================================
-// 1. FONCTION : CRÉATION DE LA BOUTIQUE
-// ==========================================
-async function creerBoutiqueRapide(event) {
-    event.preventDefault();
-    try {
-        const nom = document.getElementById('vendeur-nom')?.value.trim() || "";
-        const boutiqueNom = document.getElementById('vendeur-boutique-nom')?.value.trim() || "";
-        const emailBoutique = document.getElementById('vendeur-email')?.value.trim() || "";
-        const prefixe = document.getElementById('vendeur-prefixe')?.value || "+243";
-        const telephoneSaisi = document.getElementById('vendeur-telephone')?.value.trim() || "";
-        const ville = document.getElementById('vendeur-ville')?.value.trim() || "";
-        const vendeurPin = document.getElementById('vendeur-pin')?.value.trim() || "";
-
-        const telephoneComplet = prefixe + telephoneSaisi.replace(/\s+/g, '');
-
-        const localUser = JSON.parse(localStorage.getItem('lp_session'));
-        if (!localUser || !localUser.email) {
-            alert("Erreur : Vous devez être connecté à votre compte client.");
-            return;
-        }
-
-        const payload = {
-            nom,
-            boutiqueNom,
-            telephone: telephoneComplet,
-            ville,
-            vendeurPin,
-            email: localUser.email
-        };
-
-        const response = await fetch('/api/vendeurs/inscription', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        document.addEventListener("DOMContentLoaded", () => {
+            basculerOnglet('accueil');
         });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert("🎉 Inscription réussie ! Saisissez votre PIN pour ouvrir votre espace.");
-            localUser.boutiqueCreee = true;
-            localStorage.setItem('lp_session', JSON.stringify(localUser));
-            
-            // Masquer le formulaire et afficher la boîte de verrouillage PIN
-            document.getElementById('formulaire-inscription-boutique')?.classList.add('cache');
-            document.getElementById('vendeur-verrouille-pin')?.classList.remove('cache');
-        } else {
-            alert(data.message || "Erreur lors de la validation.");
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Erreur de connexion avec le serveur.");
-    }
-}
-
-// ==========================================
-// 2. FONCTION : DÉVERROUILLAGE PAR PIN (Ton bouton bloqué)
-// ==========================================
-async function verifierPinVendeur() {
-    // 1. Récupérer le PIN tapé par l'utilisateur
-    const pinSaisi = document.getElementById('input-pin-connexion')?.value;
-    
-    // 2. Récupérer l'email de l'utilisateur stocké dans sa session locale
-    const localUser = JSON.parse(localStorage.getItem('lp_session')) || {};
-    const emailUtilisateur = localUser.email || "";
-
-    if (!pinSaisi) {
-        alert("Veuillez saisir votre code PIN.");
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/vendeurs/verifier-sms', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: emailUtilisateur, // Envoie l'email pour que le serveur sache qui se connecte
-                code: pinSaisi          // Envoie le code PIN saisi
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert("🔑 " + data.message);
-            
-            // Masquer la boîte de verrouillage PIN
-            document.getElementById('vendeur-verrouille-pin')?.classList.add('cache');
-            
-            // Afficher le Central Vendeur
-            document.getElementById('corps-espace-vendeur')?.classList.remove('cache');
-        } else {
-            alert(data.message);
-        }
-    } catch (error) {
-        console.error("Erreur de communication :", error);
-        alert("Erreur réseau lors de la vérification.");
-    }
-}
-async function soumettreFormulaireBoutiqueComplete() {
-    // 1. Récupération des mots de passe pour vérification préliminaire
-    const password = document.getElementById('compte-password').value;
-    const passwordConf = document.getElementById('compte-password-conf').value;
-
-    if (password !== passwordConf) {
-        alert("⚠️ Les deux mots de passe ne correspondent pas.");
-        return;
-    }
-
-    // 2. Vérification des cases obligatoires (Étape 6)
-    if (!document.getElementById('cond-legaux').checked || 
-        !document.getElementById('cond-vente').checked || 
-        !document.getElementById('confirme-moyen-paiement').checked) {
-        alert("⚠️ Veuillez accepter toutes les conditions et confirmer votre moyen de paiement.");
-        return;
-    }
-
-    // 3. Construction du Payload complet avec toutes les informations récoltées
-    const payload = {
-        nom: document.getElementById('vendeur-nom').value,
-        email: document.getElementById('vendeur-email').value,
-        password: password,
-        estVendeur: true,
-        nomBoutique: document.getElementById('boutique-nom').value,
-        telephone: document.getElementById('vendeur-pays').value + document.getElementById('vendeur-tel').value,
-        pays: "Congo (RDC)",
-        ville: document.getElementById('vendeur-ville').value,
-        titulaireCompte: document.getElementById('paiement-titulaire').value,
-        reseauMobileMoney: document.getElementById('paiement-reseau').value,
-        numeroMobileMoney: document.getElementById('paiement-numero').value
-    };
-
-    try {
-        // 4. Envoi des données vers le serveur backend
-        const response = await fetch('/api/vendeurs/inscription', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        
-        // 5. Traitement du retour du serveur
-        if (data.success) {
-            alert("Compte et Boutique créés avec succès !");
-
-            // Enregistrement de la session LOCALE d'abord (avant de recharger)
-            localStorage.setItem('lp_session', JSON.stringify({
-                email: document.getElementById('vendeur-email').value,
-                boutiqueCreee: true
-            }));
-
-            // Masquer la boîte si nécessaire
-            if (document.getElementById('auth-box')) {
-                document.getElementById('auth-box').classList.add('cache');
-            }
-
-            // On recharge la page pour appliquer la session proprement
-            window.location.reload();
-
-        } else {
-            alert("Erreur : " + data.message);
-        }
-
-    } catch (error) {
-        // Gestion de sécurité en cas de coupure de connexion ou problème serveur
-        console.error("Erreur lors de la soumission :", error);
-        alert("Impossible de contacter le serveur.");
-    }
-}
-// 1. Fonction pour afficher/masquer le formulaire de la boutique
-
-function basculerChampsBoutique() {
-    const veutVendre = document.getElementById('choix-devenir-vendeur').checked;
-    const blocBoutique = document.getElementById('bloc-champs-boutique-optionnel');
-    
-    if (blocBoutique) {
-        if (veutVendre) {
-            blocBoutique.classList.remove('cache');
-        } else {
-            blocBoutique.classList.add('cache');
-        }
-    }
-}
-
-
-function selectionnerModePaiement(mode) {
-    // 1. Récupération des blocs de formulaire
-    const blocMobile = document.getElementById('details-paiement-mobile');
-    const blocBanque = document.getElementById('details-paiement-banque');
-    const blocPaypal = document.getElementById('details-paiement-paypal');
-    
-    // 2. Récupération des boutons pour changer leur style visuel
-    const btnMobile = document.getElementById('btn-pay-mobile');
-    const btnBanque = document.getElementById('btn-pay-banque');
-    const btnPaypal = document.getElementById('btn-pay-paypal');
-
-    // Réinitialisation des affichages
-    blocMobile.classList.add('cache');
-    blocBanque.classList.add('cache');
-    blocPaypal.classList.add('cache');
-    btnMobile.style.borderColor = "#ccc";
-    btnBanque.style.borderColor = "#ccc";
-    btnPaypal.style.borderColor = "#ccc";
-
-    // Activation du mode sélectionné
-    if (mode === 'mobile') {
-        blocMobile.classList.remove('cache');
-        btnMobile.style.borderColor = "#D4AF37";
-    } else if (mode === 'banque') {
-        blocBanque.classList.remove('cache');
-        btnBanque.style.borderColor = "#D4AF37";
-    } else if (mode === 'paypal') {
-        blocPaypal.classList.remove('cache');
-        btnPaypal.style.borderColor = "#D4AF37";
-    }
-}
-// =========================================================================
-// 1. ROUTEUR D'AUTHENTIFICATION CENTRAL (Appelé par le formulaire "Mon Profil")
-// =========================================================================
-function gererActionAuthentification() {
-    const ongletLogin = document.getElementById('tab-login');
-    
-    if (ongletLogin && ongletLogin.classList.contains('actif')) {
-        // Mode Connexion
-        gererConnexionGlobale();
-    } else {
-        // Mode Inscription
-        gererInscriptionGlobale();
-    }
-}
-
-// =========================================================================
-// 2. LOGIQUE DE CONNEXION GENERALE (Onglet Mon Profil)
-// =========================================================================
-async function gererConnexionGlobale() {
-    const email = document.getElementById('auth-email').value; 
-    const password = document.getElementById('auth-password').value; 
-
-    // On utilise "mdp" pour correspondre exactement à ce qu'attend ton serveur
-    const payload = { email, mdp: password };
-
-    try {
-        // Changement de l'adresse pour pointer sur '/api/connexion'
-        const response = await fetch('/api/connexion', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert("🎉 Connexion réussie !");
-
-            localStorage.setItem('lp_session', JSON.stringify({
-                email: data.user.email,
-                nom: data.user.nom,
-                boutiqueCreee: data.user.boutiqueCreee
-            }));
-
-            window.location.reload();
-        } else {
-            alert("Erreur : " + data.message);
-        }
-    } catch (error) {
-        console.error("Erreur de connexion :", error);
-        alert("Impossible de contacter le serveur.");
-    }
-}
-
-// =========================================================================
-// 3. LOGIQUE D'INSCRIPTION GENERALE
-// =========================================================================
-async function gererInscriptionGlobale() {
-    const nom = document.getElementById('auth-nom')?.value || "";
-    const email = document.getElementById('auth-email')?.value || "";
-    const password = document.getElementById('auth-password')?.value || ""; 
-    const passwordConf = document.getElementById('auth-password-conf')?.value || "";
-    const veutVendre = document.getElementById('choix-devenir-vendeur')?.checked || false;
-
-    if (password !== passwordConf) {
-        alert("⚠️ Les deux mots de passe ne correspondent pas.");
-        return;
-    }
-
-    const payload = { nom, email, password, estVendeur: veutVendre };
-
-    try {
-        const response = await fetch('/api/vendeurs/inscription', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        if (data.success) {
-            alert("🎉 Compte créé avec succès !");
-            localStorage.setItem('lp_session', JSON.stringify({ email: payload.email, nom: payload.nom, boutiqueCreee: veutVendre }));
-            window.location.reload();
-        } else {
-            alert("Erreur : " + data.message);
-        }
-    } catch (error) {
-        console.error("Erreur d'inscription :", error);
-        alert("Impossible de contacter le serveur.");
-    }
-}
-// =========================================================================
-// 1. MISE À JOUR DU PROFIL CLIENT (Fixé pour éviter la disparition)
-// =========================================================================
-function rafraichirProfilClient() {
-    console.log("🔹 [Ley Pay Log] Rafraîchissement du profil client...");
-    const blocAuth = document.getElementById('bloc-authentification');
-    const infoProfil = document.getElementById('info-profil-connecte');
-    const txtNom = document.getElementById('txt-nom-client');
-    const btnMettreEnVente = document.getElementById('btn-mettre-en-vente-client');
-
-    let sessionUser = null;
-    try {
-        sessionUser = JSON.parse(localStorage.getItem('lp_session'));
-    } catch(e) {
-        console.error("Erreur localStorage Profil", e);
-    }
-
-    if (sessionUser) {
-        if (blocAuth) blocAuth.style.display = 'none';
-        if (infoProfil) infoProfil.style.display = 'block';
-        if (txtNom) txtNom.textContent = sessionUser.nom || sessionUser.email;
-        
-        if (btnMettreEnVente) {
-            btnMettreEnVente.style.display = 'block';
-            btnMettreEnVente.onclick = function(event) {
-                event.preventDefault();
-                basculerOnglet('vendeur');
-            };
-        }
-    } else {
-        if (blocAuth) blocAuth.style.display = 'block';
-        if (infoProfil) infoProfil.style.display = 'none';
-        if (btnMettreEnVente) btnMettreEnVente.style.display = 'none';
-    }
-}
-
-// =========================================================================
-// 2. ÉCOUTEURS D'ÉVÉNEMENTS ET ROUTAGE CORRIGÉ
-// =========================================================================
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 DOM chargé. Initialisation des composants Ley Pay...");
-    
-    // On lance les deux vérifications au démarrage
-    rafraichirProfilClient();
-    rafraichirEspaceVendeur();
-
-    // Gestion universelle des clics sur les onglets du menu de navigation
-    document.addEventListener("click", (event) => {
-        const texteBouton = event.target.textContent || "";
-        
-        // Clic sur l'onglet ESPACE VENDEUR
-        if (texteBouton.toLowerCase().includes("vendeur")) {
-            console.log("Menu: Clic sur Espace Vendeur");
-            
-            // On force l'affichage des conteneurs
-            const sectionVendeur = document.getElementById('section-vendeur');
-            if (sectionVendeur) sectionVendeur.style.display = 'block';
-            
-            // On masque le profil pour ne pas superposer
-            const sectionCompte = document.getElementById('section-compte');
-            if (sectionCompte) sectionCompte.style.display = 'none';
-
-            rafraichirEspaceVendeur();
-        }
-        
-        // Clic sur l'onglet MON PROFIL
-        if (texteBouton.toLowerCase().includes("profil") || texteBouton.toLowerCase().includes("compte")) {
-            console.log("Menu: Clic sur Mon Profil");
-            
-            const sectionCompte = document.getElementById('section-compte');
-            if (sectionCompte) sectionCompte.style.display = 'block';
-            
-            const sectionVendeur = document.getElementById('section-vendeur');
-            if (sectionVendeur) sectionVendeur.style.display = 'none';
-
-            rafraichirProfilClient();
-        }
-    });
-});
- </script> 
-
+    </script>
 </body>
 </html>
