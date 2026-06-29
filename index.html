@@ -1566,41 +1566,21 @@ async function gererConnexionGlobale() {
 }
 
 // =========================================================================
-// 3. LOGIQUE D'INSCRIPTION GENERALE (Onglet Mon Profil - Client ou Vendeur)
+// 3. LOGIQUE D'INSCRIPTION GENERALE
 // =========================================================================
 async function gererInscriptionGlobale() {
-    const nom = document.getElementById('auth-nom').value;
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value; 
-    const passwordConf = document.getElementById('auth-password-conf').value;
-    const veutVendre = document.getElementById('choix-devenir-vendeur').checked;
+    const nom = document.getElementById('auth-nom')?.value || "";
+    const email = document.getElementById('auth-email')?.value || "";
+    const password = document.getElementById('auth-password')?.value || ""; 
+    const passwordConf = document.getElementById('auth-password-conf')?.value || "";
+    const veutVendre = document.getElementById('choix-devenir-vendeur')?.checked || false;
 
     if (password !== passwordConf) {
         alert("⚠️ Les deux mots de passe ne correspondent pas.");
         return;
     }
 
-    const payload = {
-        nom: nom,
-        email: email,
-        password: password,
-        estVendeur: veutVendre 
-    };
-
-    if (veutVendre) {
-        payload.nomBoutique = document.getElementById('boutique-nom').value;
-        payload.telephone = document.getElementById('vendeur-pays').value + document.getElementById('vendeur-tel').value;
-        payload.pays = "Congo (RDC)";
-        payload.ville = document.getElementById('vendeur-ville').value;
-        payload.titulaireCompte = document.getElementById('paiement-titulaire').value;
-        
-        payload.reseauMobileMoney = document.getElementById('paiement-reseau')?.value || null;
-        payload.numeroMobileMoney = document.getElementById('paiement-numero')?.value || null;
-        payload.nomBanque = document.getElementById('paiement-banque-nom')?.value || null;
-        payload.iban = document.getElementById('paiement-iban')?.value || null;
-        payload.swift = document.getElementById('paiement-swift')?.value || null;
-        payload.paypalEmail = document.getElementById('paiement-paypal-email')?.value || null;
-    }
+    const payload = { nom, email, password, estVendeur: veutVendre };
 
     try {
         const response = await fetch('/api/vendeurs/inscription', {
@@ -1610,16 +1590,9 @@ async function gererInscriptionGlobale() {
         });
 
         const data = await response.json();
-        
         if (data.success) {
-            alert(veutVendre ? "🎉 Compte et Boutique créés avec succès !" : "🎉 Compte créé avec succès !");
-            
-            localStorage.setItem('lp_session', JSON.stringify({
-                email: payload.email,
-                nom: payload.nom,
-                boutiqueCreee: veutVendre 
-            }));
-
+            alert("🎉 Compte créé avec succès !");
+            localStorage.setItem('lp_session', JSON.stringify({ email: payload.email, nom: payload.nom, boutiqueCreee: veutVendre }));
             window.location.reload();
         } else {
             alert("Erreur : " + data.message);
@@ -1633,29 +1606,30 @@ async function gererInscriptionGlobale() {
 // =========================================================================
 // 4. ROUTEUR ET VERIFICATION DE L'ESPACE VENDEUR
 // =========================================================================
-
 async function rafraichirEspaceVendeur() {
+    console.log("⚡ [Ley Pay Log] Appel de rafraichirEspaceVendeur()...");
     const sectionVendeur = document.getElementById('section-vendeur');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
     const req = document.getElementById('vendeur-auth-requis');
-    
-    // On récupère le formulaire s'il existe, sinon on cible la boîte d'authentification/inscription
-    const formInsc = document.getElementById('formulaire-inscription-boutique') || document.getElementById('bloc-champs-boutique-optionnel');
-
-    let localUser = JSON.parse(localStorage.getItem('lp_session'));
 
     if (sectionVendeur) {
         sectionVendeur.classList.remove('cache');
         sectionVendeur.style.display = 'block';
     }
 
-    // Étape A : Si pas connecté globalement
+    let localUser = null;
+    try {
+        localUser = JSON.parse(localStorage.getItem('lp_session'));
+    } catch(e) {
+        console.error("Erreur localStorage", e);
+    }
+
     if (!localUser) {
-        if (req) { req.classList.remove('cache'); req.style.display = 'block'; }
-        if (formInsc) { formInsc.classList.add('cache'); formInsc.style.display = 'none'; }
-        if (corp) { corp.classList.add('cache'); corp.style.display = 'none'; }
-        if (blocPin) { blocPin.classList.add('cache'); blocPin.style.display = 'none'; }
+        console.log("-> Mode: Non connecté.");
+        if (req) req.style.display = 'block';
+        if (corp) corp.style.display = 'none';
+        if (blocPin) blocPin.style.display = 'none';
         return;
     }
 
@@ -1667,77 +1641,40 @@ async function rafraichirEspaceVendeur() {
         });
         const statut = await response.json();
 
-        // Étape B : Connecté mais n'a pas encore créé sa boutique
-        if (!statut.aUneBoutique && !localUser.boutiqueCreee) {
-            if (req) { req.classList.add('cache'); req.style.display = 'none'; }
-            if (formInsc) { formInsc.classList.remove('cache'); formInsc.style.display = 'block'; }
-            if (corp) { corp.classList.add('cache'); corp.style.display = 'none'; }
-            
-            // Si pas de boutique, on lui montre l'écran pour saisir son PIN ou créer sa boutique
-            if (blocPin) { blocPin.classList.remove('cache'); blocPin.style.display = 'block'; }
-            return;
-        }
-
-        // Étape C : Une boutique existe, on retire les formulaires d'accès/création
-        if (formInsc) { formInsc.classList.add('cache'); formInsc.style.display = 'none'; }
-        if (req) { req.classList.add('cache'); req.style.display = 'none'; }
-
-        // Étape D : Gestion du Code PIN de sécurité du tableau de bord
         if (statut.estVerrouille) {
-            if (blocPin) { blocPin.classList.remove('cache'); blocPin.style.display = 'block'; }
-            if (corp) { corp.classList.add('cache'); corp.style.display = 'none'; }
+            if (blocPin) blocPin.style.display = 'block';
+            if (corp) corp.style.display = 'none';
         } else {
-            if (blocPin) { blocPin.classList.add('cache'); blocPin.style.display = 'none'; }
-            
-            // 🟢 FORCE l'affichage du Central Vendeur (corps-espace-vendeur)
-            if (corp) { 
-                corp.classList.remove('cache'); 
-                corp.style.display = 'block'; 
-            }
+            if (blocPin) blocPin.style.display = 'none';
+            if (corp) corp.style.display = 'block';
         }
-
+        if (req) req.style.display = 'none';
     } catch (error) {
-        console.error("Erreur de statut vendeur :", error);
-        // Secours d'affichage direct au cas où
-        if (corp) { corp.classList.remove('cache'); corp.style.display = 'block'; }
+        console.warn("Mode sans échec activé suite à une absence de réponse serveur.");
+        if (corp) corp.style.display = 'block';
+        if (req) req.style.display = 'none';
     }
 }
+
 // =========================================================================
-// TESTEUR DE SECOURS - FORCE L'AFFICHAGE DE L'ESPACE VENDEUR
+// 5. INTERCEPTEURS ET LISTENERS AUTOMATIQUES
 // =========================================================================
-function forcerAffichageVendeurManuel() {
-    console.log("Démarrage du script de secours...");
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("🚀 DOM entièrement chargé et prêt !");
     
-    const sectionVendeur = document.getElementById('section-vendeur');
-    const corpsVendeur = document.getElementById('corps-espace-vendeur');
-    const authRequis = document.getElementById('vendeur-auth-requis');
-    const blocPin = document.getElementById('vendeur-verrouille-pin');
+    // Premier rafraîchissement au démarrage pour le profil
+    if (typeof rafraichirProfilClient === 'function') rafraichirProfilClient();
 
-    // 1. On force l'affichage de la section conteneur principale
-    if (sectionVendeur) {
-        sectionVendeur.classList.remove('cache');
-        sectionVendeur.style.setProperty('display', 'block', 'important');
-        console.log("Section Vendeur principale forcée à 'block'.");
-    } else {
-        console.error("Élément #section-vendeur introuvable.");
-    }
-
-    // 2. On affiche le tableau de bord directement en contournant les filtres
-    if (corpsVendeur) {
-        corpsVendeur.classList.remove('cache');
-        corpsVendeur.style.setProperty('display', 'block', 'important');
-        console.log("Corps de l'espace vendeur forcé à 'block'.");
-    }
-
-    // 3. On masque les écrans de verrouillage pour le test
-    if (authRequis) authRequis.style.display = 'none';
-    if (blocPin) blocPin.style.display = 'none';
-}
-
-// Lancement automatique après 3 secondes pour voir si l'interface apparaît
-setTimeout(() => {
-    console.log("Exécution du test d'affichage forcé...");
-    forcerAffichageVendeurManuel();
-}, 3000);
+    // Gestion du clic sur l'onglet Espace Vendeur
+    document.addEventListener("click", (event) => {
+        const texteBouton = event.target.textContent || "";
+        if (texteBouton.toLowerCase().includes("vendeur")) {
+            console.log("Clic détecté sur l'onglet Vendeur.");
+            setTimeout(() => {
+                rafraichirEspaceVendeur();
+            }, 100);
+        }
+    });
+});
 </script> </body>
 </html>
