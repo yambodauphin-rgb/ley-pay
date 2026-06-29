@@ -1602,79 +1602,86 @@ async function gererInscriptionGlobale() {
         alert("Impossible de contacter le serveur.");
     }
 }
-
 // =========================================================================
-// 4. ROUTEUR ET VERIFICATION DE L'ESPACE VENDEUR
+// 1. MISE À JOUR DU PROFIL CLIENT (Fixé pour éviter la disparition)
 // =========================================================================
-async function rafraichirEspaceVendeur() {
-    console.log("⚡ [Ley Pay Log] Appel de rafraichirEspaceVendeur()...");
-    const sectionVendeur = document.getElementById('section-vendeur');
-    const corp = document.getElementById('corps-espace-vendeur');
-    const blocPin = document.getElementById('vendeur-verrouille-pin');
-    const req = document.getElementById('vendeur-auth-requis');
+function rafraichirProfilClient() {
+    console.log("🔹 [Ley Pay Log] Rafraîchissement du profil client...");
+    const blocAuth = document.getElementById('bloc-authentification');
+    const infoProfil = document.getElementById('info-profil-connecte');
+    const txtNom = document.getElementById('txt-nom-client');
+    const btnMettreEnVente = document.getElementById('btn-mettre-en-vente-client');
 
-    if (sectionVendeur) {
-        sectionVendeur.classList.remove('cache');
-        sectionVendeur.style.display = 'block';
-    }
-
-    let localUser = null;
+    let sessionUser = null;
     try {
-        localUser = JSON.parse(localStorage.getItem('lp_session'));
+        sessionUser = JSON.parse(localStorage.getItem('lp_session'));
     } catch(e) {
-        console.error("Erreur localStorage", e);
+        console.error("Erreur localStorage Profil", e);
     }
 
-    if (!localUser) {
-        console.log("-> Mode: Non connecté.");
-        if (req) req.style.display = 'block';
-        if (corp) corp.style.display = 'none';
-        if (blocPin) blocPin.style.display = 'none';
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/vendeur/statut', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: localUser.email })
-        });
-        const statut = await response.json();
-
-        if (statut.estVerrouille) {
-            if (blocPin) blocPin.style.display = 'block';
-            if (corp) corp.style.display = 'none';
-        } else {
-            if (blocPin) blocPin.style.display = 'none';
-            if (corp) corp.style.display = 'block';
+    if (sessionUser) {
+        if (blocAuth) blocAuth.style.display = 'none';
+        if (infoProfil) infoProfil.style.display = 'block';
+        if (txtNom) txtNom.textContent = sessionUser.nom || sessionUser.email;
+        
+        if (btnMettreEnVente) {
+            btnMettreEnVente.style.display = 'block';
+            btnMettreEnVente.onclick = function(event) {
+                event.preventDefault();
+                basculerOnglet('vendeur');
+            };
         }
-        if (req) req.style.display = 'none';
-    } catch (error) {
-        console.warn("Mode sans échec activé suite à une absence de réponse serveur.");
-        if (corp) corp.style.display = 'block';
-        if (req) req.style.display = 'none';
+    } else {
+        if (blocAuth) blocAuth.style.display = 'block';
+        if (infoProfil) infoProfil.style.display = 'none';
+        if (btnMettreEnVente) btnMettreEnVente.style.display = 'none';
     }
 }
 
 // =========================================================================
-// 5. INTERCEPTEURS ET LISTENERS AUTOMATIQUES
+// 2. ÉCOUTEURS D'ÉVÉNEMENTS ET ROUTAGE CORRIGÉ
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 DOM entièrement chargé et prêt !");
+    console.log("🚀 DOM chargé. Initialisation des composants Ley Pay...");
     
-    // Premier rafraîchissement au démarrage pour le profil
-    if (typeof rafraichirProfilClient === 'function') rafraichirProfilClient();
+    // On lance les deux vérifications au démarrage
+    rafraichirProfilClient();
+    rafraichirEspaceVendeur();
 
-    // Gestion du clic sur l'onglet Espace Vendeur
+    // Gestion universelle des clics sur les onglets du menu de navigation
     document.addEventListener("click", (event) => {
         const texteBouton = event.target.textContent || "";
+        
+        // Clic sur l'onglet ESPACE VENDEUR
         if (texteBouton.toLowerCase().includes("vendeur")) {
-            console.log("Clic détecté sur l'onglet Vendeur.");
-            setTimeout(() => {
-                rafraichirEspaceVendeur();
-            }, 100);
+            console.log("Menu: Clic sur Espace Vendeur");
+            
+            // On force l'affichage des conteneurs
+            const sectionVendeur = document.getElementById('section-vendeur');
+            if (sectionVendeur) sectionVendeur.style.display = 'block';
+            
+            // On masque le profil pour ne pas superposer
+            const sectionCompte = document.getElementById('section-compte');
+            if (sectionCompte) sectionCompte.style.display = 'none';
+
+            rafraichirEspaceVendeur();
+        }
+        
+        // Clic sur l'onglet MON PROFIL
+        if (texteBouton.toLowerCase().includes("profil") || texteBouton.toLowerCase().includes("compte")) {
+            console.log("Menu: Clic sur Mon Profil");
+            
+            const sectionCompte = document.getElementById('section-compte');
+            if (sectionCompte) sectionCompte.style.display = 'block';
+            
+            const sectionVendeur = document.getElementById('section-vendeur');
+            if (sectionVendeur) sectionVendeur.style.display = 'none';
+
+            rafraichirProfilClient();
         }
     });
 });
-</script> </body>
+ </script> 
+
+</body>
 </html>
