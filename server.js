@@ -138,25 +138,28 @@ app.post('/api/connexion', async (req, res) => {
     }
 });
 
-app.get('/api/vendeur/statut', async (req, res) => {
+app.post('/api/vendeur/statut', async (req, res) => { // 🟢 Changé en app.post pour pouvoir envoyer l'email sécurisé
     try {
-        const sessionUserEmail = Object.keys(sessionsActives)[0]; 
+        const { email } = req.body; // 🟢 On récupère l'email envoyé par le navigateur
 
-        if (!sessionUserEmail) {
+        if (!email) {
             return res.json({ connecte: false, aUneBoutique: false, estVerrouille: true });
         }
 
-        const session = sessionsActives[sessionUserEmail];
-        const user = await mongoose.model('Utilisateur').findOne({ email: session.email });
+        const user = await mongoose.model('Utilisateur').findOne({ email: email });
 
         if (!user) {
             return res.json({ connecte: false, aUneBoutique: false, estVerrouille: true });
         }
 
+        // On vérifie dans la mémoire si la session est active et déverrouillée
+        const session = sessionsActives[email];
+        const estVerrouille = session ? !session.vendeurDeverrouille : true;
+
         res.json({
             connecte: true,
             aUneBoutique: user.boutiqueCreee,
-            estVerrouille: !session.vendeurDeverrouille 
+            estVerrouille: estVerrouille
         });
 
     } catch (error) {
@@ -164,23 +167,6 @@ app.get('/api/vendeur/statut', async (req, res) => {
         res.status(500).json({ connecte: false, error: "Erreur serveur" });
     }
 });
-
-app.post('/api/vendeur/verifier-pin', async (req, res) => {
-    const { email, pin } = req.body;
-    try {
-        const user = await mongoose.model('Utilisateur').findOne({ email: email });
-        if (user && user.vendeurPin === pin) {
-            if (sessionsActives[email]) {
-                sessionsActives[email].vendeurDeverrouille = true;
-            }
-            return res.json({ success: true, message: "Code PIN valide !" });
-        }
-        res.status(400).json({ success: false, message: "Code PIN incorrect." });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Erreur serveur." });
-    }
-});
-
 // ==========================================
 // ROUTES GESTION DES PRODUITS & COMMANDES
 // ==========================================
