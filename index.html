@@ -193,6 +193,7 @@
                 <button class="btn-or" onclick="verifierPinVendeur()">Déverrouiller le Central Vendeur</button>
             </div>
 
+
             <div id="corps-espace-vendeur" class="box-vendeur cache corps-large">
     <div class="vendeur-header">
         <h2>📊 Central Vendeur - Ley Pay Business</h2>
@@ -457,6 +458,8 @@
             if (pin.length >= 4) {
                 document.getElementById('vendeur-verrouille-pin').classList.add('cache');
                 document.getElementById('corps-espace-vendeur').classList.remove('cache');
+                // CORRECTION ICI : Charge immédiatement le catalogue enregistré dès la connexion !
+                rafraichirCatalogueVendeur();
             } else {
                 alert("Veuillez saisir votre mot de passe vendeur.");
             }
@@ -524,6 +527,7 @@ function calculerFraisVendeur() {
 }
 
 // 3. Ajouter le produit au catalogue du vendeur
+// 1. AJOUTER LE PRODUIT ET FORCER L'AFFICHAGE IMMÉDIAT
 function ajouterProduitVendeur() {
     const nom = document.getElementById('p-nom').value.trim();
     const prix = document.getElementById('p-prix').value.trim();
@@ -534,14 +538,13 @@ function ajouterProduitVendeur() {
         return;
     }
 
-    // Récupérer l'image principale (la première) ou mettre un placeholder si aucune image
-    const imagePrincipale = imagesProduitBase64.length > 0 ? imagesProduitBase64[0] : '';
+    // Récupérer la première image ou mettre un placeholder par défaut
+    const imagePrincipale = tableauImagesVendeur[0] || 'https://via.placeholder.com/150'; 
 
-    // Récupération de la session utilisateur
-    let session = JSON.parse(localStorage.getItem('lp_session')) || {};
-    if (!session.produits) session.produits = [];
+    // ÉTAPE CRUCIALE : Récupérer ou créer la liste globale des produits du site
+    let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
 
-    // Création de l'objet produit
+    // Création de l'objet produit unique
     const nouveauProduit = {
         id: Date.now(),
         nom: nom,
@@ -550,40 +553,49 @@ function ajouterProduitVendeur() {
         image: imagePrincipale
     };
 
-    session.produits.push(nouveauProduit);
-    localStorage.setItem('lp_session', JSON.stringify(session));
+    // Sauvegarder dans le stockage local pour que l'accueil et le catalogue y aient accès
+    listeProduitsGlobale.push(nouveauProduit);
+    localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
 
     alert("🚀 Produit mis en ligne avec succès !");
     
-    // Réinitialiser le formulaire
+    // Réinitialisation des champs du formulaire
     document.getElementById('p-nom').value = '';
     document.getElementById('p-prix').value = '';
-    document.getElementById('p-images').value = '';
-    gererApercuImages({ files: [] }); // Reset l'affichage des vignettes
+    réinitialiserSlotsPhotos(); 
 
+    // Relancer l'affichage du catalogue vendeur immédiatement
     rafraichirCatalogueVendeur();
+
+    // Si tu as une fonction existante pour charger les produits sur l'accueil, appelle-la ici :
+    if (typeof afficherProduitsAccueil === 'function') {
+        afficherProduitsAccueil();
+    }
 }
 
-// 4. Mettre à jour l'affichage du catalogue et gérer la suppression
+// 2. METTRE À JOUR LE CATALOGUE VENDEUR (À DROITE)
 function rafraichirCatalogueVendeur() {
     const conteneurListe = document.getElementById('liste-produits-vendeur');
-    const session = JSON.parse(localStorage.getItem('lp_session')) || {};
-    const produits = session.produits || [];
+    if (!conteneurListe) return;
 
-    if (produits.length === 0) {
+    // Récupérer la liste globale mise à jour
+    const listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
+
+    if (listeProduitsGlobale.length === 0) {
         conteneurListe.innerHTML = '<p class="texte-vide">Aucun produit en ligne pour le moment.</p>';
         return;
     }
 
+    // Construire visuellement la liste
     conteneurListe.innerHTML = '';
-    produits.forEach(produit => {
+    listeProduitsGlobale.forEach(produit => {
         const item = document.createElement('div');
         item.className = 'item-produit-vendeur';
         item.innerHTML = `
-            <img src="${produit.image || 'https://via.placeholder.com/40'}" class="preview-img-catalog" alt="Aperçu">
-            <div class="info-item-vendeur">
-                <h5>${produit.nom}</h5>
-                <span>${produit.prix} $ • ${produit.categorie}</span>
+            <img src="${produit.image}" class="preview-img-catalog" alt="Aperçu" style="width:45px; height:45px; object-fit:cover; border-radius:6px;">
+            <div class="info-item-vendeur" style="flex:1; margin-left:12px;">
+                <h5 style="margin:0; font-size:14px; color:#2d3748;">${produit.nom}</h5>
+                <span style="font-size:12px; color:#6c5ce7; font-weight:600;">${produit.prix} $ • ${produit.categorie}</span>
             </div>
             <button class="btn-supprimer-produit" onclick="supprimerProduitVendeur(${produit.id})">Supprimer</button>
         `;
@@ -591,17 +603,26 @@ function rafraichirCatalogueVendeur() {
     });
 }
 
-// 5. Action de suppression du produit
+// 3. RETIRER UN PRODUIT ET ENLEVER DE L'ÉCRAN
 function supprimerProduitVendeur(idProduit) {
     if (confirm("Voulez-vous vraiment retirer ce produit de la vente ?")) {
-        let session = JSON.parse(localStorage.getItem('lp_session')) || {};
-        if (session.produits) {
-            session.produits = session.produits.filter(p => p.id !== idProduit);
-            localStorage.setItem('lp_session', JSON.stringify(session));
-            rafraichirCatalogueVendeur();
+        let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
+        
+        // Filtrer pour retirer le produit sélectionné
+        listeProduitsGlobale = listeProduitsGlobale.filter(p => p.id !== idProduit);
+        localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
+        
+        // Rafraîchir instantanément la vue
+        rafraichirCatalogueVendeur();
+        
+        if (typeof afficherProduitsAccueil === 'function') {
+            afficherProduitsAccueil();
         }
     }
 }
+
+
+
 
         document.addEventListener("DOMContentLoaded", () => {
             basculerOnglet('accueil');
