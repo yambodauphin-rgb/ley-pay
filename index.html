@@ -22,59 +22,184 @@
             </section>
 
         <section id="section-compte" class="cache">
+            
             <div id="bloc-authentification" class="box-auth">
+                
+                <div class="auth-tabs-nav">
+                    <button id="tab-login" class="actif" onclick="basculerOngletAuth('login')">Connexion</button>
+                    <button id="tab-register" onclick="basculerOngletAuth('register')">Inscription</button>
+                </div>
+
                 <h3 id="auth-titre-interne">Connexion</h3>
-                <p id="auth-sous-titre">Bon retour ! Connectez-vous à votre compte.</p>
+                <p id="auth-sous-titre">Bon retour ! Connectez-vous à votre compte client.</p>
                 
-                <input type="email" id="auth-email" placeholder="Votre adresse email">
-                <input type="password" id="auth-password" placeholder="Votre mot de passe">
+                <div id="wrapper-nom-complet" class="cache">
+                    <label class="form-label">Nom complet</label>
+                    <input type="text" id="auth-nom" placeholder="Entrez votre nom complet">
+                </div>
+
+                <label class="form-label">Adresse e-mail</label>
+                <input type="email" id="auth-email" placeholder="exemple@email.com">
                 
-                <button class="btn-or" onclick="gererConnexionGlobale()">Se connecter</button>
-                <p class="texte-aide">
-                    Pas de compte ? Simulez une connexion en entrant un email.
+                <label class="form-label">Mot de passe</label>
+                <input type="password" id="auth-password" placeholder="Entrez votre mot de passe">
+
+                <div id="wrapper-confirmer-pass" class="cache">
+                    <label class="form-label">Confirmer le mot de passe</label>
+                    <input type="password" id="auth-password-conf" placeholder="Confirmez votre mot de passe">
+                    
+                    <label class="checkbox-container-auth">
+                        <input type="checkbox" id="auth-conditions"> J'accepte les <span class="lien-orange">Conditions d'utilisation</span> et la <span class="lien-orange">Politique de confidentialité</span>
+                    </label>
+                </div>
+                
+                <button id="btn-texte-auth" class="btn-orange-submit" onclick="gererAuthentificationGlobale()">Se connecter</button>
+                
+                <p id="auth-bascule-texte" class="texte-aide-auth">
+                    Pas de compte ? <span class="lien-orange" onclick="basculerOngletAuth('register')">Créer un compte</span>
                 </p>
             </div>
 
             <div id="info-profil-connecte" class="box-auth cache">
-                <h3>Mon Account</h3>
+                <h3>Mon Compte</h3>
                 <p>Bonjour, <span id="txt-nom-client" class="nom-mise-en-avant">Client</span> !</p>
-                <button class="btn-or btn-espace-vendeur" id="btn-mettre-en-vente-client">🚀 Ouvrir mon Espace Vendeur</button>
+                <p class="statut-badge-client">Compte client actif vériﬁé 🔒</p>
+                <button class="btn-or btn-espace-vendeur" id="btn-ouvrir-vendeur-depuis-profil">🚀 Ouvrir mon Espace Vendeur</button>
                 <button class="btn-deconnexion" onclick="executerDeconnexion()">Se déconnecter</button>
             </div>
         </section>
 
         <section id="section-vendeur" class="cache">
             
-            <div id="vendeur-auth-requis" class="box-vendeur">
+            <div id="vendeur-auth-requis" class="box-vendeur text-center">
                 <h3>🔒 Accès Restreint</h3>
-                <p>Veuillez vous connecter à votre compte client dans l'onglet <strong>Mon Profil</strong> pour accéder à cette interface.</p>
-                <button class="btn-or" onclick="basculerOnglet('profil')">Aller à la connexion</button>
+                <p>Pour pouvoir créer votre boutique en ligne, vous devez d'abord posséder un compte client.</p>
+                <p>Veuillez vous inscrire ou vous connecter dans l'onglet <strong>Mon Profil</strong>.</p>
+                <button class="btn-or" style="margin-top: 15px;" onclick="basculerVersConnexionForcee()">Créer un compte ou se connecter</button>
             </div>
 
-            <div id="formulaire-inscription-boutique" class="box-vendeur cache">
-                <h3>Création de votre Boutique</h3>
-                <p>Remplissez les informations pour activer votre profil commercial.</p>
-                <input type="text" id="vendeur-boutique-nom" placeholder="Nom de votre boutique">
-                <select id="boutique-categorie-input">
-                    <option value="High-Tech">High-Tech</option>
-                    <option value="Mode">Mode & Vêtements</option>
-                </select>
-                <button class="btn-or" onclick="creerBoutiqueRapideManuel()">Activer ma boutique</button>
+            <div id="formulaire-inscription-boutique" class="box-vendeur cache formulaire-boutique-design">
+                
+                <div class="etape-formulaire">
+                    <div class="etape-badge">1</div>
+                    <h3 class="etape-titre">Informations personnelles</h3>
+                    
+                    <label class="form-label">Nom complet</label>
+                    <input type="text" id="vendeur-nom-complet" placeholder="Entrez votre nom complet">
+
+                    <label class="form-label">Nom de la boutique</label>
+                    <input type="text" id="vendeur-boutique-nom" placeholder="Entrez le nom de votre boutique">
+
+                    <label class="form-label">Email</label>
+                    <input type="email" id="vendeur-email-contact" placeholder="exemple@email.com">
+
+                    <label class="form-label">Numéro de téléphone</label>
+                    <div class="telephone-row">
+                        <select id="vendeur-prefixe-tel" style="width: 30%; margin: 0;">
+                            <option value="+243">+243 🇨🇩</option>
+                            <option value="+33">+33 🇫🇷</option>
+                        </select>
+                        <input type="tel" id="vendeur-telephone" placeholder="Numéro de téléphone" style="width: 68%; margin: 0;">
+                    </div>
+
+                    <div class="row-pays-ville">
+                        <div style="width: 48%;">
+                            <label class="form-label">Pays</label>
+                            <select id="vendeur-pays" style="margin: 0;">
+                                <option value="">Sélectionnez votre pays</option>
+                                <option value="RDC">République Démocratique du Congo</option>
+                            </select>
+                        </div>
+                        <div style="width: 48%;">
+                            <label class="form-label">Ville</label>
+                            <input type="text" id="vendeur-ville" placeholder="Votre ville" style="margin: 0;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="etape-formulaire" style="margin-top: 35px;">
+                    <div class="etape-badge">4</div>
+                    <h3 class="etape-titre">Informations de paiement</h3>
+                    
+                    <label class="form-label">Nom du titulaire du compte</label>
+                    <input type="text" id="vendeur-titulaire-compte" placeholder="Entrez le nom du titulaire">
+
+                    <label class="form-label">Moyen de paiement</label>
+                    <div class="moyens-paiement-flex">
+                        <button type="button" class="btn-moyen actif">📱 Mobile Money</button>
+                        <button type="button" class="btn-moyen">🏦 Banque</button>
+                        <button type="button" class="btn-moyen">💳 PayPal</button>
+                    </div>
+
+                    <div class="details-paiement-box">
+                        <label class="form-label">Nom du réseau utilisé</label>
+                        <select id="vendeur-reseau-mobile">
+                            <option value="">Ex. : Airtel Money, Orange Money, M-Pesa...</option>
+                            <option value="Airtel">Airtel Money</option>
+                            <option value="Orange">Orange Money</option>
+                            <option value="M-Pesa">M-Pesa</option>
+                        </select>
+
+                        <label class="form-label">Numéro Mobile Money</label>
+                        <div class="telephone-row">
+                            <select style="width: 30%; margin:0;"><option>+243</option></select>
+                            <input type="text" id="vendeur-num-mobile-money" placeholder="Entrez votre numéro" style="width: 68%; margin:0;">
+                        </div>
+
+                        <label class="form-label" style="margin-top: 15px;">Nom enregistré sur le compte</label>
+                        <input type="text" id="vendeur-nom-enregistre-compte" placeholder="Nom tel qu'enregistré sur le compte">
+
+                        <label class="checkbox-container" style="margin-top: 15px; display: flex; gap: 10px; align-items: center; font-size: 13px;">
+                            <input type="checkbox" id="vendeur-confirme-propriete" style="width: auto; margin:0;"> Je confirme que ce moyen de paiement m'appartient.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="etape-formulaire" style="margin-top: 35px;">
+                    <div class="etape-badge">5</div>
+                    <h3 class="etape-titre">Sécurité du compte</h3>
+                    
+                    <label class="form-label">Créer un code PIN ou mot de passe vendeur</label>
+                    <input type="password" id="vendeur-pass" placeholder="Entrez un mot de passe vendeur">
+
+                    <label class="form-label">Confirmer le mot de passe vendeur</label>
+                    <input type="password" id="vendeur-pass-conf" placeholder="Confirmez votre mot de passe vendeur">
+                </div>
+
+                <div class="etape-formulaire" style="margin-top: 35px;">
+                    <div class="etape-badge">6</div>
+                    <h3 class="etape-titre">Conditions d'utilisation</h3>
+                    
+                    <div class="conditions-list" style="display:flex; flex-direction:column; gap:12px; margin-bottom: 25px;">
+                        <label style="display:flex; gap:10px; font-size:14px; align-items: flex-start;">
+                            <input type="checkbox" id="cond-1" style="width:auto; margin-top:3px;"> 🛡️ Je confirme que mes produits sont légaux et ne violent aucune loi.
+                        </label>
+                        <label style="display:flex; gap:10px; font-size:14px; align-items: flex-start;">
+                            <input type="checkbox" id="cond-2" style="width:auto; margin-top:3px;"> 📄 J'accepte les conditions de vente de la plateforme.
+                        </label>
+                        <label style="display:flex; gap:10px; font-size:14px; align-items: flex-start;">
+                            <input type="checkbox" id="cond-3" style="width:auto; margin-top:3px;"> 🔐 J'accepte la politique de confidentialité et l'utilisation de mes données.
+                        </label>
+                    </div>
+
+                    <button class="btn-boutique-vert" onclick="creerBoutiqueRapideManuel()">🔒 Créer ma boutique</button>
+                    <p style="text-align:center; font-size:12px; color:#718096; margin-top:8px;">🛡️ Inscription 100% sécurisée</p>
+                </div>
             </div>
 
             <div id="vendeur-verrouille-pin" class="box-vendeur cache">
-                <h3>🔑 Code PIN Requis</h3>
-                <p>Entrez votre code de sécurité pour ouvrir le Tableau de Bord.</p>
-                <input type="password" id="input-pin-connexion" placeholder="Code PIN à 6 chiffres" maxlength="6">
-                <button class="btn-or" onclick="verifierPinVendeur()">Déverrouiller l'espace</button>
+                <h3>🔑 Code PIN de Sécurité Vendeur</h3>
+                <p>Entrez le mot de passe d'administration défini lors de la création pour ouvrir votre Tableau de Bord.</p>
+                <input type="password" id="input-pin-connexion" placeholder="Entrez le mot de passe vendeur">
+                <button class="btn-or" onclick="verifierPinVendeur()">Déverrouiller le Central Vendeur</button>
             </div>
 
             <div id="corps-espace-vendeur" class="box-vendeur cache corps-large">
                 <h2>📊 Central Vendeur - Ley Pay Business</h2>
-                <p>Félicitations, vous êtes dans votre espace de gestion commerciale.</p>
+                <p>Bienvenue dans votre gestion commerciale centralisée.</p>
                 <div class="statut-boutique-box">
-                    <strong>Statut de la boutique :</strong> En ligne et Actif <br>
-                    <strong>Solde actuel :</strong> 0.00 $
+                    <strong>Statut de la boutique :</strong> En ligne et vérifiée <br>
+                    <strong>Solde des ventes :</strong> 0.00 $
                 </div>
             </div>
 
@@ -83,9 +208,11 @@
     </main>
 
     <script>
+        // État interne de la bascule d'authentification ('login' ou 'register')
+        let modeAuthentificationActuel = 'login';
+
+        // Fonction principale de changement d'onglet global
         function basculerOnglet(nomOnglet) {
-            console.log("Navigation vers : " + nomOnglet);
-            
             document.getElementById('section-produits').style.display = 'none';
             document.getElementById('section-compte').style.display = 'none';
             document.getElementById('section-vendeur').style.display = 'none';
@@ -108,39 +235,108 @@
             }
         }
 
-        function gererConnexionGlobale() {
-            const email = document.getElementById('auth-email').value.trim();
-            if(!email) { alert("Veuillez entrer une adresse email."); return; }
+        // Basculer l'affichage interne entre Connexion et Inscription (Inspiré de M.png / image_dc099f.png)
+        function basculerOngletAuth(mode) {
+            modeAuthentificationActuel = mode;
+            
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const wrapperNom = document.getElementById('wrapper-nom-complet');
+            const wrapperConfPass = document.getElementById('wrapper-confirmer-pass');
+            const btnTexte = document.getElementById('btn-texte-auth');
+            const titreInterne = document.getElementById('auth-titre-interne');
+            const sousTitre = document.getElementById('auth-sous-titre');
+            const basculeTexte = document.getElementById('auth-bascule-texte');
 
+            if (mode === 'register') {
+                tabLogin.classList.remove('actif');
+                tabRegister.classList.add('actif');
+                wrapperNom.classList.remove('cache');
+                wrapperConfPass.classList.remove('cache');
+                btnTexte.textContent = "Créer mon compte";
+                titreInterne.textContent = "Créer un compte";
+                sousTitre.textContent = "Rejoignez-nous et commencez à vendre ou à acheter dès maintenant.";
+                basculeTexte.innerHTML = 'Vous avez déjà un compte ? <span class="lien-orange" onclick="basculerOngletAuth(\'login\')">Connectez-vous</span>';
+            } else {
+                tabLogin.classList.add('actif');
+                tabRegister.classList.remove('actif');
+                wrapperNom.classList.add('cache');
+                wrapperConfPass.classList.add('cache');
+                btnTexte.textContent = "Se connecter";
+                titreInterne.textContent = "Connexion";
+                sousTitre.textContent = "Bon retour ! Connectez-vous à votre compte client.";
+                basculeTexte.innerHTML = 'Pas de compte ? <span class="lien-orange" onclick="basculerOngletAuth(\'register\')">Créer un compte</span>';
+            }
+        }
+
+        // Force l'utilisateur à naviguer vers l'onglet profil s'il n'est pas connecté
+        function basculerVersConnexionForcee() {
+            basculerOnglet('profil');
+            basculerOngletAuth('register');
+        }
+
+        // Gérer la soumission du formulaire d'authentification (Connexion ou Inscription)
+        function gererAuthentificationGlobale() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+
+            if (!email || !password) {
+                alert("Veuillez remplir les champs obligatoires (Email et Mot de passe).");
+                return;
+            }
+
+            let nomClient = email.split('@')[0];
+
+            if (modeAuthentificationActuel === 'register') {
+                const nomSaisi = document.getElementById('auth-nom').value.trim();
+                const passConf = document.getElementById('auth-password-conf').value;
+                const condCheck = document.getElementById('auth-conditions').checked;
+
+                if (nomSaisi) nomClient = nomSaisi;
+                if (password !== passConf) {
+                    alert("Les mots de passe ne correspondent pas.");
+                    return;
+                }
+                if (!condCheck) {
+                    alert("Veuillez accepter les conditions d'utilisation.");
+                    return;
+                }
+            }
+
+            // Enregistrement de la session utilisateur connectée
             const sessionData = {
                 email: email,
-                nom: email.split('@')[0],
+                nom: nomClient,
                 boutiqueCreee: false
             };
+
             localStorage.setItem('lp_session', JSON.stringify(sessionData));
-            alert("🎉 Connexion réussie !");
+            alert(modeAuthentificationActuel === 'register' ? "🎉 Votre compte client a bien été créé !" : "🎉 Connexion réussie !");
+            
             rafraichirProfilClient();
+            basculerOnglet('accueil'); // Redirection par défaut vers la boutique
         }
 
         function executerDeconnexion() {
             localStorage.removeItem('lp_session');
-            alert("Vous êtes déconnecté.");
+            alert("Vous avez été déconnecté avec succès.");
             basculerOnglet('accueil');
         }
 
         function rafraichirProfilClient() {
             const user = JSON.parse(localStorage.getItem('lp_session'));
-            if(user) {
+            if (user) {
                 document.getElementById('bloc-authentification').style.display = 'none';
                 document.getElementById('info-profil-connecte').style.display = 'block';
                 document.getElementById('txt-nom-client').textContent = user.nom;
                 
-                document.getElementById('btn-mettre-en-vente-client').onclick = () => {
+                document.getElementById('btn-ouvrir-vendeur-depuis-profil').onclick = () => {
                     basculerOnglet('vendeur');
                 };
             } else {
                 document.getElementById('bloc-authentification').style.display = 'block';
                 document.getElementById('info-profil-connecte').style.display = 'none';
+                basculerOngletAuth('login');
             }
         }
 
@@ -158,38 +354,50 @@
             corpsVendeur.style.display = 'none';
 
             if (!user) {
+                // Bloqué : Pas de compte connecté
                 blocAuthReq.style.display = 'block';
                 return;
             }
 
+            // Auto-remplissage initial de l'étape 1 du formulaire vendeur avec les données de session du compte
+            document.getElementById('vendeur-nom-complet').value = user.nom;
+            document.getElementById('vendeur-email-contact').value = user.email;
+
             if (!user.boutiqueCreee) {
+                // Étape de création de la boutique accessible
                 blocFormInsc.style.display = 'block';
                 return;
             }
 
+            // Déjà créée mais verrouillée
             blocPin.style.display = 'block';
         }
 
-        function crearBoutiqueRapideManuel() {
-            const nomB = document.getElementById('vendeur-boutique-nom').value.trim();
-            if(!nomB) { alert("Donnez un nom à votre boutique."); return; }
+        function creerBoutiqueRapideManuel() {
+            const nomBoutique = document.getElementById('vendeur-boutique-nom').value.trim();
+            const cond1 = document.getElementById('cond-1').checked;
+            const cond2 = document.getElementById('cond-2').checked;
+            const cond3 = document.getElementById('cond-3').checked;
+
+            if (!nomBoutique) { alert("Veuillez entrer un nom pour votre boutique."); return; }
+            if (!cond1 || !cond2 || !cond3) { alert("Veuillez accepter toutes les conditions d'utilisation."); return; }
 
             const user = JSON.parse(localStorage.getItem('lp_session'));
-            if(user) {
+            if (user) {
                 user.boutiqueCreee = true;
                 localStorage.setItem('lp_session', JSON.stringify(user));
-                alert("🎉 Boutique '" + nomB + "' créée ! Étape de sécurité requise.");
+                alert("🎉 Votre boutique '" + nomBoutique + "' a été créée avec succès ! Entrez vos accès de sécurité pour ouvrir le panneau.");
                 rafraichirEspaceVendeur();
             }
         }
 
         function verifierPinVendeur() {
             const pin = document.getElementById('input-pin-connexion').value;
-            if(pin.length === 6) {
+            if (pin.length >= 4) {
                 document.getElementById('vendeur-verrouille-pin').style.display = 'none';
                 document.getElementById('corps-espace-vendeur').style.display = 'block';
             } else {
-                alert("Veuillez saisir un code PIN valide à 6 chiffres.");
+                alert("Veuillez saisir votre mot de passe vendeur.");
             }
         }
 
