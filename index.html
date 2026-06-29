@@ -194,13 +194,72 @@
             </div>
 
             <div id="corps-espace-vendeur" class="box-vendeur cache corps-large">
-                <h2>📊 Central Vendeur - Ley Pay Business</h2>
-                <p>Bienvenue dans votre gestion commerciale centralisée.</p>
-                <div class="statut-boutique-box">
-                    <strong>Statut de la boutique :</strong> En ligne et vérifiée <br>
-                    <strong>Solde des ventes :</strong> 0.00 $
+    <div class="vendeur-header">
+        <h2>📊 Central Vendeur - Ley Pay Business</h2>
+        <p>Bienvenue dans votre gestion commerciale centralisée.</p>
+    </div>
+
+    <div class="zone-stats-vendeur">
+        <div class="carte-stat">
+            <h4>💰 Total Ventes</h4>
+            <p id="stat-total-ventes">0.00 $</p>
+        </div>
+        <div class="carte-stat">
+            <h4>📉 Frais Plateforme (10%)</h4>
+            <p id="stat-frais-plateforme">0.00 $</p>
+        </div>
+        <div class="carte-stat Solde">
+            <h4>💵 Votre Solde Net</h4>
+            <p id="stat-solde-net">0.00 $</p>
+        </div>
+    </div>
+
+    <div class="grille-vendeur-actions">
+        <div class="bloc-action-vendeur">
+            <h3>🛍️ Mettre un produit en ligne</h3>
+            <div class="form-ajout-produit">
+                <label class="form-label">Nom du produit</label>
+                <input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
+
+                <div class="row-pays-ville">
+                    <div style="width: 48%;">
+                        <label class="form-label">Prix ($)</label>
+                        <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
+                    </div>
+                    <div style="width: 48%;">
+                        <label class="form-label">Catégorie</label>
+                        <select id="p-categorie">
+                            <option value="Électronique">Électronique 📱</option>
+                            <option value="Mode">Mode & Vêtements 👕</option>
+                            <option value="Maison">Maison & Cuisine 🍳</option>
+                            <option value="Beauté">Beauté & Santé 🧴</option>
+                        </select>
+                    </div>
                 </div>
+
+                <label class="form-label">Photos du produit (4 maximum)</label>
+                <div class="zone-upload-images">
+                    <input type="file" id="p-images" accept="image/*" multiple onchange="gererApercuImages(this)">
+                    <div class="vignettes-apercu" id="conteneur-apercu-photos">
+                        <div class="slot-photo-vide">1</div>
+                        <div class="slot-photo-vide">2</div>
+                        <div class="slot-photo-vide">3</div>
+                        <div class="slot-photo-vide">4</div>
+                    </div>
+                </div>
+
+                <button class="btn-boutique-vert" onclick="ajouterProduitVendeur()">🚀 Publier le produit</button>
             </div>
+        </div>
+
+        <div class="bloc-action-vendeur">
+            <h3>📦 Votre catalogue en ligne</h3>
+            <div id="liste-produits-vendeur" class="liste-produits-mini">
+                <p class="texte-vide">Aucun produit en ligne pour le moment.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
         </section>
 
@@ -384,6 +443,130 @@
                 alert("Veuillez saisir votre mot de passe vendeur.");
             }
         }
+        // Base de données simulée pour stocker les images lues en Base64
+let imagesProduitBase64 = [];
+
+// 1. Gérer la prévisualisation des 4 images importées
+function gererApercuImages(input) {
+    const conteneur = document.getElementById('conteneur-apercu-photos');
+    conteneur.innerHTML = ''; // Nettoyer les slots de base
+    imagesProduitBase64 = []; // Reset des fichiers
+
+    const fichiers = Array.from(input.files).slice(0, 4); // Bloquer à 4 fichiers maximum
+
+    fichiers.forEach((fichier, index) => {
+        const lecteur = new FileReader();
+        lecteur.onload = function (e) {
+            imagesProduitBase64.push(e.target.result);
+            
+            // Ajouter la vignette active avec l'image en fond
+            const div = document.createElement('div');
+            div.className = 'vignette-image-active';
+            div.style.backgroundImage = `url(${e.target.result})`;
+            conteneur.appendChild(div);
+        };
+        lecteur.readAsDataURL(fichier);
+    });
+
+    // Si moins de 4 images, recréer des slots vides pour garder l'alignement
+    for (let i = fichiers.length; i < 4; i++) {
+        const slotVide = document.createElement('div');
+        slotVide.className = 'slot-photo-vide';
+        slotVide.textContent = i + 1;
+        conteneur.appendChild(slotVide);
+    }
+}
+
+// 2. Simulation dynamique du tableau de calcul des gains
+function calculerFraisVendeur() {
+    const prix = parseFloat(document.getElementById('p-prix').value) || 0;
+    const frais = prix * 0.10; // 10% plateforme
+    const soldeNet = prix - frais;
+
+    document.getElementById('stat-total-ventes').textContent = `${prix.toFixed(2)} $`;
+    document.getElementById('stat-frais-plateforme').textContent = `${frais.toFixed(2)} $`;
+    document.getElementById('stat-solde-net').textContent = `${soldeNet.toFixed(2)} $`;
+}
+
+// 3. Ajouter le produit au catalogue du vendeur
+function ajouterProduitVendeur() {
+    const nom = document.getElementById('p-nom').value.trim();
+    const prix = document.getElementById('p-prix').value.trim();
+    const categorie = document.getElementById('p-categorie').value;
+
+    if (!nom || !prix) {
+        alert("Veuillez donner un nom et un prix à votre produit.");
+        return;
+    }
+
+    // Récupérer l'image principale (la première) ou mettre un placeholder si aucune image
+    const imagePrincipale = imagesProduitBase64.length > 0 ? imagesProduitBase64[0] : '';
+
+    // Récupération de la session utilisateur
+    let session = JSON.parse(localStorage.getItem('lp_session')) || {};
+    if (!session.produits) session.produits = [];
+
+    // Création de l'objet produit
+    const nouveauProduit = {
+        id: Date.now(),
+        nom: nom,
+        prix: parseFloat(prix).toFixed(2),
+        categorie: categorie,
+        image: imagePrincipale
+    };
+
+    session.produits.push(nouveauProduit);
+    localStorage.setItem('lp_session', JSON.stringify(session));
+
+    alert("🚀 Produit mis en ligne avec succès !");
+    
+    // Réinitialiser le formulaire
+    document.getElementById('p-nom').value = '';
+    document.getElementById('p-prix').value = '';
+    document.getElementById('p-images').value = '';
+    gererApercuImages({ files: [] }); // Reset l'affichage des vignettes
+
+    rafraichirCatalogueVendeur();
+}
+
+// 4. Mettre à jour l'affichage du catalogue et gérer la suppression
+function rafraichirCatalogueVendeur() {
+    const conteneurListe = document.getElementById('liste-produits-vendeur');
+    const session = JSON.parse(localStorage.getItem('lp_session')) || {};
+    const produits = session.produits || [];
+
+    if (produits.length === 0) {
+        conteneurListe.innerHTML = '<p class="texte-vide">Aucun produit en ligne pour le moment.</p>';
+        return;
+    }
+
+    conteneurListe.innerHTML = '';
+    produits.forEach(produit => {
+        const item = document.createElement('div');
+        item.className = 'item-produit-vendeur';
+        item.innerHTML = `
+            <img src="${produit.image || 'https://via.placeholder.com/40'}" class="preview-img-catalog" alt="Aperçu">
+            <div class="info-item-vendeur">
+                <h5>${produit.nom}</h5>
+                <span>${produit.prix} $ • ${produit.categorie}</span>
+            </div>
+            <button class="btn-supprimer-produit" onclick="supprimerProduitVendeur(${produit.id})">Supprimer</button>
+        `;
+        conteneurListe.appendChild(item);
+    });
+}
+
+// 5. Action de suppression du produit
+function supprimerProduitVendeur(idProduit) {
+    if (confirm("Voulez-vous vraiment retirer ce produit de la vente ?")) {
+        let session = JSON.parse(localStorage.getItem('lp_session')) || {};
+        if (session.produits) {
+            session.produits = session.produits.filter(p => p.id !== idProduit);
+            localStorage.setItem('lp_session', JSON.stringify(session));
+            rafraichirCatalogueVendeur();
+        }
+    }
+}
 
         document.addEventListener("DOMContentLoaded", () => {
             basculerOnglet('accueil');
