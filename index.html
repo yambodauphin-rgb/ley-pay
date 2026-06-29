@@ -63,7 +63,7 @@
             <div id="info-profil-connecte" class="box-auth cache">
                 <h3>Mon Compte</h3>
                 <p>Bonjour, <span id="txt-nom-client" class="nom-mise-en-avant">Client</span> !</p>
-                <p class="statut-badge-client">Compte client actif vériﬁé 🔒</p>
+                <p class="statut-badge-client">Compte client actif vérifié 🔒</p>
                 <button class="btn-or btn-espace-vendeur" id="btn-ouvrir-vendeur-depuis-profil">🚀 Ouvrir mon Espace Vendeur</button>
                 <button class="btn-deconnexion" onclick="executerDeconnexion()">Se déconnecter</button>
             </div>
@@ -159,7 +159,7 @@
                     <div class="etape-badge">5</div>
                     <h3 class="etape-titre">Sécurité du compte</h3>
                     
-                    <label class="form-label">Créer un code PIN ou mot de passe vendeur</label>
+                    <label class="form-label">Créer un mot de passe vendeur</label>
                     <input type="password" id="vendeur-pass" placeholder="Entrez un mot de passe vendeur">
 
                     <label class="form-label">Confirmer le mot de passe vendeur</label>
@@ -183,7 +183,6 @@
                     </div>
 
                     <button class="btn-boutique-vert" onclick="creerBoutiqueRapideManuel()">🔒 Créer ma boutique</button>
-                    <p style="text-align:center; font-size:12px; color:#718096; margin-top:8px;">🛡️ Inscription 100% sécurisée</p>
                 </div>
             </div>
 
@@ -208,34 +207,38 @@
     </main>
 
     <script>
-        // État interne de la bascule d'authentification ('login' ou 'register')
         let modeAuthentificationActuel = 'login';
 
-        // Fonction principale de changement d'onglet global
+        // Système de routage corrigé (Utilise classList au lieu de style.display pour contourner le !important du CSS)
         function basculerOnglet(nomOnglet) {
-            document.getElementById('section-produits').style.display = 'none';
-            document.getElementById('section-compte').style.display = 'none';
-            document.getElementById('section-vendeur').style.display = 'none';
+            console.log("Navigation vers : " + nomOnglet);
+            
+            const secProduits = document.getElementById('section-produits');
+            const secCompte = document.getElementById('section-compte');
+            const secVendeur = document.getElementById('section-vendeur');
+
+            secProduits.classList.add('cache');
+            secCompte.classList.add('cache');
+            secVendeur.classList.add('cache');
 
             document.getElementById('btn-nav-accueil').classList.remove('actif');
             document.getElementById('btn-nav-profil').classList.remove('actif');
             document.getElementById('btn-nav-vendeur').classList.remove('actif');
 
             if (nomOnglet === 'accueil') {
-                document.getElementById('section-produits').style.display = 'block';
+                secProduits.classList.remove('cache');
                 document.getElementById('btn-nav-accueil').classList.add('actif');
             } else if (nomOnglet === 'profil') {
-                document.getElementById('section-compte').style.display = 'block';
+                secCompte.classList.remove('cache');
                 document.getElementById('btn-nav-profil').classList.add('actif');
                 rafraichirProfilClient();
             } else if (nomOnglet === 'vendeur') {
-                document.getElementById('section-vendeur').style.display = 'block';
+                secVendeur.classList.remove('cache');
                 document.getElementById('btn-nav-vendeur').classList.add('actif');
                 rafraichirEspaceVendeur();
             }
         }
 
-        // Basculer l'affichage interne entre Connexion et Inscription (Inspiré de M.png / image_dc099f.png)
         function basculerOngletAuth(mode) {
             modeAuthentificationActuel = mode;
             
@@ -269,19 +272,17 @@
             }
         }
 
-        // Force l'utilisateur à naviguer vers l'onglet profil s'il n'est pas connecté
         function basculerVersConnexionForcee() {
             basculerOnglet('profil');
             basculerOngletAuth('register');
         }
 
-        // Gérer la soumission du formulaire d'authentification (Connexion ou Inscription)
         function gererAuthentificationGlobale() {
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
 
             if (!email || !password) {
-                alert("Veuillez remplir les champs obligatoires (Email et Mot de passe).");
+                alert("Veuillez remplir l'adresse e-mail et le mot de passe.");
                 return;
             }
 
@@ -293,49 +294,36 @@
                 const condCheck = document.getElementById('auth-conditions').checked;
 
                 if (nomSaisi) nomClient = nomSaisi;
-                if (password !== passConf) {
-                    alert("Les mots de passe ne correspondent pas.");
-                    return;
-                }
-                if (!condCheck) {
-                    alert("Veuillez accepter les conditions d'utilisation.");
-                    return;
-                }
+                if (password !== passConf) { alert("Les mots de passe ne correspondent pas."); return; }
+                if (!condCheck) { alert("Veuillez accepter les conditions d'utilisation."); return; }
             }
 
-            // Enregistrement de la session utilisateur connectée
-            const sessionData = {
-                email: email,
-                nom: nomClient,
-                boutiqueCreee: false
-            };
-
+            const sessionData = { email: email, nom: nomClient, boutiqueCreee: false };
             localStorage.setItem('lp_session', JSON.stringify(sessionData));
-            alert(modeAuthentificationActuel === 'register' ? "🎉 Votre compte client a bien été créé !" : "🎉 Connexion réussie !");
             
+            alert(modeAuthentificationActuel === 'register' ? "🎉 Compte client créé !" : "🎉 Connexion réussie !");
             rafraichirProfilClient();
-            basculerOnglet('accueil'); // Redirection par défaut vers la boutique
         }
 
         function executerDeconnexion() {
             localStorage.removeItem('lp_session');
-            alert("Vous avez été déconnecté avec succès.");
+            alert("Déconnecté.");
             basculerOnglet('accueil');
         }
 
         function rafraichirProfilClient() {
             const user = JSON.parse(localStorage.getItem('lp_session'));
+            const blocAuth = document.getElementById('bloc-authentification');
+            const infoProfil = document.getElementById('info-profil-connecte');
+
             if (user) {
-                document.getElementById('bloc-authentification').style.display = 'none';
-                document.getElementById('info-profil-connecte').style.display = 'block';
+                blocAuth.classList.add('cache');
+                infoProfil.classList.remove('cache');
                 document.getElementById('txt-nom-client').textContent = user.nom;
-                
-                document.getElementById('btn-ouvrir-vendeur-depuis-profil').onclick = () => {
-                    basculerOnglet('vendeur');
-                };
+                document.getElementById('btn-ouvrir-vendeur-depuis-profil').onclick = () => basculerOnglet('vendeur');
             } else {
-                document.getElementById('bloc-authentification').style.display = 'block';
-                document.getElementById('info-profil-connecte').style.display = 'none';
+                blocAuth.classList.remove('cache');
+                infoProfil.classList.add('cache');
                 basculerOngletAuth('login');
             }
         }
@@ -348,29 +336,25 @@
             const blocPin = document.getElementById('vendeur-verrouille-pin');
             const corpsVendeur = document.getElementById('corps-espace-vendeur');
 
-            blocAuthReq.style.display = 'none';
-            blocFormInsc.style.display = 'none';
-            blocPin.style.display = 'none';
-            corpsVendeur.style.display = 'none';
+            blocAuthReq.classList.add('cache');
+            blocFormInsc.classList.add('cache');
+            blocPin.classList.add('cache');
+            corpsVendeur.classList.add('cache');
 
             if (!user) {
-                // Bloqué : Pas de compte connecté
-                blocAuthReq.style.display = 'block';
+                blocAuthReq.classList.remove('cache');
                 return;
             }
 
-            // Auto-remplissage initial de l'étape 1 du formulaire vendeur avec les données de session du compte
             document.getElementById('vendeur-nom-complet').value = user.nom;
             document.getElementById('vendeur-email-contact').value = user.email;
 
             if (!user.boutiqueCreee) {
-                // Étape de création de la boutique accessible
-                blocFormInsc.style.display = 'block';
+                blocFormInsc.classList.remove('cache');
                 return;
             }
 
-            // Déjà créée mais verrouillée
-            blocPin.style.display = 'block';
+            blocPin.classList.remove('cache');
         }
 
         function creerBoutiqueRapideManuel() {
@@ -380,13 +364,13 @@
             const cond3 = document.getElementById('cond-3').checked;
 
             if (!nomBoutique) { alert("Veuillez entrer un nom pour votre boutique."); return; }
-            if (!cond1 || !cond2 || !cond3) { alert("Veuillez accepter toutes les conditions d'utilisation."); return; }
+            if (!cond1 || !cond2 || !cond3) { alert("Veuillez valider toutes les conditions d'utilisation."); return; }
 
             const user = JSON.parse(localStorage.getItem('lp_session'));
             if (user) {
                 user.boutiqueCreee = true;
                 localStorage.setItem('lp_session', JSON.stringify(user));
-                alert("🎉 Votre boutique '" + nomBoutique + "' a été créée avec succès ! Entrez vos accès de sécurité pour ouvrir le panneau.");
+                alert("🎉 Boutique créée !");
                 rafraichirEspaceVendeur();
             }
         }
@@ -394,8 +378,8 @@
         function verifierPinVendeur() {
             const pin = document.getElementById('input-pin-connexion').value;
             if (pin.length >= 4) {
-                document.getElementById('vendeur-verrouille-pin').style.display = 'none';
-                document.getElementById('corps-espace-vendeur').style.display = 'block';
+                document.getElementById('vendeur-verrouille-pin').classList.add('cache');
+                document.getElementById('corps-espace-vendeur').classList.remove('cache');
             } else {
                 alert("Veuillez saisir votre mot de passe vendeur.");
             }
