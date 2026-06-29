@@ -1624,17 +1624,16 @@ async function gererInscriptionGlobale() {
 // =========================================================================
 
 async function rafraichirEspaceVendeur() {
-    // 🟢 On cible la section parente globale
     const sectionVendeur = document.getElementById('section-vendeur');
-    
-    const formInsc = document.getElementById('formulaire-inscription-boutique');
     const corp = document.getElementById('corps-espace-vendeur');
     const blocPin = document.getElementById('vendeur-verrouille-pin');
     const req = document.getElementById('vendeur-auth-requis');
+    
+    // On récupère le formulaire s'il existe, sinon on cible la boîte d'authentification/inscription
+    const formInsc = document.getElementById('formulaire-inscription-boutique') || document.getElementById('bloc-champs-boutique-optionnel');
 
     let localUser = JSON.parse(localStorage.getItem('lp_session'));
 
-    // On s'assure d'abord que l'onglet général du vendeur est bien visible
     if (sectionVendeur) {
         sectionVendeur.classList.remove('cache');
         sectionVendeur.style.display = 'block';
@@ -1662,7 +1661,9 @@ async function rafraichirEspaceVendeur() {
             if (req) { req.classList.add('cache'); req.style.display = 'none'; }
             if (formInsc) { formInsc.classList.remove('cache'); formInsc.style.display = 'block'; }
             if (corp) { corp.classList.add('cache'); corp.style.display = 'none'; }
-            if (blocPin) { blocPin.classList.add('cache'); blocPin.style.display = 'none'; }
+            
+            // Si pas de boutique, on lui montre l'écran pour saisir son PIN ou créer sa boutique
+            if (blocPin) { blocPin.classList.remove('cache'); blocPin.style.display = 'block'; }
             return;
         }
 
@@ -1677,7 +1678,7 @@ async function rafraichirEspaceVendeur() {
         } else {
             if (blocPin) { blocPin.classList.add('cache'); blocPin.style.display = 'none'; }
             
-            // 🟢 ICI : On force l'affichage du tableau interne enfin débloqué !
+            // 🟢 FORCE l'affichage du Central Vendeur (corps-espace-vendeur)
             if (corp) { 
                 corp.classList.remove('cache'); 
                 corp.style.display = 'block'; 
@@ -1686,6 +1687,7 @@ async function rafraichirEspaceVendeur() {
 
     } catch (error) {
         console.error("Erreur de statut vendeur :", error);
+        // Secours d'affichage direct au cas où
         if (corp) { corp.classList.remove('cache'); corp.style.display = 'block'; }
     }
 }
