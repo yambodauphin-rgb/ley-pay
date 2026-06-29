@@ -617,4 +617,37 @@ input:focus, select:focus {
 .slot-photo-vide:hover {
     border-color: #6c5ce7;
     transform: scale(1.05);
-}    
+}
+/* =========================================================================
+   FORCE L'ALIGNEMENT HORIZONTAL PARALLÈLE - SOLUTION ULTIME
+   ========================================================================= */
+
+/* On force TOUT l'espace vendeur à s'élargir sur l'écran */
+#corps-espace-vendeur.box-vendeur {
+    max-width: 1250px !important; /* On donne de la place pour de vrai */
+    width: 95% !important;
+    margin: 30px auto !important;
+    padding: 25px !important;
+}
+
+/* On force la grille à devenir un Flexbox horizontal ultra-strict */
+.grille-vendeur-actions {
+    display: flex !important;
+    flex-direction: row !important; /* Alignement en ligne obligatoire */
+    justify-content: space-between !important;
+    gap: 30px !important;
+    width: 100% !important;
+    align-items: flex-start !important;
+}
+
+/* Chaque colonne prend exactement 50% de l'espace */
+.grille-vendeur-actions .bloc-action-vendeur {
+    flex: 1 !important;
+    width: 50% !important; /* Force la moitié de la largeur */
+    min-width: 0 !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+    padding: 24px !important;
+    box-sizing: border-box !important;
+}
