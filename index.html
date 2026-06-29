@@ -1702,5 +1702,42 @@ async function rafraichirEspaceVendeur() {
         if (corp) { corp.classList.remove('cache'); corp.style.display = 'block'; }
     }
 }
+// =========================================================================
+// TESTEUR DE SECOURS - FORCE L'AFFICHAGE DE L'ESPACE VENDEUR
+// =========================================================================
+function forcerAffichageVendeurManuel() {
+    console.log("Démarrage du script de secours...");
+    
+    const sectionVendeur = document.getElementById('section-vendeur');
+    const corpsVendeur = document.getElementById('corps-espace-vendeur');
+    const authRequis = document.getElementById('vendeur-auth-requis');
+    const blocPin = document.getElementById('vendeur-verrouille-pin');
+
+    // 1. On force l'affichage de la section conteneur principale
+    if (sectionVendeur) {
+        sectionVendeur.classList.remove('cache');
+        sectionVendeur.style.setProperty('display', 'block', 'important');
+        console.log("Section Vendeur principale forcée à 'block'.");
+    } else {
+        console.error("Élément #section-vendeur introuvable.");
+    }
+
+    // 2. On affiche le tableau de bord directement en contournant les filtres
+    if (corpsVendeur) {
+        corpsVendeur.classList.remove('cache');
+        corpsVendeur.style.setProperty('display', 'block', 'important');
+        console.log("Corps de l'espace vendeur forcé à 'block'.");
+    }
+
+    // 3. On masque les écrans de verrouillage pour le test
+    if (authRequis) authRequis.style.display = 'none';
+    if (blocPin) blocPin.style.display = 'none';
+}
+
+// Lancement automatique après 3 secondes pour voir si l'interface apparaît
+setTimeout(() => {
+    console.log("Exécution du test d'affichage forcé...");
+    forcerAffichageVendeurManuel();
+}, 3000);
 </script> </body>
 </html>
