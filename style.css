@@ -471,70 +471,31 @@ input:focus, select:focus {
    EXTENSIONS CENTRAL VENDEUR (Tableau, Upload, Catalogue)
    ========================================================================= */
 
+/* Élargit le conteneur pour laisser assez de place aux deux blocs côte à côte */
 .corps-large {
-    max-width: 950px !important;
+    max-width: 1200px !important; /* Augmenté de 950px à 1200px */
+    width: 95%;
+    margin: 20px auto;
 }
 
-/* Grille de statistiques des revenus */
-.zone-stats-vendeur {
-    display: flex;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.carte-stat {
-    flex: 1;
-    background: #f8f7ff;
-    border: 1px solid #efeaff;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.carte-stat h4 {
-    margin: 0 0 8px 0;
-    color: #718096;
-    font-size: 14px;
-}
-
-.carte-stat p {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-    color: #2d3748;
-}
-
-.carte-stat.solde {
-    background: #f1edff;
-    border-color: #dcd6f7;
-}
-
-.carte-stat.solde p {
-    color: #6c5ce7;
-}
-
-/* Structure en deux colonnes */
+/* Force l'affichage en deux colonnes parallèles de taille égale */
 .grille-vendeur-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
+    grid-template-columns: 1fr 1fr; /* Deux colonnes identiques côte à côte */
+    gap: 30px; /* Espace confortable entre les deux blocs */
+    align-items: start; /* Aligne le haut des deux blocs */
     margin-top: 30px;
     text-align: left;
 }
 
+/* Optionnel : Assure que le catalogue prenne une hauteur minimale propre */
 .bloc-action-vendeur {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 14px;
-    padding: 20px;
-}
-
-.bloc-action-vendeur h3 {
-    margin-top: 0;
-    font-size: 16px;
-    color: #2d3748;
-    border-bottom: 2px solid #f8f7ff;
-    padding-bottom: 10px;
+    padding: 24px;
+    min-height: 480px; /* Donne la même consistance visuelle aux deux blocs */
+    box-sizing: border-box;
 }
 
 /* Zone d'upload des photos */
