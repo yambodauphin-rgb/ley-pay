@@ -467,149 +467,12 @@ input:focus, select:focus {
     border: 1px solid #e2e8f0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
-/* =========================================================================
-   EXTENSIONS CENTRAL VENDEUR (Tableau, Upload, Catalogue)
+/* ===========================================================================
+   STYLE DES SLOTS DE PHOTOS & VIDÉOS (ZONE D'UPLOAD)
    ========================================================================= */
 
-/* =========================================================================
-   CORRECTIF ALIGNEMENT PARALLÈLE - LEY PAY BUSINESS
-   ========================================================================= */
 
-/* On s'assure que l'espace vendeur peut s'agrandir proprement */
-#corps-espace-vendeur.corps-large {
-    max-width: 1200px !important;
-    width: 95% !important;
-    margin: 20px auto !important;
-    display: block;
-}
 
-/* Conteneur principal qui force l'alignement côte à côte */
-.grille-vendeur-actions {
-    display: flex !important;
-    flex-direction: row !important; /* Force l'alignement horizontal */
-    justify-content: space-between;
-    gap: 25px;
-    margin-top: 25px;
-    width: 100%;
-}
-
-/* Équilibre parfait : chaque bloc prend exactement la moitié de l'espace (moins l'écart) */
-.grille-vendeur-actions .bloc-action-vendeur {
-    flex: 1 !important;
-    min-width: 0; /* Évite les débordements de texte inattendus */
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 24px;
-    box-sizing: border-box;
-}
-
-/* Harmonisation de la hauteur de la liste du catalogue */
-.liste-produits-mini {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: 420px; /* Aligné sur la hauteur du formulaire d'à côté */
-    overflow-y: auto;
-    padding-right: 5px;
-}
-/* Zone d'upload des photos */
-.zone-upload-images input[type="file"] {
-    margin-bottom: 10px;
-    font-size: 13px;
-}
-
-.vignettes-apercu {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.slot-photo-vide, .vignette-image-active {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    border: 2px dashed #dcd6f7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: #a29bfe;
-    background: #fdfcff;
-    background-size: cover;
-    background-position: center;
-}
-
-.vignette-image-active {
-    border-style: solid;
-    border-color: #6c5ce7;
-}
-
-/* Catalogue d'administration du vendeur */
-.liste-produits-mini {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 380px;
-    overflow-y: auto;
-}
-
-.item-produit-vendeur {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fdfcff;
-    border: 1px solid #efeaff;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.preview-img-catalog {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    object-fit: cover;
-    background: #e2e8f0;
-}
-
-.info-item-vendeur {
-    flex: 1;
-    margin-left: 10px;
-}
-
-.info-item-vendeur h5 {
-    margin: 0;
-    font-size: 14px;
-    color: #2d3748;
-}
-
-.info-item-vendeur span {
-    font-size: 12px;
-    color: #6c5ce7;
-    font-weight: 600;
-}
-
-.btn-supprimer-produit {
-    background: #ff7675;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-supprimer-produit:hover {
-    background: #e86463;
-}
-
-.texte-vide {
-    font-size: 13px;
-    color: #a0aec0;
-    text-align: center;
-    margin-top: 20px;
-}
 .slot-photo-vide {
     cursor: pointer;
     transition: transform 0.2s ease, border-color 0.2s ease;
@@ -619,110 +482,70 @@ input:focus, select:focus {
     transform: scale(1.05);
 }
 /* =========================================================================
-   FORCE L'ALIGNEMENT HORIZONTAL PARALLÈLE - SOLUTION ULTIME
+   CORRECTIF HARMONISATION ET LARGEUR DU FORMULAIRE VENDEUR
    ========================================================================= */
 
-/* On force TOUT l'espace vendeur à s'élargir sur l'écran */
-#corps-espace-vendeur.box-vendeur {
-    max-width: 1250px !important; /* On donne de la place pour de vrai */
-    width: 95% !important;
-    margin: 30px auto !important;
-    padding: 25px !important;
-}
-
-/* On force la grille à devenir un Flexbox horizontal ultra-strict */
-.grille-vendeur-actions {
-    display: flex !important;
-    flex-direction: row !important; /* Alignement en ligne obligatoire */
-    justify-content: space-between !important;
-    gap: 30px !important;
-    width: 100% !important;
-    align-items: flex-start !important;
-}
-
-/* Chaque colonne prend exactement 50% de l'espace */
-.grille-vendeur-actions .bloc-action-vendeur {
-    flex: 1 !important;
-    width: 50% !important; /* Force la moitié de la largeur */
-    min-width: 0 !important;
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 14px !important;
-    padding: 24px !important;
-    box-sizing: border-box !important;
-}
-/* =========================================================================
-   RESTRUCTURATION PROPRE ET SÉCURISÉE DU FORMULAIRE VENDEUR
-   ========================================================================= */
-
-/* On isole le bloc de gauche pour qu'il reprenne sa structure verticale */
+/* On structure le bloc pour qu'il s'aligne verticalement et occupe tout l'espace */
 .grille-vendeur-actions .bloc-action-vendeur {
     display: flex !important;
     flex-direction: column !important;
-    gap: 15px !important;
+    gap: 20px !important;
+    width: 100% !important;
     box-sizing: border-box !important;
 }
 
-/* On s'assure que le titre et le nom prennent 100% de la largeur */
-.bloc-action-vendeur h3,
-.bloc-action-vendeur input[type="text"] {
-    width: 100% !important;
-    display: block !important;
-}
-
-/* ALIGNEMENT DES 3 CHAMPS (Prix, Stock, Catégorie) */
+/* La ligne des 3 champs (Prix, Stock, Catégorie) bascule sur une grille parfaite */
 .row-pays-ville {
     display: grid !important;
-    grid-template-columns: 1fr 1fr 1fr !important; /* Divise proprement en 3 colonnes égales */
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 15px !important;
     width: 100% !important;
     margin: 10px 0 !important;
+    box-sizing: border-box !important;
 }
 
-/* Pour chaque sous-bloc de champ */
+/* On force chaque bloc de champ à bien empiler son label et son input */
 .row-pays-ville > div {
     display: flex !important;
     flex-direction: column !important;
+    width: 100% !important;
 }
 
-/* Gestion propre des labels (étiquettes) */
+/* Alignement et visibilité des labels */
 .form-label {
+    display: block !important;
     font-weight: 600 !important;
     color: #4a5568 !important;
     font-size: 14px !important;
-    margin-bottom: 5px !important;
+    margin-bottom: 6px !important;
     text-align: left !important;
-    display: block !important;
 }
 
-/* Style uniforme pour TOUS les champs de saisie */
+/* Uniformisation complète de la taille des champs de saisie */
 .bloc-action-vendeur input,
 .bloc-action-vendeur select {
     width: 100% !important;
-    padding: 10px 12px !important;
+    padding: 11px 14px !important;
     border: 1px solid #cbd5e0 !important;
     border-radius: 8px !important;
     box-sizing: border-box !important;
     font-size: 14px !important;
-    background-color: #fff !important;
+    background-color: #ffffff !important;
 }
 
-/* ZONE DES PHOTOS : En dessous des champs */
+/* Réajustement de la zone d'images en dessous des champs */
 .zone-upload-images {
     width: 100% !important;
-    margin-top: 15px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    margin-top: 10px !important;
 }
 
 .vignettes-apercu {
     display: flex !important;
     flex-direction: row !important;
     gap: 12px !important;
-    margin-top: 10px !important;
-}
-
-/* BOUTON PUBLIER */
-.bloc-action-vendeur button {
-    width: 100% !important;
-    padding: 14px !important;
-    margin-top: 15px !important;
+    margin-top: 8px !important;
+    flex-wrap: wrap !important;
 }
