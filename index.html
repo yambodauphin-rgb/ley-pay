@@ -3,654 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ley Pay - Marketplace</title>
+    <title>Ley Pay - Espace Vendeur</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <nav class="menu-nav">
-        <button onclick="basculerOnglet('accueil')" id="btn-nav-accueil" class="actif">BOUTIQUE 🛍️</button>
-        <button onclick="basculerOnglet('profil')" id="btn-nav-profil">MON PROFIL 👤</button>
-        <button onclick="basculerOnglet('vendeur')" id="btn-nav-vendeur">ESPACE VENDEUR 🚀</button>
-    </nav>
-
-    <main class="conteneur-principal">
-
-        <section id="section-produits">
-            <h2>Bienvenue sur Ley Pay</h2>
-            <p>Découvrez nos articles disponibles.</p>
-            </section>
-
-        <section id="section-compte" class="cache">
-            
-            <div id="bloc-authentification" class="box-auth">
-                
-                <div class="auth-tabs-nav">
-                    <button id="tab-login" class="actif" onclick="basculerOngletAuth('login')">Connexion</button>
-                    <button id="tab-register" onclick="basculerOngletAuth('register')">Inscription</button>
-                </div>
-
-                <h3 id="auth-titre-interne">Connexion</h3>
-                <p id="auth-sous-titre">Bon retour ! Connectez-vous à votre compte client.</p>
-                
-                <div id="wrapper-nom-complet" class="cache">
-                    <label class="form-label">Nom complet</label>
-                    <input type="text" id="auth-nom" placeholder="Entrez votre nom complet">
-                </div>
-
-                <label class="form-label">Adresse e-mail</label>
-                <input type="email" id="auth-email" placeholder="exemple@email.com">
-                
-                <label class="form-label">Mot de passe</label>
-                <input type="password" id="auth-password" placeholder="Entrez votre mot de passe">
-
-                <div id="wrapper-confirmer-pass" class="cache">
-                    <label class="form-label">Confirmer le mot de passe</label>
-                    <input type="password" id="auth-password-conf" placeholder="Confirmez votre mot de passe">
-                    
-                    <label class="checkbox-container-auth">
-                        <input type="checkbox" id="auth-conditions"> J'accepte les <span class="lien-orange">Conditions d'utilisation</span> et la <span class="lien-orange">Politique de confidentialité</span>
-                    </label>
-                </div>
-                
-                <button id="btn-texte-auth" class="btn-orange-submit" onclick="gererAuthentificationGlobale()">Se connecter</button>
-                
-                <p id="auth-bascule-texte" class="texte-aide-auth">
-                    Pas de compte ? <span class="lien-orange" onclick="basculerOngletAuth('register')">Créer un compte</span>
-                </p>
-            </div>
-
-            <div id="info-profil-connecte" class="box-auth cache">
-                <h3>Mon Compte</h3>
-                <p>Bonjour, <span id="txt-nom-client" class="nom-mise-en-avant">Client</span> !</p>
-                <p class="statut-badge-client">Compte client actif vérifié 🔒</p>
-                <button class="btn-or btn-espace-vendeur" id="btn-ouvrir-vendeur-depuis-profil">🚀 Ouvrir mon Espace Vendeur</button>
-                <button class="btn-deconnexion" onclick="executerDeconnexion()">Se déconnecter</button>
-            </div>
-        </section>
-
-        <section id="section-vendeur" class="cache">
-            
-            <div id="vendeur-auth-requis" class="box-vendeur text-center">
-                <h3>🔒 Accès Restreint</h3>
-                <p>Pour pouvoir créer votre boutique en ligne, vous devez d'abord posséder un compte client.</p>
-                <p>Veuillez vous inscrire ou vous connecter dans l'onglet <strong>Mon Profil</strong>.</p>
-                <button class="btn-or" style="margin-top: 15px;" onclick="basculerVersConnexionForcee()">Créer un compte ou se connecter</button>
-            </div>
-
-            <div id="formulaire-inscription-boutique" class="box-vendeur cache formulaire-boutique-design">
-                
-                <div class="etape-formulaire">
-                    <div class="etape-badge">1</div>
-                    <h3 class="etape-titre">Informations personnelles</h3>
-                    
-                    <label class="form-label">Nom complet</label>
-                    <input type="text" id="vendeur-nom-complet" placeholder="Entrez votre nom complet">
-
-                    <label class="form-label">Nom de la boutique</label>
-                    <input type="text" id="vendeur-boutique-nom" placeholder="Entrez le nom de votre boutique">
-
-                    <label class="form-label">Email</label>
-                    <input type="email" id="vendeur-email-contact" placeholder="exemple@email.com">
-
-                    <label class="form-label">Numéro de téléphone</label>
-                    <div class="telephone-row">
-                        <select id="vendeur-prefixe-tel" style="width: 30%; margin: 0;">
-                            <option value="+243">+243 🇨🇩</option>
-                            <option value="+33">+33 🇫🇷</option>
-                        </select>
-                        <input type="tel" id="vendeur-telephone" placeholder="Numéro de téléphone" style="width: 68%; margin: 0;">
-                    </div>
-
-                    <div class="row-pays-ville">
-                        <div style="width: 48%;">
-                            <label class="form-label">Pays</label>
-                            <select id="vendeur-pays" style="margin: 0;">
-                                <option value="">Sélectionnez votre pays</option>
-                                <option value="RDC">République Démocratique du Congo</option>
-                            </select>
-                        </div>
-                        <div style="width: 48%;">
-                            <label class="form-label">Ville</label>
-                            <input type="text" id="vendeur-ville" placeholder="Votre ville" style="margin: 0;">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="etape-formulaire" style="margin-top: 35px;">
-                    <div class="etape-badge">4</div>
-                    <h3 class="etape-titre">Informations de paiement</h3>
-                    
-                    <label class="form-label">Nom du titulaire du compte</label>
-                    <input type="text" id="vendeur-titulaire-compte" placeholder="Entrez le nom du titulaire">
-
-                    <label class="form-label">Moyen de paiement</label>
-                    <div class="moyens-paiement-flex">
-                        <button type="button" class="btn-moyen actif">📱 Mobile Money</button>
-                        <button type="button" class="btn-moyen">🏦 Banque</button>
-                        <button type="button" class="btn-moyen">💳 PayPal</button>
-                    </div>
-
-                    <div class="details-paiement-box">
-                        <label class="form-label">Nom du réseau utilisé</label>
-                        <select id="vendeur-reseau-mobile">
-                            <option value="">Ex. : Airtel Money, Orange Money, M-Pesa...</option>
-                            <option value="Airtel">Airtel Money</option>
-                            <option value="Orange">Orange Money</option>
-                            <option value="M-Pesa">M-Pesa</option>
-                        </select>
-
-                        <label class="form-label">Numéro Mobile Money</label>
-                        <div class="telephone-row">
-                            <select style="width: 30%; margin:0;"><option>+243</option></select>
-                            <input type="text" id="vendeur-num-mobile-money" placeholder="Entrez votre numéro" style="width: 68%; margin:0;">
-                        </div>
-
-                        <label class="form-label" style="margin-top: 15px;">Nom enregistré sur le compte</label>
-                        <input type="text" id="vendeur-nom-enregistre-compte" placeholder="Nom tel qu'enregistré sur le compte">
-
-                        <label class="checkbox-container" style="margin-top: 15px; display: flex; gap: 10px; align-items: center; font-size: 13px;">
-                            <input type="checkbox" id="vendeur-confirme-propriete" style="width: auto; margin:0;"> Je confirme que ce moyen de paiement m'appartient.
-                        </label>
-                    </div>
-                </div>
-
-                <div class="etape-formulaire" style="margin-top: 35px;">
-                    <div class="etape-badge">5</div>
-                    <h3 class="etape-titre">Sécurité du compte</h3>
-                    
-                    <label class="form-label">Créer un mot de passe vendeur</label>
-                    <input type="password" id="vendeur-pass" placeholder="Entrez un mot de passe vendeur">
-
-                    <label class="form-label">Confirmer le mot de passe vendeur</label>
-                    <input type="password" id="vendeur-pass-conf" placeholder="Confirmez votre mot de passe vendeur">
-                </div>
-
-                <div class="etape-formulaire" style="margin-top: 35px;">
-                    <div class="etape-badge">6</div>
-                    <h3 class="etape-titre">Conditions d'utilisation</h3>
-                    
-                    <div class="conditions-list" style="display:flex; flex-direction:column; gap:12px; margin-bottom: 25px;">
-                        <label style="display:flex; gap:10px; font-size:14px; align-items: flex-start;">
-                            <input type="checkbox" id="cond-1" style="width:auto; margin-top:3px;"> 🛡️ Je confirme que mes produits sont légaux et ne violent aucune loi.
-                        </label>
-                        <label style="display:flex; gap:10px; font-size:14px; align-items: flex-start;">
-                            <input type="checkbox" id="cond-2" style="width:auto; margin-top:3px;"> 📄 J'accepte les conditions de vente de la plateforme.
-                        </label>
-                        <label style="display:flex; gap:10px; font-size:14px; align-items: flex-start;">
-                            <input type="checkbox" id="cond-3" style="width:auto; margin-top:3px;"> 🔐 J'accepte la politique de confidentialité et l'utilisation de mes données.
-                        </label>
-                    </div>
-
-                    <button class="btn-boutique-vert" onclick="creerBoutiqueRapideManuel()">🔒 Créer ma boutique</button>
-                </div>
-            </div>
-
-            <div id="vendeur-verrouille-pin" class="box-vendeur cache">
-                <h3>🔑 Code PIN de Sécurité Vendeur</h3>
-                <p>Entrez le mot de passe d'administration défini lors de la création pour ouvrir votre Tableau de Bord.</p>
-                <input type="password" id="input-pin-connexion" placeholder="Entrez le mot de passe vendeur">
-                <button class="btn-or" onclick="verifierPinVendeur()">Déverrouiller le Central Vendeur</button>
-            </div>
-
-
-            <div id="corps-espace-vendeur" class="box-vendeur cache corps-large">
-    <div class="vendeur-header">
-        <h2>📊 Central Vendeur - Ley Pay Business</h2>
-        <p>Bienvenue dans votre gestion commerciale centralisée.</p>
+    <div id="vendeur-verrouille-pin">
+        <div class="boite-pin">
+            <h3>🔒 Accès Espace Vendeur</h3>
+            <p>Veuillez saisir votre code PIN à 4 chiffres pour continuer.</p>
+            <input type="password" id="input-pin-connexion" placeholder="••••" maxlength="4" oninput="verifierPinVendeur()">
+        </div>
     </div>
 
-    <div class="zone-stats-vendeur">
-        <div class="carte-stat">
-            <h4>💰 Total Ventes</h4>
-            <p id="stat-total-ventes">0.00 $</p>
-        </div>
-        <div class="carte-stat">
-            <h4>📉 Frais Plateforme (10%)</h4>
-            <p id="stat-frais-plateforme">0.00 $</p>
-        </div>
-        <div class="carte-stat Solde">
+    <div id="corps-espace-vendeur" class="cache">
+        
+        <div class="tableau-solde-vendeur">
             <h4>💵 Votre Solde Net</h4>
-            <p id="stat-solde-net">0.00 $</p>
+            <div class="stats-solde-container">
+                <div class="stat-box">
+                    <span class="stat-titre">Total Ventes Brutes</span>
+                    <span class="stat-valeur" id="stat-total-ventes">0.00 $</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-titre">Frais Plateforme</span>
+                    <span class="stat-valeur" id="stat-frais-plateforme">0.00 $ (0%)</span>
+                </div>
+                <div class="stat-box net">
+                    <span class="stat-titre">Solde Net Restant</span>
+                    <span class="stat-valeur" id="stat-solde-net">0.00 $</span>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="grille-vendeur-actions">
-        <div class="bloc-action-vendeur">
-            <h3>🛍️ Mettre un produit en ligne</h3>
-            <div class="form-ajout-produit">
-                <label class="form-label">Nom du produit</label>
-<input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
+        <div class="grille-vendeur-actions">
+            
+            <div class="bloc-action-vendeur">
+                <h3>🛍️ Mettre un produit en ligne</h3>
+                
+                <div class="champ-groupe">
+                    <label class="form-label">Nom du produit</label>
+                    <input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
+                </div>
 
-<div class="row-pays-ville">
-    <div>
-        <label class="form-label">Prix ($)</label>
-        <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
-    </div>
-    <div>
-        <label class="form-label">Stock</label>
-        <input type="number" id="p-stock" placeholder="Ex: 10" value="1">
-    </div>
-    <div>
-        <label class="form-label">Catégorie</label>
-        <select id="p-categorie">
-            <option value="Électronique">Électronique 📱</option>
-            <option value="Mode">Mode & Vêtements 👕</option>
-            <option value="Maison">Maison & Cuisine 🍳</option>
-            <option value="Beauté">Beauté & Santé 🧴</option>
-        </select>
-    </div>
-</div>
-
-<label class="form-label">Mode de service Ley Pay</label>
-<select id="p-mode-service" onchange="calculerFraisVendeur()">
-    <option value="FMA">Mode FMA (10% de frais plateforme) 🚀</option>
-    <option value="FMM">Mode FMM (5% de frais plateforme) ⚡</option>
-</select>
+                <div class="row-pays-ville">
+                    <div>
+                        <label class="form-label">Prix ($)</label>
+                        <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
+                    </div>
+                    <div>
+                        <label class="form-label">Stock</label>
+                        <input type="number" id="p-stock" placeholder="Ex: 10" value="1">
+                    </div>
+                    <div>
+                        <label class="form-label">Catégorie</label>
+                        <select id="p-categorie">
+                            <option value="Électronique">Électronique 📱</option>
+                            <option value="Mode">Mode & Vêtements 👕</option>
+                            <option value="Maison">Maison & Cuisine 🍳</option>
+                            <option value="Beauté">Beauté & Santé 🧴</option>
+                        </select>
                     </div>
                 </div>
 
-                <label class="form-label">Photos du produit (4 maximum)</label>
-                <label class="form-label">Photos du produit (Cliquez sur chaque carré pour ajouter une image)</label>
-<div class="zone-upload-images">
-    <div class="vignettes-apercu" id="conteneur-apercu-photos">
-        
-        <div class="slot-photo-vide" id="slot-1" onclick="declencherInputPhoto(1)">
-            <span>+</span>
-            <input type="file" id="file-slot-1" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 1)">
-        </div>
-        
-        <div class="slot-photo-vide" id="slot-2" onclick="declencherInputPhoto(2)">
-            <span>+</span>
-            <input type="file" id="file-slot-2" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 2)">
-        </div>
-        
-        <div class="slot-photo-vide" id="slot-3" onclick="declencherInputPhoto(3)">
-            <span>+</span>
-            <input type="file" id="file-slot-3" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 3)">
-        </div>
-        
-        <div class="slot-photo-vide" id="slot-4" onclick="declencherInputPhoto(4)">
-            <span>+</span>
-            <input type="file" id="file-slot-4" accept="image/*" class="cache" onchange="chargerPhotoIndependante(this, 4)">
-        </div>
-
-    </div>
-</div>
+                <div class="champ-groupe">
+                    <label class="form-label">Mode de service Ley Pay</label>
+                    <select id="p-mode-service" onchange="calculerFraisVendeur()">
+                        <option value="FMA" selected>Mode FMA (10% de frais plateforme) 🚀</option>
+                        <option value="FMM">Mode FMM (5% de frais plateforme) ⚡</option>
+                    </select>
                 </div>
 
-                <button class="btn-boutique-vert" onclick="ajouterProduitVendeur()">🚀 Publier le produit</button>
-            </div>
-        </div>
+                <div class="zone-upload-images">
+                    <label class="form-label">Photos du produit (4 maximum)</label>
+                    <p class="form-aide">Cliquez sur chaque carré pour ajouter une image</p>
+                    
+                    <div class="vignettes-apercu">
+                        <div id="slot-0" onclick="declencherInputPhoto(0)">+</div>
+                        <div id="slot-1" onclick="declencherInputPhoto(1)">+</div>
+                        <div id="slot-2" onclick="declencherInputPhoto(2)">+</div>
+                        <div id="slot-3" onclick="declencherInputPhoto(3)">+</div>
+                    </div>
+                    
+                    <input type="file" id="file-slot-0" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 0)">
+                    <input type="file" id="file-slot-1" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 1)">
+                    <input type="file" id="file-slot-2" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 2)">
+                    <input type="file" id="file-slot-3" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 3)">
+                </div>
 
-        <div class="bloc-action-vendeur">
-            <h3>📦 Votre catalogue en ligne</h3>
-            <div id="liste-produits-vendeur" class="liste-produits-mini">
-                <p class="texte-vide">Aucun produit en ligne pour le moment.</p>
+                <button id="btn-publier" class="btn-principal-vendeur" onclick="ajouterProduitVendeur()">🚀 Publier le produit</button>
             </div>
+
+            <div class="bloc-action-vendeur">
+                <h3>📦 Votre catalogue en ligne</h3>
+                <div id="liste-produits-vendeur" class="conteneur-liste-flux">
+                    <p class="texte-vide">Aucun produit en ligne pour le moment.</p>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
-
-        </section>
-
-    </main>
 
     <script>
-        let modeAuthentificationActuel = 'login';
-
-        // Système de routage corrigé (Utilise classList au lieu de style.display pour contourner le !important du CSS)
-        function basculerOnglet(nomOnglet) {
-            console.log("Navigation vers : " + nomOnglet);
-            
-            const secProduits = document.getElementById('section-produits');
-            const secCompte = document.getElementById('section-compte');
-            const secVendeur = document.getElementById('section-vendeur');
-
-            secProduits.classList.add('cache');
-            secCompte.classList.add('cache');
-            secVendeur.classList.add('cache');
-
-            document.getElementById('btn-nav-accueil').classList.remove('actif');
-            document.getElementById('btn-nav-profil').classList.remove('actif');
-            document.getElementById('btn-nav-vendeur').classList.remove('actif');
-
-            if (nomOnglet === 'accueil') {
-                secProduits.classList.remove('cache');
-                document.getElementById('btn-nav-accueil').classList.add('actif');
-            } else if (nomOnglet === 'profil') {
-                secCompte.classList.remove('cache');
-                document.getElementById('btn-nav-profil').classList.add('actif');
-                rafraichirProfilClient();
-            } else if (nomOnglet === 'vendeur') {
-                secVendeur.classList.remove('cache');
-                document.getElementById('btn-nav-vendeur').classList.add('actif');
-                rafraichirEspaceVendeur();
-            }
-        }
-
-        function basculerOngletAuth(mode) {
-            modeAuthentificationActuel = mode;
-            
-            const tabLogin = document.getElementById('tab-login');
-            const tabRegister = document.getElementById('tab-register');
-            const wrapperNom = document.getElementById('wrapper-nom-complet');
-            const wrapperConfPass = document.getElementById('wrapper-confirmer-pass');
-            const btnTexte = document.getElementById('btn-texte-auth');
-            const titreInterne = document.getElementById('auth-titre-interne');
-            const sousTitre = document.getElementById('auth-sous-titre');
-            const basculeTexte = document.getElementById('auth-bascule-texte');
-
-            if (mode === 'register') {
-                tabLogin.classList.remove('actif');
-                tabRegister.classList.add('actif');
-                wrapperNom.classList.remove('cache');
-                wrapperConfPass.classList.remove('cache');
-                btnTexte.textContent = "Créer mon compte";
-                titreInterne.textContent = "Créer un compte";
-                sousTitre.textContent = "Rejoignez-nous et commencez à vendre ou à acheter dès maintenant.";
-                basculeTexte.innerHTML = 'Vous avez déjà un compte ? <span class="lien-orange" onclick="basculerOngletAuth(\'login\')">Connectez-vous</span>';
-            } else {
-                tabLogin.classList.add('actif');
-                tabRegister.classList.remove('actif');
-                wrapperNom.classList.add('cache');
-                wrapperConfPass.classList.add('cache');
-                btnTexte.textContent = "Se connecter";
-                titreInterne.textContent = "Connexion";
-                sousTitre.textContent = "Bon retour ! Connectez-vous à votre compte client.";
-                basculeTexte.innerHTML = 'Pas de compte ? <span class="lien-orange" onclick="basculerOngletAuth(\'register\')">Créer un compte</span>';
-            }
-        }
-
-        function basculerVersConnexionForcee() {
-            basculerOnglet('profil');
-            basculerOngletAuth('register');
-        }
-
-        function gererAuthentificationGlobale() {
-            const email = document.getElementById('auth-email').value.trim();
-            const password = document.getElementById('auth-password').value;
-
-            if (!email || !password) {
-                alert("Veuillez remplir l'adresse e-mail et le mot de passe.");
-                return;
-            }
-
-            let nomClient = email.split('@')[0];
-
-            if (modeAuthentificationActuel === 'register') {
-                const nomSaisi = document.getElementById('auth-nom').value.trim();
-                const passConf = document.getElementById('auth-password-conf').value;
-                const condCheck = document.getElementById('auth-conditions').checked;
-
-                if (nomSaisi) nomClient = nomSaisi;
-                if (password !== passConf) { alert("Les mots de passe ne correspondent pas."); return; }
-                if (!condCheck) { alert("Veuillez accepter les conditions d'utilisation."); return; }
-            }
-
-            const sessionData = { email: email, nom: nomClient, boutiqueCreee: false };
-            localStorage.setItem('lp_session', JSON.stringify(sessionData));
-            
-            alert(modeAuthentificationActuel === 'register' ? "🎉 Compte client créé !" : "🎉 Connexion réussie !");
-            rafraichirProfilClient();
-        }
-
-        function executerDeconnexion() {
-            localStorage.removeItem('lp_session');
-            alert("Déconnecté.");
-            basculerOnglet('accueil');
-        }
-
-        function rafraichirProfilClient() {
-            const user = JSON.parse(localStorage.getItem('lp_session'));
-            const blocAuth = document.getElementById('bloc-authentification');
-            const infoProfil = document.getElementById('info-profil-connecte');
-
-            if (user) {
-                blocAuth.classList.add('cache');
-                infoProfil.classList.remove('cache');
-                document.getElementById('txt-nom-client').textContent = user.nom;
-                document.getElementById('btn-ouvrir-vendeur-depuis-profil').onclick = () => basculerOnglet('vendeur');
-            } else {
-                blocAuth.classList.remove('cache');
-                infoProfil.classList.add('cache');
-                basculerOngletAuth('login');
-            }
-        }
-
-        function rafraichirEspaceVendeur() {
-            const user = JSON.parse(localStorage.getItem('lp_session'));
-            
-            const blocAuthReq = document.getElementById('vendeur-auth-requis');
-            const blocFormInsc = document.getElementById('formulaire-inscription-boutique');
-            const blocPin = document.getElementById('vendeur-verrouille-pin');
-            const corpsVendeur = document.getElementById('corps-espace-vendeur');
-
-            blocAuthReq.classList.add('cache');
-            blocFormInsc.classList.add('cache');
-            blocPin.classList.add('cache');
-            corpsVendeur.classList.add('cache');
-
-            if (!user) {
-                blocAuthReq.classList.remove('cache');
-                return;
-            }
-
-            document.getElementById('vendeur-nom-complet').value = user.nom;
-            document.getElementById('vendeur-email-contact').value = user.email;
-
-            if (!user.boutiqueCreee) {
-                blocFormInsc.classList.remove('cache');
-                return;
-            }
-
-            blocPin.classList.remove('cache');
-        }
-
-        function creerBoutiqueRapideManuel() {
-            const nomBoutique = document.getElementById('vendeur-boutique-nom').value.trim();
-            const cond1 = document.getElementById('cond-1').checked;
-            const cond2 = document.getElementById('cond-2').checked;
-            const cond3 = document.getElementById('cond-3').checked;
-
-            if (!nomBoutique) { alert("Veuillez entrer un nom pour votre boutique."); return; }
-            if (!cond1 || !cond2 || !cond3) { alert("Veuillez valider toutes les conditions d'utilisation."); return; }
-
-            const user = JSON.parse(localStorage.getItem('lp_session'));
-            if (user) {
-                user.boutiqueCreee = true;
-                localStorage.setItem('lp_session', JSON.stringify(user));
-                alert("🎉 Boutique créée !");
-                rafraichirEspaceVendeur();
-            }
-        }
+        let tableauImagesVendeur = [null, null, null, null];
 
         function verifierPinVendeur() {
             const pin = document.getElementById('input-pin-connexion').value;
-            if (pin.length >= 4) {
+            if (pin.length === 4) {
                 document.getElementById('vendeur-verrouille-pin').classList.add('cache');
                 document.getElementById('corps-espace-vendeur').classList.remove('cache');
-                // CORRECTION ICI : Charge immédiatement le catalogue enregistré dès la connexion !
                 rafraichirCatalogueVendeur();
-            } else {
-                alert("Veuillez saisir votre mot de passe vendeur.");
             }
         }
-        // Base de données simulée pour stocker les images lues en Base64
-let imagesProduitBase64 = [];
 
-
-    // Tableau fixe pour stocker les 4 images individuellement
-let tableauImagesVendeur = [null, null, null, null];
-
-// Déclencher le clic sur le bon input caché lorsqu'on clique sur son carré
-function declencherInputPhoto(indexSlot) {
-    document.getElementById(`file-slot-${indexSlot}`).click();
-}
-
-// Charger l'image sélectionnée pour un carré précis sans effacer les autres
-function chargerPhotoIndependante(input, indexSlot) {
-    const fichier = input.files[0];
-    if (!fichier) return;
-
-    const lecteur = new FileReader();
-    lecteur.onload = function (e) {
-        // Enregistrer l'image en Base64 dans notre tableau à l'index correspondant (0 à 3)
-        tableauImagesVendeur[indexSlot - 1] = e.target.result;
-        
-        // Mettre à jour l'aperçu visuel du carré cliqué
-        const slotDiv = document.getElementById(`slot-${indexSlot}`);
-        slotDiv.style.backgroundImage = `url(${e.target.result})`;
-        slotDiv.style.backgroundSize = 'cover';
-        slotDiv.style.backgroundPosition = 'center';
-        slotDiv.classList.add('vignette-image-active');
-        
-        // Masquer le texte "+" pour laisser place à la photo
-        if (slotDiv.querySelector('span')) {
-            slotDiv.querySelector('span').style.display = 'none';
+        function declencherInputPhoto(indexSlot) {
+            document.getElementById(`file-slot-${indexSlot}`).click();
         }
-    };
-    lecteur.readAsDataURL(fichier);
-}
 
-// Fonction de réinitialisation après publication (à appeler dans ajouterProduitVendeur)
-function réinitialiserSlotsPhotos() {
-    tableauImagesVendeur = [null, null, null, null];
-    for (let i = 1; i <= 4; i++) {
-        const slotDiv = document.getElementById(`slot-${i}`);
-        slotDiv.style.backgroundImage = 'none';
-        slotDiv.classList.remove('vignette-image-active');
-        document.getElementById(`file-slot-${i}`).value = '';
-        if (slotDiv.querySelector('span')) {
-            slotDiv.querySelector('span').style.display = 'block';
+        function chargerPhotoIndependante(input, indexSlot) {
+            const fichier = input.files[0];
+            if (fichier) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tableauImagesVendeur[indexSlot] = e.target.result;
+                    const slot = document.getElementById(`slot-${indexSlot}`);
+                    slot.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover; border-radius:6px;">`;
+                    slot.style.borderStyle = "solid";
+                };
+                reader.readAsDataURL(fichier);
+            }
         }
-    }
-}
 
-// 2. Simulation dynamique du tableau de calcul des gains
-function calculerFraisVendeur() {
-    const prix = parseFloat(document.getElementById('p-prix').value) || 0;
-    const modeService = document.getElementById('p-mode-service').value;
-    
-    // Détermination du taux de commission selon le mode sélectionné
-    let tauxCommission = 0.10; // Par défaut FMA (10%)
-    if (modeService === 'FMM') {
-        tauxCommission = 0.05; // FMM (5%)
-    }
-
-    const pourcentageAffiche = tauxCommission * 100;
-    const frais = prix * tauxCommission;
-    const soldeNet = prix - frais;
-
-    // Mise à jour des textes du tableau de bord de revenus
-    document.getElementById('stat-total-ventes').textContent = `${prix.toFixed(2)} $`;
-    document.getElementById('stat-frais-plateforme').textContent = `${frais.toFixed(2)} $ (${pourcentageAffiche}%)`;
-    document.getElementById('stat-solde-net').textContent = `${soldeNet.toFixed(2)} $`;
-}
-
-// 3. Ajouter le produit au catalogue du vendeur
-// 1. AJOUTER LE PRODUIT ET FORCER L'AFFICHAGE IMMÉDIAT
-function ajouterProduitVendeur() {
-    const nom = document.getElementById('p-nom').value.trim();
-    const prix = document.getElementById('p-prix').value.trim();
-    const categorie = document.getElementById('p-categorie').value;
-
-    if (!nom || !prix) {
-        alert("Veuillez donner un nom et un prix à votre produit.");
-        return;
-    }
-
-    const imagePrincipale = tableauImagesVendeur[0] || 'https://via.placeholder.com/150'; 
-    let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
-
-    // Récupérer la valeur du stock saisi
-    const stock = parseInt(document.getElementById('p-stock').value) || 0;
-
-    // L'objet propre, sans lignes de code perdues à l'intérieur
-    const nouveauProduit = {
-        id: Date.now(),
-        nom: nom,
-        prix: parseFloat(prix).toFixed(2),
-        stock: stock, // <-- C'est comme ça qu'on stocke la valeur !
-        categorie: categorie,
-        modeService: document.getElementById('p-mode-service').value,
-        image: imagePrincipale
-    };
-
-    // Sauvegarder dans le stockage local
-    listeProduitsGlobale.push(nouveauProduit);
-    localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
-
-    alert("🚀 Produit mis en ligne avec succès !");
-    
-    // Réinitialisation des champs du formulaire (C'EST ICI qu'on nettoie le stock !)
-    document.getElementById('p-nom').value = '';
-    document.getElementById('p-prix').value = '';
-    document.getElementById('p-stock').value = '1'; // Mis au bon endroit !
-    réinitialiserSlotsPhotos(); 
-
-    // Forcer l'affichage immédiat dans le catalogue
-    rafraichirCatalogueVendeur();
-
-    if (typeof afficherProduitsAccueil === 'function') {
-        afficherProduitsAccueil();
-    }
-}
-
-// 2. METTRE À JOUR LE CATALOGUE VENDEUR (À DROITE)
-function rafraichirCatalogueVendeur() {
-    const conteneurListe = document.getElementById('liste-produits-vendeur');
-    if (!conteneurListe) return;
-
-    // Récupérer la liste globale mise à jour
-    const listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
-
-    if (listeProduitsGlobale.length === 0) {
-        conteneurListe.innerHTML = '<p class="texte-vide">Aucun produit en ligne pour le moment.</p>';
-        return;
-    }
-
-    // Construire visuellement la liste
-    conteneurListe.innerHTML = '';
-    listeProduitsGlobale.forEach(produit => {
-        const item = document.createElement('div');
-        item.className = 'item-produit-vendeur';
-        item.innerHTML = `
-            <img src="${produit.image}" class="preview-img-catalog" alt="Aperçu" style="width:45px; height:45px; object-fit:cover; border-radius:6px;">
-            <div class="info-item-vendeur" style="flex:1; margin-left:12px;">
-                <h5 style="margin:0; font-size:14px; color:#2d3748;">${produit.nom}</h5>
-                <span style="font-size:12px; color:#6c5ce7; font-weight:600;">${produit.prix} $ • ${produit.categorie}</span>
-            </div>
-            <button class="btn-supprimer-produit" onclick="supprimerProduitVendeur(${produit.id})">Supprimer</button>
-        `;
-        conteneurListe.appendChild(item);
-    });
-}
-
-// 3. RETIRER UN PRODUIT ET ENLEVER DE L'ÉCRAN
-function supprimerProduitVendeur(idProduit) {
-    if (confirm("Voulez-vous vraiment retirer ce produit de la vente ?")) {
-        let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
-        
-        // Filtrer pour retirer le produit sélectionné
-        listeProduitsGlobale = listeProduitsGlobale.filter(p => p.id !== idProduit);
-        localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
-        
-        // Rafraîchir instantanément la vue
-        rafraichirCatalogueVendeur();
-        
-        if (typeof afficherProduitsAccueil === 'function') {
-            afficherProduitsAccueil();
+        function réinitialiserSlotsPhotos() {
+            tableauImagesVendeur = [null, null, null, null];
+            for (let i = 0; i < 4; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                slot.innerHTML = "+";
+                slot.style.borderStyle = "dashed";
+                document.getElementById(`file-slot-${i}`).value = "";
+            }
         }
-    }
-}
 
+        function calculerFraisVendeur() {
+            const prix = parseFloat(document.getElementById('p-prix').value) || 0;
+            const modeService = document.getElementById('p-mode-service').value;
+            
+            let tauxCommission = 0.10;
+            if (modeService === 'FMM') { tauxCommission = 0.05; }
 
+            const pourcentageAffiche = tauxCommission * 100;
+            const frais = prix * tauxCommission;
+            const soldeNet = prix - frais;
 
+            document.getElementById('stat-total-ventes').textContent = `${prix.toFixed(2)} $`;
+            document.getElementById('stat-frais-plateforme').textContent = `${frais.toFixed(2)} $ (${pourcentageAffiche}%)`;
+            document.getElementById('stat-solde-net').textContent = `${soldeNet.toFixed(2)} $`;
+        }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            basculerOnglet('accueil');
-        });
+        function ajouterProduitVendeur() {
+            const nom = document.getElementById('p-nom').value.trim();
+            const prix = document.getElementById('p-prix').value.trim();
+            const stock = parseInt(document.getElementById('p-stock').value) || 1;
+            const categorie = document.getElementById('p-categorie').value;
+
+            if (!nom || !prix) {
+                alert("Veuillez donner un nom et un prix à votre produit.");
+                return;
+            }
+
+            const imagePrincipale = tableauImagesVendeur[0] || 'https://via.placeholder.com/150'; 
+            let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
+
+            const nouveauProduit = {
+                id: Date.now(),
+                nom: nom,
+                prix: parseFloat(prix).toFixed(2),
+                stock: stock,
+                categorie: categorie,
+                modeService: document.getElementById('p-mode-service').value,
+                image: imagePrincipale
+            };
+
+            listeProduitsGlobale.push(nouveauProduit);
+            localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
+
+            alert("🚀 Produit mis en ligne avec succès !");
+            
+            document.getElementById('p-nom').value = '';
+            document.getElementById('p-prix').value = '';
+            document.getElementById('p-stock').value = '1';
+            réinitialiserSlotsPhotos(); 
+            calculerFraisVendeur();
+            rafraichirCatalogueVendeur();
+        }
+
+        function rafraichirCatalogueVendeur() {
+            const conteneurListe = document.getElementById('liste-produits-vendeur');
+            if (!conteneurListe) return;
+
+            const listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
+
+            if (listeProduitsGlobale.length === 0) {
+                conteneurListe.innerHTML = '<p class="texte-vide">Aucun produit en ligne pour le moment.</p>';
+                return;
+            }
+
+            conteneurListe.innerHTML = '';
+            listeProduitsGlobale.forEach(produit => {
+                const badgeMode = produit.modeService || 'FMA';
+                const item = document.createElement('div');
+                item.className = 'item-produit-vendeur';
+                item.innerHTML = `
+                    <img src="${produit.image}" alt="Aperçu">
+                    <div class="info-item-vendeur">
+                        <h5>${produit.nom}</h5>
+                        <span>${produit.prix} $ • ${produit.categorie} • <b style="color:#2ecc71;">Stock: ${produit.stock}</b> <small style="background:#edf2f7; padding:2px 4px; border-radius:4px; font-weight:normal;">${badgeMode}</small></span>
+                    </div>
+                    <button class="btn-supprimer-produit" onclick="supprimerProduitVendeur(${produit.id})">Supprimer</button>
+                `;
+                conteneurListe.appendChild(item);
+            });
+        }
+
+        function supprimerProduitVendeur(idProduit) {
+            if (confirm("Voulez-vous vraiment retirer ce produit de la vente ?")) {
+                let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
+                listeProduitsGlobale = listeProduitsGlobale.filter(p => p.id !== idProduit);
+                localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
+                rafraichirCatalogueVendeur();
+            }
+        }
     </script>
 </body>
 </html>

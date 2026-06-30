@@ -1,499 +1,104 @@
 /* =========================================================================
-   CHARTE GRAPHIQUE & CONFIGURATION LEY PAY (Inspiré de la maquette officielle)
+   STYLE GLOBAL & FORMULAIRE PARALLÈLE CONFIGURATION - LEY PAY 
    ========================================================================= */
 
-:root {
-    --lp-purple: #6c5ce7;
-    --lp-purple-light: #f1f0ff;
-    --lp-orange: #ff7675;
-    --lp-dark: #2d3436;
-    --lp-gray-bg: #f8f9fa;
-    --lp-gray-border: #e2e8f0;
-    --lp-text-main: #2d3748;
-    --lp-text-muted: #718096;
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-    --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.05);
-    --transition: all 0.3s ease;
-}
-
-/* Réinitialisation de base */
 body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f7fafc;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--lp-gray-bg);
-    color: var(--lp-text-main);
-    -webkit-font-smoothing: antialiased;
 }
 
-/* Gestion du masquage par classe de sécurité */
-.cache { 
-    display: none !important; 
+/* CLASSE UTILITAIRE DE MASQUAGE */
+.cache {
+    display: none !important;
 }
 
-/* =========================================================================
-   NAVBAR DE NAVIGATION UNIQUE & ÉPURÉE
-   ========================================================================= */
-.menu-nav { 
-    background: #ffffff; 
-    padding: 15px 40px; 
-    display: flex; 
+/* ZONE DE PIN VERROUILLÉE */
+#vendeur-verrouille-pin {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(26, 32, 44, 0.9);
+    display: flex;
     align-items: center;
-    gap: 15px; 
-    border-bottom: 1px solid var(--lp-gray-border);
-    box-shadow: var(--shadow-subtle);
+    justify-content: center;
+    z-index: 9999;
 }
 
-.menu-nav button { 
-    background: none; 
-    border: none; 
-    color: var(--lp-text-muted); 
-    font-size: 15px; 
-    font-weight: 600;
-    cursor: pointer; 
-    padding: 10px 20px; 
-    border-radius: var(--radius-sm);
-    transition: var(--transition);
-}
-
-.menu-nav button:hover {
-    background-color: var(--lp-purple-light);
-    color: var(--lp-purple);
-}
-
-.menu-nav button.actif { 
-    background-color: var(--lp-purple);
-    color: #ffffff; 
-}
-
-/* =========================================================================
-   ZONE PRINCIPALE ET CONTENEURS (CARDS)
-   ========================================================================= */
-.conteneur-principal { 
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px; 
-    min-height: 500px; 
-}
-
-/* Boîtes de contenu (Profil, Formulaires, Tableaux de bord) */
-.box-auth, .box-vendeur { 
-    background: #ffffff; 
-    color: var(--lp-text-main); 
-    padding: 35px; 
-    border-radius: var(--radius-lg); 
-    max-width: 550px; 
-    margin: 0 auto 30px auto; 
-    border: 1px solid var(--lp-gray-border);
-    box-shadow: var(--shadow-subtle);
-}
-
-.corps-large {
-    max-width: 100%;
-}
-
-/* Typographie interne */
-h2 {
-    font-size: 28px;
-    color: var(--lp-dark);
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
-h3 {
-    font-size: 22px;
-    color: var(--lp-dark);
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-p {
-    color: var(--lp-text-muted);
-    line-height: 1.6;
-    margin-top: 0;
-}
-
-/* =========================================================================
-   FORMULAIRES ET INPUTS MODERNES
-   ========================================================================= */
-input, select { 
-    display: block; 
-    width: 100%; 
-    padding: 14px 16px; 
-    margin: 15px 0; 
-    border-radius: var(--radius-md); 
-    border: 1px solid var(--lp-gray-border); 
-    background: #ffffff; 
-    color: var(--lp-text-main); 
-    font-size: 15px;
-    box-sizing: border-box;
-    transition: var(--transition);
-}
-
-input:focus, select:focus {
-    outline: none;
-    border-color: var(--lp-purple);
-    box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.15);
-}
-
-/* =========================================================================
-   BOUTONS DE L'INTERFACE
-   ========================================================================= */
-.btn-or { 
-    background: var(--lp-purple);
-    color: #ffffff; 
-    font-weight: 600; 
-    font-size: 16px;
-    padding: 14px 24px; 
-    border: none; 
-    border-radius: var(--radius-md); 
-    cursor: pointer; 
-    width: 100%;
-    transition: var(--transition);
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-}
-
-.btn-or:hover {
-    background: #5b4cc4;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
-}
-
-.btn-espace-vendeur {
-    margin-bottom: 15px;
-}
-
-.btn-deconnexion {
-    background: #ffe5e5; 
-    color: var(--lp-orange); 
-    font-weight: 600; 
-    font-size: 16px;
-    padding: 14px 24px; 
-    border: none; 
-    border-radius: var(--radius-md); 
-    cursor: pointer;
-    width: 100%;
-    transition: var(--transition);
-}
-
-.btn-deconnexion:hover {
-    background: #ffd2d2;
-    color: #d63031;
-}
-
-/* =========================================================================
-   COMPOSANTS SPÉCIFIQUES ET ÉTAT DE SERVICES
-   ========================================================================= */
-.texte-aide {
-    margin-top: 20px; 
-    font-size: 13px; 
-    color: var(--lp-text-muted);
+.boite-pin {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     text-align: center;
+    max-width: 360px;
+    width: 90%;
 }
 
-.nom-mise-en-avant {
-    color: var(--lp-purple); 
-    font-weight: 700;
-}
-
-/* Cadre informatif du Tableau de bord vendeur */
-.statut-boutique-box {
-    background: var(--lp-purple-light); 
-    padding: 20px; 
-    border-radius: var(--radius-md); 
-    border-left: 5px solid var(--lp-purple);
-    margin-top: 25px;
-    color: var(--lp-dark);
-    font-size: 15px;
-    line-height: 1.8;
-}
-/* =========================================================================
-   STYLE SPÉCIFIQUE POUR LES ZONES D'INSCRIPTION & DE CONNEXION (Inspiré de M.png)
-   ========================================================================= */
-
-/* En-tête interne du bloc d'authentification (Tabs) */
-.auth-tabs-nav {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 25px;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 10px;
-}
-
-.auth-tabs-nav button {
-    background: none;
-    border: none;
-    font-size: 16px;
-    font-weight: 600;
-    color: #718096;
-    cursor: pointer;
-    padding: 8px 16px;
-    transition: all 0.2s ease;
-}
-
-.auth-tabs-nav button:hover {
-    color: #ff7675; /* Version claire de l'orange */
-}
-
-/* Onglet d'authentification actif */
-.auth-tabs-nav button.actif {
-    color: #ff7675; /* Orange principal */
-    border-bottom: 3px solid #ff7675;
-    margin-bottom: -13px;
-}
-
-/* Case à cocher pour accepter les conditions d'utilisation */
-.checkbox-container-auth {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 13px;
-    color: #4a5568;
-    margin: 15px 0;
-    cursor: pointer;
-    text-align: left;
-}
-
-.checkbox-container-auth input {
-    width: auto;
-    margin-top: 3px;
-    cursor: pointer;
-}
-
-/* Bouton d'action principal Orange de soumission */
-.btn-orange-submit {
-    background-color: #ff7675 !important; /* Orange de ta maquette M.png */
-    color: #ffffff !important;
-    font-weight: 600;
-    font-size: 16px;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
+.boite-pin h3 { margin-top: 0; color: #2d3748; }
+.boite-pin p { color: #718096; font-size: 14px; }
+.boite-pin input {
     width: 100%;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(255, 118, 117, 0.25);
-    transition: all 0.2s ease;
-}
-
-.btn-orange-submit:hover {
-    background-color: #e86463 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(255, 118, 117, 0.35);
-}
-
-/* Liens et textes cliquables en orange */
-.lien-orange {
-    color: #ff7675;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.lien-orange:hover {
-    text-decoration: underline
-}
-/* =========================================================================
-   STYLE DE L'ESPACE VENDEUR & FORMULAIRE MULTI-ÉTAPES (Thème Violet)
-   ========================================================================= */
-
-/* Conteneur global du formulaire de création de boutique */
-.formulaire-boutique-design {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 10px 25px rgba(108, 92, 231, 0.05);
-    border: 1px solid #e2e8f0;
-    max-width: 650px;
-    margin: 20px auto;
-}
-
-/* Blocs d'étapes (Cartes intérieures) */
-.etape-formulaire {
-    background: #fdfcff;
-    border: 1px solid #efeaff;
-    border-radius: 14px;
-    padding: 24px;
-    position: relative;
-    text-align: left;
-}
-
-/* Badge numérique de l'étape (1, 4, 5, 6) */
-.etape-badge {
-    position: absolute;
-    top: -15px;
-    left: 20px;
-    background: #6c5ce7; /* Violet Ley Pay */
-    color: #ffffff;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
-}
-
-/* Titre de l'étape */
-.etape-titre {
-    color: #2d3748;
-    font-size: 18px;
-    font-weight: 700;
-    margin-top: 5px;
-    margin-bottom: 20px;
-    padding-left: 5px;
-}
-
-/* Libellés des champs (Labels) */
-.form-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #4a5568;
-    margin-bottom: 6px;
-    margin-top: 14px;
-}
-
-/* Entrées et sélections du formulaire */
-.formulaire-boutique-design input[type="text"],
-.formulaire-boutique-design input[type="email"],
-.formulaire-boutique-design input[type="password"],
-.formulaire-boutique-design input[type="tel"],
-.formulaire-boutique-design select {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #dcd6f7;
+    padding: 12px;
+    font-size: 22px;
+    text-align: center;
+    border: 2px solid #cbd5e0;
     border-radius: 10px;
-    font-size: 14px;
-    color: #2d3748;
-    background-color: #ffffff;
-    transition: all 0.2s ease;
+    letter-spacing: 8px;
     box-sizing: border-box;
 }
 
-/* Focus sur les inputs (Effet violet brillant) */
-.formulaire-boutique-design input:focus,
-.formulaire-boutique-design select:focus {
-    outline: none;
-    border-color: #a29bfe;
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
-}
-
-/* Alignements en ligne (Téléphone, Pays/Ville) */
-.telephone-row, .row-pays-ville {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    align-items: center;
-    width: 100%;
-}
-
-/* Flexbox pour la sélection des moyens de paiement */
-.moyens-paiement-flex {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-/* Boutons de sélection du mode de paiement */
-.btn-moyen {
-    flex: 1;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #4a5568;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-moyen:hover {
-    border-color: #a29bfe;
-    background-color: #f8f7ff;
-}
-
-/* État actif du moyen de paiement sélectionné */
-.btn-moyen.actif {
-    border-color: #6c5ce7;
-    background-color: #f1edff;
-    color: #6c5ce7;
-    box-shadow: 0 2px 6px rgba(108, 92, 231, 0.1);
-}
-
-/* Encadré gris/violet des détails de paiement */
-.details-paiement-box {
-    background-color: #f8f7ff;
-    border: 1px dashed #dcd6f7;
-    border-radius: 10px;
-    padding: 16px;
-    margin-top: 10px;
-}
-
-/* Bouton final vert "Créer ma boutique" (Conforme à l'image) */
-.btn-boutique-vert {
-    background-color: #00b894 !important; /* Vert émeraude de validation */
-    color: #ffffff !important;
-    font-weight: 600;
-    font-size: 16px;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    width: 100%;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
-    transition: all 0.2s ease;
-    margin-top: 15px;
-}
-
-.btn-boutique-vert:hover {
-    background-color: #00a887 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(0, 184, 148, 0.3);
-}
-
-/* Boîte d'accès restreint si non connecté */
-.box-vendeur {
-    max-width: 550px;
-    margin: 40px auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-}
-/* =========================================================================
-   RESTRUCTURATION GLOBALE ET PROPRE DE L'ESPACE VENDEUR - LEY PAY
-   ========================================================================= */
-
-/* 1. CONTENEUR PRINCIPAL */
+/* STRUCTURE ENTIÈRE DE LA PAGE VENDEUR */
 #corps-espace-vendeur {
     max-width: 1250px !important;
     width: 95% !important;
     margin: 30px auto !important;
-    display: block !important;
+    box-sizing: border-box;
 }
 
-/* 2. DISPOSITION CÔTE À CÔTE (Formulaire à gauche, Catalogue à droite) */
+/* TABLEAU DES REVENUS ET STATS */
+.tableau-solde-vendeur {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #e2e8f0;
+}
+
+.tableau-solde-vendeur h4 { margin: 0 0 15px 0; color: #2d3748; font-size: 16px; }
+.stats-solde-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.stat-box {
+    flex: 1;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #edf2f7;
+}
+
+.stat-box .stat-titre { display: block; font-size: 12px; color: #718096; margin-bottom: 5px; }
+.stat-box .stat-valeur { font-size: 18px; font-weight: 700; color: #2d3748; }
+.stat-box.net { background: #ebf8ff; border-color: #bee3f8; }
+.stat-box.net .stat-valeur { color: #2b6cb0; }
+
+/* RESTRUCTURATION STRICTE CÔTE À CÔTE */
 .grille-vendeur-actions {
     display: flex !important;
-    flex-direction: row !important; /* Force l'alignement horizontal */
+    flex-direction: row !important;
     justify-content: space-between !important;
     gap: 30px !important;
     align-items: flex-start !important;
     width: 100% !important;
-    box-sizing: border-box !important;
 }
 
-/* 3. STRUCTURE DES DEUX GRANDS BLOCS (50% chacun) */
+/* CHAQUE COLONNE PREND PILE 50% DE L'ÉCRAN */
 .grille-vendeur-actions .bloc-action-vendeur {
     flex: 1 !important;
-    width: 50% !important; /* Partage équitable de l'écran */
+    width: 50% !important;
     min-width: 0 !important;
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
@@ -503,34 +108,52 @@ input:focus, select:focus {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 4. ALIGNEMENT DES 3 INPUTS (Prix, Stock, Catégorie) */
+.bloc-action-vendeur h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #2d3748;
+}
+
+/* GROUPEMENT DE CHAMPS */
+.champ-groupe {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* LIGNE DES MULTI-INPUTS (Prix, Stock, Catégorie) */
 .row-pays-ville {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important; /* 3 colonnes parfaites */
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 15px !important;
     width: 100% !important;
     margin: 15px 0 !important;
-    box-sizing: border-box !important;
 }
 
 .row-pays-ville > div {
     display: flex !important;
     flex-direction: column !important;
-    width: 100% !important;
 }
 
-/* 5. LABELS ET EN-TÊTES */
+/* LABELS DES INPUTS */
 .form-label {
     display: block !important;
     font-weight: 600 !important;
     color: #4a5568 !important;
-    font-size: 14px !important;
+    font-size: 13px !important;
     margin-bottom: 6px !important;
     text-align: left !important;
 }
 
-/* 6. STYLE UNIFORME DES CHAMPS (Inputs et Selects) */
-.bloc-action-vendeur input,
+.form-aide {
+    font-size: 12px;
+    color: #a0aec0;
+    margin: -4px 0 10px 0;
+}
+
+/* CHAMPS DE SAISIE ET SELECTEURS UNIFORMES */
+.bloc-action-vendeur input[type="text"],
+.bloc-action-vendeur input[type="number"],
 .bloc-action-vendeur select {
     width: 100% !important;
     padding: 12px 14px !important;
@@ -546,26 +169,23 @@ input:focus, select:focus {
 .bloc-action-vendeur select:focus {
     border-color: #6c5ce7 !important;
     outline: none !important;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
 }
 
-/* 7. RE-STYLAGE DES CARRÉS DE SÉLECTION DE PHOTOS */
+/* GESTION DE LA ZONE PHOTO ET APERCU */
 .zone-upload-images {
     width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    margin-top: 15px !important;
+    margin-top: 20px !important;
 }
 
 .vignettes-apercu {
     display: flex !important;
     flex-direction: row !important;
     gap: 12px !important;
-    margin-top: 10px !important;
     flex-wrap: wrap !important;
 }
 
-/* Force les slots à redevenir de belles cases carrées */
+/* FORÇAGE DES JOLIS CARRÉS D'IMAGE EXCLUSIFS */
 .vignettes-apercu div, 
 .vignettes-apercu [id^="slot-"] {
     width: 65px !important;
@@ -578,9 +198,10 @@ input:focus, select:focus {
     cursor: pointer !important;
     background-color: #f7fafc !important;
     color: #a0aec0 !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     box-sizing: border-box !important;
     transition: all 0.2s ease-in-out !important;
+    user-select: none;
 }
 
 .vignettes-apercu div:hover, 
@@ -590,18 +211,40 @@ input:focus, select:focus {
     color: #6c5ce7 !important;
 }
 
-/* 8. BOUTON DE PUBLICATION */
-.bloc-action-vendeur button#btn-publier,
-.bloc-action-vendeur .btn-principal-vendeur {
+/* BOUTON DE PUBLICATION PRINCIPAL EN BAS */
+.btn-principal-vendeur {
     width: 100% !important;
+    background-color: #00b894 !important;
+    color: #ffffff !important;
+    border: none !important;
     padding: 14px !important;
-    margin-top: 20px !important;
-    font-size: 16px !important;
+    margin-top: 25px !important;
+    font-size: 15px !important;
     font-weight: 600 !important;
     border-radius: 10px !important;
+    cursor: pointer !important;
+    transition: background 0.2s;
 }
 
-/* 9. STYLE DU CATALOGUE DE DROITE (Items du catalogue) */
+.btn-principal-vendeur:hover {
+    background-color: #00a383 !important;
+}
+
+/* CONTENEUR DE FLUX DU CATALOGUE DE VENTE (DROITE) */
+.conteneur-liste-flux {
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.texte-vide {
+    color: #a0aec0;
+    font-size: 14px;
+    text-align: center;
+    padding: 30px 0;
+}
+
+/* ÉLÉMENTS INDIVIDUELS DU CATALOGUE DANS LA LISTE */
 .item-produit-vendeur {
     display: flex !important;
     align-items: center !important;
@@ -613,6 +256,30 @@ input:focus, select:focus {
     border: 1px solid #e2e8f0 !important;
 }
 
+.item-produit-vendeur img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.info-item-vendeur {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.info-item-vendeur h5 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: #2d3748;
+}
+
+.info-item-vendeur span {
+    font-size: 12px;
+    color: #6c5ce7;
+    font-weight: 600;
+}
+
 .btn-supprimer-produit {
     background-color: #fed7d7 !important;
     color: #c53030 !important;
@@ -622,6 +289,7 @@ input:focus, select:focus {
     cursor: pointer !important;
     font-size: 12px !important;
     font-weight: 600 !important;
+    transition: background 0.2s;
 }
 
 .btn-supprimer-produit:hover {
