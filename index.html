@@ -88,11 +88,81 @@
     </div>
 
     <script>
-// ==========================================
-// GESTION DU PANIER FLOTTANT
-// ==========================================
+// =========================================================
+// 1. STOCKAGE ET CONFIGURATION INITIALE
+// =========================================================
 let panierArticles = [];
 
+// Chargement initial au démarrage de la page
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("🚀 Ley Pay Pro connecté et prêt !");
+    
+    // Rendre la touche 'Entrée' fonctionnelle pour la barre de recherche
+    const inputRecherche = document.getElementById('recherche-input');
+    if (inputRecherche) {
+        inputRecherche.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') filtrerRecherche();
+        });
+    }
+});
+
+// =========================================================
+// 2. FONCTIONS DE LA BARRE DE NAVIGATION & ACCUEIL
+// =========================================================
+
+// Fonction pour le bouton de recherche
+function filtrerRecherche() {
+    const valeur = document.getElementById('recherche-input').value.trim().toLowerCase();
+    if (!valeur) {
+        alert("🔍 Veuillez saisir un mot-clé pour la recherche.");
+        return;
+    }
+    alert(`Recherche en cours pour : "${valeur}" (Connexion API à venir...)`);
+    // Ici, tu pourras filtrer l'affichage de ta grille de produits
+}
+
+// Fonction pour les badges de catégories (Tout voir, Vêtements, Tech, Cuisine)
+function filtrerCategorie(categorie) {
+    // 1. Met à jour le style visuel des boutons (badges)
+    const badges = document.querySelectorAll('.badge-filtre');
+    badges.forEach(badge => badge.classList.remove('actif'));
+    
+    // Trouve le badge cliqué et lui ajoute la classe 'actif'
+    const badgeClique = Array.from(badges).find(b => b.textContent.includes(categorie) || (categorie === 'Tout' && b.textContent.includes('Tout')));
+    if (badgeClique) badgeClique.classList.add('actif');
+
+    console.log(`🗂️ Filtrage sur la catégorie : ${categorie}`);
+    alert(`Filtrage actif : ${categorie}`);
+    // Ici, tu mettras ta logique pour masquer/afficher les produits de cette catégorie
+}
+
+// Bouton "Vendre 🚀"
+function ouvrirEspaceVendeur() {
+    alert("🔐 Redirection vers l'Espace Vendeur... Saisie du code PIN requise.");
+    // Si tu as un bloc ou une page pour le code PIN, tu l'affiches ici, par exemple :
+    // document.getElementById('bloc-pin-vendeur').style.display = 'flex';
+}
+
+// Bouton "Se connecter / S'inscrire"
+const btnConnexion = document.querySelector('.btn-connexion-nav');
+if (btnConnexion) {
+    btnConnexion.addEventListener('click', () => {
+        alert("🔒 Ouverture de la fenêtre de connexion / inscription.");
+    });
+}
+
+// Bouton du bandeau "Voir les offres"
+const btnHero = document.querySelector('.btn-hero-action');
+if (btnHero) {
+    btnHero.addEventListener('click', () => {
+        // Fait défiler la page doucement jusqu'aux recommandations
+        document.querySelector('.titre-section').scrollIntoView({ behavior: 'smooth' });
+    });
+}
+
+// =========================================================
+// 3. LOGIQUE DU PANIER FLOTTANT
+// =========================================================
 function basculerAffichagePanier() {
     const panier = document.getElementById('panier-flottant-interface');
     panier.classList.toggle('actif');
@@ -137,38 +207,46 @@ function rafraichirVisuelPanier() {
     gTotal.textContent = `${(totalCumule + 5).toFixed(2)} $`;
 }
 
+function retirerDuPanier(index) {
+    panierArticles.splice(index, 1);
+    rafraichirVisuelPanier();
+}
+
 function viderPanierComplet() {
     panierArticles = [];
     rafraichirVisuelPanier();
 }
 
-// ==========================================
-// TON ANCIENNE FONCTION VENDEUR (RÉINTEGRÉE)
-// ==========================================
+function passerCommande() {
+    if (panierArticles.length === 0) {
+        alert("⚠️ Votre panier est vide.");
+        return;
+    }
+    alert("📝 Traitement de votre commande...");
+}
+
+// =========================================================
+// 4. ANCIENNE FONCTION VENDEUR SYNCRO
+// =========================================================
 function ajouterProduitVendeur() {
-    // 1. Récupération de l'image (prend la première ou une image par défaut)
     const imagePrincipale = (typeof tableauImagesVendeur !== 'undefined' && tableauImagesVendeur[0]) 
                             || 'https://via.placeholder.com/150';
 
-    // 2. Récupération ou création de la liste globale des produits du site
     let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_products_global')) || [];
 
-    // 3. Récupération des données des champs du formulaire
-    const nom = document.getElementById('p-nom').value;
-    const prix = document.getElementById('p-prix').value;
-    const stock = parseInt(document.getElementById('p-stock').value) || 0;
-    const categorie = document.getElementById('p-categorie').value; // Récupère la catégorie sélectionnée
-    const modeService = document.getElementById('p-mode-service').value; // Enregistre si c'est FMM ou FMA
+    const nom = document.getElementById('p-nom')?.value;
+    const prix = document.getElementById('p-prix')?.value;
+    const stock = parseInt(document.getElementById('p-stock')?.value) || 0;
+    const categorie = document.getElementById('p-categorie')?.value; 
+    const modeService = document.getElementById('p-mode-service')?.value; 
 
-    // Validation rapide pour éviter d'envoyer un produit vide
     if (!nom || !prix) {
-        alert("⚠️ Veuillez remplir au moins le nom et le prix du produit.");
+        alert("⚠️ Veuillez remplir le nom et le prix du produit.");
         return;
     }
 
-    // 4. Création de l'objet produit unique (exactement comme dans tes captures)
     const nouveauProduit = {
-        id: Date.now(), // Identifiant unique basé sur le temps
+        id: Date.now(), 
         nom: nom,
         prix: parseFloat(prix).toFixed(2),
         stock: stock,
@@ -177,26 +255,15 @@ function ajouterProduitVendeur() {
         image: imagePrincipale
     };
 
-    // 5. Sauvegarde dans le stockage local (localStorage)
     listeProduitsGlobale.push(nouveauProduit);
     localStorage.setItem('lp_products_global', JSON.stringify(listeProduitsGlobale));
 
-    // 6. Message de succès
     alert("🚀 Produit mis en ligne avec succès !");
 
-    // 7. Réinitialisation des champs du formulaire après envoi
-    document.getElementById('p-nom').value = '';
-    document.getElementById('p-prix').value = '';
-    document.getElementById('p-stock').value = '1'; // Remet le stock à 1 par défaut
-    
-    if (typeof reininitialiserPhotos === 'function') {
-        reininitialiserPhotos(); // Si tu as une fonction pour vider les carrés de photos
-    }
-    
-    // Optionnel : recharger la liste sur l'écran si nécessaire
-    if (typeof afficherCatalogueVendeur === 'function') {
-        afficherCatalogueVendeur();
-    }
+    // Nettoyage des champs si les éléments existent
+    if(document.getElementById('p-nom')) document.getElementById('p-nom').value = '';
+    if(document.getElementById('p-prix')) document.getElementById('p-prix').value = '';
+    if(document.getElementById('p-stock')) document.getElementById('p-stock').value = '1';
 }
 </script>
 </body>
