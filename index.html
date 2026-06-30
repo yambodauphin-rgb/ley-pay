@@ -265,6 +265,18 @@ function ajouterProduitVendeur() {
     if(document.getElementById('p-prix')) document.getElementById('p-prix').value = '';
     if(document.getElementById('p-stock')) document.getElementById('p-stock').value = '1';
 }
+function ouvrirEspaceVendeur() {
+    // Rend visible le bloc de l'espace vendeur / code PIN
+    const blocPIN = document.getElementById('espace-vendeur-container') || document.getElementById('bloc-pin-vendeur');
+    
+    if (blocPIN) {
+        blocPIN.style.display = 'flex'; 
+        console.log("🔒 Écran du code PIN affiché avec succès.");
+    } else {
+        // Alerte de secours si l'identifiant ne correspond pas encore à ton HTML
+        alert("🔒 Redirection vers l'Espace Vendeur... Saisie du code PIN requise.");
+    }
+}
 </script>
 </body>
 </html>
