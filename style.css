@@ -482,70 +482,63 @@ input:focus, select:focus {
     transform: scale(1.05);
 }
 /* =========================================================================
-   CORRECTIF HARMONISATION ET LARGEUR DU FORMULAIRE VENDEUR
+   ALIGNEMENT SÉCURISÉ CÔTE À CÔTE ET RE-STYLAGE DES IMAGES
    ========================================================================= */
 
-/* On structure le bloc pour qu'il s'aligne verticalement et occupe tout l'espace */
-.grille-vendeur-actions .bloc-action-vendeur {
+/* 1. Force le conteneur à devenir un Flexbox horizontal large */
+#corps-espace-vendeur {
+    max-width: 1200px !important;
+    width: 95% !important;
+    margin: 20px auto !important;
+}
+
+.grille-vendeur-actions {
     display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-/* La ligne des 3 champs (Prix, Stock, Catégorie) bascule sur une grille parfaite */
-.row-pays-ville {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 15px !important;
-    width: 100% !important;
-    margin: 10px 0 !important;
-    box-sizing: border-box !important;
-}
-
-/* On force chaque bloc de champ à bien empiler son label et son input */
-.row-pays-ville > div {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-}
-
-/* Alignement et visibilité des labels */
-.form-label {
-    display: block !important;
-    font-weight: 600 !important;
-    color: #4a5568 !important;
-    font-size: 14px !important;
-    margin-bottom: 6px !important;
-    text-align: left !important;
-}
-
-/* Uniformisation complète de la taille des champs de saisie */
-.bloc-action-vendeur input,
-.bloc-action-vendeur select {
-    width: 100% !important;
-    padding: 11px 14px !important;
-    border: 1px solid #cbd5e0 !important;
-    border-radius: 8px !important;
-    box-sizing: border-box !important;
-    font-size: 14px !important;
-    background-color: #ffffff !important;
-}
-
-/* Réajustement de la zone d'images en dessous des champs */
-.zone-upload-images {
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important; /* Force les deux blocs côte à côte */
+    justify-content: space-between !important;
+    gap: 30px !important;
     align-items: flex-start !important;
-    margin-top: 10px !important;
+    width: 100% !important;
 }
 
+/* 2. On attribue la moitié de la largeur à chaque grand bloc */
+.grille-vendeur-actions .bloc-action-vendeur {
+    flex: 1 !important;
+    width: 50% !important; /* Formulaire à gauche (50%), Catalogue à droite (50%) */
+    min-width: 0 !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+    padding: 24px !important;
+    box-sizing: border-box !important;
+}
+
+/* 3. RE-STYLAGE DES CARRÉS DE SÉLECTION DE PHOTOS */
 .vignettes-apercu {
     display: flex !important;
     flex-direction: row !important;
     gap: 12px !important;
-    margin-top: 8px !important;
-    flex-wrap: wrap !important;
+    margin-top: 10px !important;
+}
+
+/* Redonne vie aux jolies cases pour cliquer et charger les photos */
+.vignettes-apercu div[id^="slot-"] {
+    width: 65px !important;
+    height: 65px !important;
+    border: 2px dashed #cbd5e0 !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    background-color: #f7fafc !important;
+    color: #a0aec0 !important;
+    font-size: 18px !important;
+    transition: all 0.2s ease !important;
+}
+
+.vignettes-apercu div[id^="slot-"]:hover {
+    border-color: #6c5ce7 !important;
+    background-color: #edf2f7 !important;
+    color: #6c5ce7 !important;
 }
