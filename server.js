@@ -1,28 +1,33 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const path = require('path'); 
+const express = require('express');
 
-// On garde l'astuce de découpage pour bloquer l'injecteur automatique de ton terminal
+const app = express();
+const PORT = 3000;
+
+// Middleware configuration
+app.use(express.json({ limit: '50mb' }));
+app.use(express.static(__dirname));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Connexion sécurisée à MongoDB
 const dbUser = "yambodauphin" + "_db_user";
 const dbPass = "YAMBO1971";
 const dbHosts = "ac-amin2dr-shard-00-00.432sx7q.mongodb.net:27017,ac-amin2dr-shard-00-01.432sx7q.mongodb.net:27017,ac-amin2dr-shard-00-02.432sx7q.mongodb.net:27017/?ssl=true&replicaSet=atlas-j6zw0m-shard-0&authSource=admin&appName=Cluster0";
-
 const cleanURI = `mongodb://${dbUser}:${dbPass}@${dbHosts}`;
 
 mongoose.connect(cleanURI)
   .then(() => console.log('✅ Connexion à MongoDB réussie !'))
   .catch(err => console.error('❌ Erreur de connexion MongoDB : ', err));
 
-// Stockage temporaire en mémoire pour les codes SMS (OTP)
-const codesVerificationSMS = {};
-
 // Stockage temporaire pour les sessions actives (Simule un gestionnaire de session)
 const sessionsActives = {};
 
 // =========================================================
-// 1. DÉFINITION DES SCHÉMAS ET MODÈLES MONGOOSE
+// MODÈLES MONGOOSE
 // =========================================================
 
-// Schéma pour les Produits
 const produitSchema = new mongoose.Schema({
     id: { type: Number, required: true },
     nom: { type: String, required: true },
@@ -35,17 +40,15 @@ const produitSchema = new mongoose.Schema({
     img_detail1: { type: String },
     img_detail2: { type: String },
     img_detail3: { type: String },
-    vendeur: { type: String, default: "vendeur@test.com" },
+    vendedor: { type: String, default: "vendeur@test.com" },
     valide: { type: Boolean, default: true }
 });
-if (!mongoose.models.Produit) mongoose.model('Produit', produitSchema);
+const Produit = mongoose.models.Produit || mongoose.model('Produit', produitSchema);
 
-// 🏦 SCHÉMA UTILISATEUR MIS À JOUR POUR LE CONTENU INTERNATIONAL
 const utilisateurSchema = new mongoose.Schema({
     nom: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }, // Harmonisé avec le payload
-    
+    password: { type: String, required: true },
     boutiqueCreee: { type: Boolean, default: false },
     vendeurNom: { type: String, default: "" },
     boutiqueNom: { type: String, default: "" },
@@ -53,62 +56,53 @@ const utilisateurSchema = new mongoose.Schema({
     vendeurPays: { type: String, default: "Congo (RDC)" },
     vendeurVille: { type: String, default: "" },
     vendeurPin: { type: String, default: "" },
-
-    // 💳 Nouveaux champs de paiement (Monde entier)
     paiementTitulaire: { type: String, default: "" },
-    paiementReseau: { type: String, default: null },       // Mobile Money
-    paiementNumero: { type: String, default: null },       // Mobile Money
-    paiementBanqueNom: { type: String, default: null },    // Virement Bancaire
-    paiementIban: { type: String, default: null },         // Virement Bancaire
-    paiementSwift: { type: String, default: null },        // Virement Bancaire
-    paiementPaypalEmail: { type: String, default: null }   // PayPal
+    paiementReseau: { type: String, default: null },
+    paiementNumero: { type: String, default: null },
+    paiementBanqueNom: { type: String, default: null },
+    paiementIban: { type: String, default: null },
+    paiementSwift: { type: String, default: null },
+    paiementPaypalEmail: { type: String, default: null }
 });
-
-// Réinitialisation ou déclaration propre du modèle
-if (mongoose.models.Utilisateur) {
-    delete mongoose.models.Utilisateur;
-}
-mongoose.model('Utilisateur', utilisateurSchema);
-
-// =========================================================
-
-const path = require('path'); 
-const express = require('express');
-const app = express();
-const PORT = 3000;
-
-// Middleware configuration
-app.use(express.json({ limit: '50mb' }));
-app.use(express.static(__dirname));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+const Utilisateur = mongoose.models.Utilisateur || mongoose.model('Utilisateur', utilisateurSchema);
 
 // ==========================================
-// ROUTES AUTHENTIFICATION DE BASE
+// ROUTES AUTHENTIFICATION (CORRIGÉES)
 // ==========================================
 
-app.post('/api/inscription', (req, res) => {
-    const { nom, email, mdp } = req.body; 
-    const sql = 'INSERT INTO utilisateurs (nom, email, motDePasse) VALUES (?, ?, ?)';
-    
-    if (typeof db !== "undefined") {
-        db.query(sql, [nom, email, mdp], (err, result) => {
-            if (err) {
-                console.error("❌ Erreur MySQL :", err);
-                return res.status(500).json({ message: "Erreur lors de l'enregistrement." });
-            }
-            console.log(`👤 Nouvel utilisateur inscrit : ${nom}`);
-            res.json({ message: `Compte créé avec succès dans MySQL pour ${nom} !` });
+// Inscription standard client unifiée sur MongoDB
+app.post('/api/inscription', async (req, res) => {
+    try {
+        const { nom, email, mdp } = req.body; 
+
+        if (!nom || !email || !mdp) {
+            return res.status(400).json({ success: false, message: "Tous les champs sont obligatoires." });
+        }
+
+        const utilisateurExiste = await Utilisateur.findOne({ email });
+        if (utilisateurExiste) {
+            return res.status(400).json({ success: false, message: "Cet e-mail est déjà utilisé." });
+        }
+
+        await Utilisateur.create({
+            nom: nom,
+            email: email,
+            password: mdp,
+            boutiqueCreee: false
         });
-    } else {
-        res.status(500).json({ message: "Base de données MySQL non configurée." });
+
+        console.log(`👤 Nouvel utilisateur inscrit dans MongoDB : ${nom}`);
+        res.json({ success: true, message: `Compte créé avec succès pour ${nom} !` });
+    } catch (err) {
+        console.error("❌ Erreur lors de l'inscription :", err);
+        res.status(500).json({ success: false, message: "Erreur serveur." });
     }
 });
 
 app.post('/api/connexion', async (req, res) => {
     const { email, mdp } = req.body;
-
     try {
-        const user = await mongoose.model('Utilisateur').findOne({ email: email, password: mdp });
+        const user = await Utilisateur.findOne({ email: email, password: mdp });
 
         if (user) {
             console.log(`🔑 Connexion réussie pour : ${user.nom}`);
@@ -138,21 +132,18 @@ app.post('/api/connexion', async (req, res) => {
     }
 });
 
-app.post('/api/vendeur/statut', async (req, res) => { // 🟢 Changé en app.post pour pouvoir envoyer l'email sécurisé
+app.post('/api/vendeur/statut', async (req, res) => {
     try {
-        const { email } = req.body; // 🟢 On récupère l'email envoyé par le navigateur
-
+        const { email } = req.body;
         if (!email) {
             return res.json({ connecte: false, aUneBoutique: false, estVerrouille: true });
         }
 
-        const user = await mongoose.model('Utilisateur').findOne({ email: email });
-
+        const user = await Utilisateur.findOne({ email: email });
         if (!user) {
             return res.json({ connecte: false, aUneBoutique: false, estVerrouille: true });
         }
 
-        // On vérifie dans la mémoire si la session est active et déverrouillée
         const session = sessionsActives[email];
         const estVerrouille = session ? !session.vendeurDeverrouille : true;
 
@@ -161,19 +152,19 @@ app.post('/api/vendeur/statut', async (req, res) => { // 🟢 Changé en app.pos
             aUneBoutique: user.boutiqueCreee,
             estVerrouille: estVerrouille
         });
-
     } catch (error) {
         console.error("❌ Erreur de statut vendeur :", error);
         res.status(500).json({ connecte: false, error: "Erreur serveur" });
     }
 });
+
 // ==========================================
 // ROUTES GESTION DES PRODUITS & COMMANDES
 // ==========================================
 
 app.get('/api/produits', async (req, res) => {
     try {
-        const results = await mongoose.model('Produit').find({});
+        const results = await Produit.find({});
         res.json(results); 
     } catch (err) {
         console.error("❌ Erreur MongoDB lors de la récupération des produits :", err);
@@ -183,66 +174,58 @@ app.get('/api/produits', async (req, res) => {
 
 app.post('/api/produits', async (req, res) => {
     try {
-        const ProduitModel = mongoose.model('Produit');
-        const nouveauProduit = new ProduitModel(req.body);
+        const nouveauProduit = new Produit(req.body);
         await nouveauProduit.save();
-        
         console.log(`📦 Nouveau produit publié en ligne : ${req.body.nom}`);
         res.status(201).json({ success: true, message: "Produit publié avec succès !" });
     } catch (err) {
         console.error("❌ Erreur lors de la publication du produit :", err);
-        res.status(500).json({ error: "Impossible de publier le produit sur la plateforme." });
+        res.status(500).json({ error: "Impossible de publier le produit." });
     }
 });
 
 app.post('/api/commande/valider', async (req, res) => {
     const { items } = req.body;
-
     if (!items || items.length === 0) {
         return res.status(400).json({ success: false, message: "Le panier est vide." });
     }
-
     try {
-        const ProduitModel = mongoose.model('Produit');
         for (const item of items) {
-            await ProduitModel.findByIdAndUpdate(item.id, {
+            await Produit.findByIdAndUpdate(item.id, {
                 $inc: { stock: -item.qty } 
             });
         }
         console.log("📦 Une commande a été validée et les stocks mis à jour dans MongoDB !");
         res.json({ success: true, message: "Commande enregistrée avec succès !" });
     } catch (err) {
-        console.error(`❌ Erreur de mise à jour des stocks dans MongoDB :`, err);
-        return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour de certains stocks." });
+        console.error(`❌ Erreur de mise à jour des stocks :`, err);
+        return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour des stocks." });
     }
 });
 
 app.delete('/api/produits/:id', async (req, res) => {
     try {
         const produitId = req.params.id;
-        const MonModeleProduit = mongoose.models.Produit || mongoose.model('Produit');
-        const resultat = await MonModeleProduit.deleteOne({ _id: produitId });
+        const resultat = await Produit.deleteOne({ _id: produitId });
         
         if (resultat.deletedCount === 0) {
-            return res.status(404).json({ success: false, message: "Produit introuvable ou déjà supprimé." });
+            return res.status(404).json({ success: false, message: "Produit introuvable." });
         }
-        
-        console.log(`🗑️ Produit supprimé de MongoDB avec succès : ${produitId}`);
-        res.json({ success: true, message: "Le produit a été retiré de toute la plateforme !" });
+        res.json({ success: true, message: "Le produit a été retiré !" });
     } catch (err) {
         console.error("❌ Erreur lors de la suppression du produit :", err);
-        res.status(500).json({ success: false, message: "Erreur serveur lors de la suppression." });
+        res.status(500).json({ success: false, message: "Erreur serveur." });
     }
 });
 
 // =========================================================================
-// 🌟 ROUTE INSCRIPTION VENDEUR INTERNATIONALE AJUSTÉE (Banque, Mobile, PayPal)
+// INSCRIPTION VENDEUR INTERNATIONALE (CORRIGÉE AVEC PIN)
 // =========================================================================
 app.post('/api/vendeurs/inscription', async (req, res) => {
     try {
         const { 
             nom, email, password, estVendeur,
-            nomBoutique, telephone, pays, ville,
+            nomBoutique, telephone, pays, ville, vendeurPin,
             titulaireCompte, reseauMobileMoney, numeroMobileMoney,
             nomBanque, iban, swift, paypalEmail
         } = req.body;
@@ -251,7 +234,7 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
             return res.status(400).json({ success: false, message: "Données de compte obligatoires manquantes." });
         }
 
-        const utilisateurExiste = await mongoose.model('Utilisateur').findOne({ email });
+        const utilisateurExiste = await Utilisateur.findOne({ email });
         if (utilisateurExiste) {
             return res.status(400).json({ success: false, message: "Cet e-mail est déjà utilisé." });
         }
@@ -264,8 +247,8 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
         };
 
         if (estVendeur) {
-            if (!nomBoutique || !telephone || !ville) {
-                return res.status(400).json({ success: false, message: "Veuillez remplir les informations de base de votre boutique." });
+            if (!nomBoutique || !telephone || !ville || !vendedorPin) {
+                return res.status(400).json({ success: false, message: "Veuillez remplir toutes les informations ainsi que le code PIN." });
             }
             
             nouvelUtilisateur.boutiqueCreee = true;
@@ -274,8 +257,8 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
             nouvelUtilisateur.vendeurTelephone = telephone;
             nouvelUtilisateur.vendeurPays = pays || "Congo (RDC)";
             nouvelUtilisateur.vendeurVille = ville;
+            nouvelUtilisateur.vendeurPin = vendeurPin; // Enregistrement du PIN réparé !
             
-            // Collecte des informations de paiement selon ce que l'utilisateur a configuré
             nouvelUtilisateur.paiementTitulaire = titulaireCompte || nom;
             nouvelUtilisateur.paiementReseau = reseauMobileMoney || null;
             nouvelUtilisateur.paiementNumero = numeroMobileMoney || null;
@@ -285,11 +268,11 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
             nouvelUtilisateur.paiementPaypalEmail = paypalEmail || null;
         }
 
-        await mongoose.model('Utilisateur').create(nouvelUtilisateur);
+        await Utilisateur.create(nouvelUtilisateur);
 
         return res.json({ 
             success: true, 
-            message: estVendeur ? "🚀 Votre boutique a été créée et configurée avec succès !" : "Compte client créé avec succès !" 
+            message: estVendeur ? "🚀 Votre boutique a été créée avec succès !" : "Compte client créé avec succès !" 
         });
 
     } catch (error) {
@@ -298,7 +281,6 @@ app.post('/api/vendeurs/inscription', async (req, res) => {
     }
 });
 
-// Lancement du serveur
 app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur le port : ${PORT}`);
 });
