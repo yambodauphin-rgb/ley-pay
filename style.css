@@ -470,41 +470,32 @@ input:focus, select:focus {
 /* ===========================================================================
    STYLE DES SLOTS DE PHOTOS & VIDÉOS (ZONE D'UPLOAD)
    ========================================================================= */
-
-
-
-.slot-photo-vide {
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-}
-.slot-photo-vide:hover {
-    border-color: #6c5ce7;
-    transform: scale(1.05);
-}
-/* =========================================================================
-   ALIGNEMENT SÉCURISÉ CÔTE À CÔTE ET RE-STYLAGE DES IMAGES
+   /* =========================================================================
+   INTERFACES VENDEUR STABLE - LEY PAY
    ========================================================================= */
 
-/* 1. Force le conteneur à devenir un Flexbox horizontal large */
+/* On force le conteneur principal à prendre l'espace nécessaire */
 #corps-espace-vendeur {
     max-width: 1200px !important;
     width: 95% !important;
     margin: 20px auto !important;
+    display: block !important;
 }
 
+/* Force l'alignement horizontal strict pour le Formulaire et le Catalogue */
 .grille-vendeur-actions {
     display: flex !important;
-    flex-direction: row !important; /* Force les deux blocs côte à côte */
+    flex-direction: row !important; /* Côte à côte obligatoire */
     justify-content: space-between !important;
     gap: 30px !important;
     align-items: flex-start !important;
     width: 100% !important;
 }
 
-/* 2. On attribue la moitié de la largeur à chaque grand bloc */
+/* Les deux grands blocs prennent chacun 50% de la largeur */
 .grille-vendeur-actions .bloc-action-vendeur {
     flex: 1 !important;
-    width: 50% !important; /* Formulaire à gauche (50%), Catalogue à droite (50%) */
+    width: 50% !important;
     min-width: 0 !important;
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
@@ -513,16 +504,40 @@ input:focus, select:focus {
     box-sizing: border-box !important;
 }
 
-/* 3. RE-STYLAGE DES CARRÉS DE SÉLECTION DE PHOTOS */
+/* Alignement parfait de la grille interne des 3 inputs (Prix, Stock, Catégorie) */
+.row-pays-ville {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 15px !important;
+    width: 100% !important;
+    margin: 10px 0 !important;
+}
+
+.row-pays-ville > div {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Restructuration propre de la zone des photos */
+.zone-upload-images {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+}
+
+/* Restauration de la forme carrée des slots de sélection d'images */
 .vignettes-apercu {
     display: flex !important;
     flex-direction: row !important;
     gap: 12px !important;
     margin-top: 10px !important;
+    flex-wrap: wrap !important;
 }
 
-/* Redonne vie aux jolies cases pour cliquer et charger les photos */
-.vignettes-apercu div[id^="slot-"] {
+/* Remplacement des styles manquants des carrés photos */
+.vignettes-apercu div, 
+.vignettes-apercu [id^="slot-"] {
     width: 65px !important;
     height: 65px !important;
     border: 2px dashed #cbd5e0 !important;
@@ -534,11 +549,5 @@ input:focus, select:focus {
     background-color: #f7fafc !important;
     color: #a0aec0 !important;
     font-size: 18px !important;
-    transition: all 0.2s ease !important;
-}
-
-.vignettes-apercu div[id^="slot-"]:hover {
-    border-color: #6c5ce7 !important;
-    background-color: #edf2f7 !important;
-    color: #6c5ce7 !important;
+    box-sizing: border-box !important;
 }
