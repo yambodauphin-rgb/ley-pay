@@ -467,66 +467,96 @@ input:focus, select:focus {
     border: 1px solid #e2e8f0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
-/* ===========================================================================
-   STYLE DES SLOTS DE PHOTOS & VIDÉOS (ZONE D'UPLOAD)
-   ========================================================================= */
-   /* =========================================================================
-   INTERFACES VENDEUR STABLE - LEY PAY
+/* =========================================================================
+   RESTRUCTURATION GLOBALE ET PROPRE DE L'ESPACE VENDEUR - LEY PAY
    ========================================================================= */
 
-/* On force le conteneur principal à prendre l'espace nécessaire */
+/* 1. CONTENEUR PRINCIPAL */
 #corps-espace-vendeur {
-    max-width: 1200px !important;
+    max-width: 1250px !important;
     width: 95% !important;
-    margin: 20px auto !important;
+    margin: 30px auto !important;
     display: block !important;
 }
 
-/* Force l'alignement horizontal strict pour le Formulaire et le Catalogue */
+/* 2. DISPOSITION CÔTE À CÔTE (Formulaire à gauche, Catalogue à droite) */
 .grille-vendeur-actions {
     display: flex !important;
-    flex-direction: row !important; /* Côte à côte obligatoire */
+    flex-direction: row !important; /* Force l'alignement horizontal */
     justify-content: space-between !important;
     gap: 30px !important;
     align-items: flex-start !important;
     width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* Les deux grands blocs prennent chacun 50% de la largeur */
+/* 3. STRUCTURE DES DEUX GRANDS BLOCS (50% chacun) */
 .grille-vendeur-actions .bloc-action-vendeur {
     flex: 1 !important;
-    width: 50% !important;
+    width: 50% !important; /* Partage équitable de l'écran */
     min-width: 0 !important;
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     border-radius: 14px !important;
-    padding: 24px !important;
+    padding: 25px !important;
     box-sizing: border-box !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Alignement parfait de la grille interne des 3 inputs (Prix, Stock, Catégorie) */
+/* 4. ALIGNEMENT DES 3 INPUTS (Prix, Stock, Catégorie) */
 .row-pays-ville {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important; /* 3 colonnes parfaites */
     gap: 15px !important;
     width: 100% !important;
-    margin: 10px 0 !important;
+    margin: 15px 0 !important;
+    box-sizing: border-box !important;
 }
 
 .row-pays-ville > div {
     display: flex !important;
     flex-direction: column !important;
+    width: 100% !important;
 }
 
-/* Restructuration propre de la zone des photos */
+/* 5. LABELS ET EN-TÊTES */
+.form-label {
+    display: block !important;
+    font-weight: 600 !important;
+    color: #4a5568 !important;
+    font-size: 14px !important;
+    margin-bottom: 6px !important;
+    text-align: left !important;
+}
+
+/* 6. STYLE UNIFORME DES CHAMPS (Inputs et Selects) */
+.bloc-action-vendeur input,
+.bloc-action-vendeur select {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    border: 1px solid #cbd5e0 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    font-size: 14px !important;
+    background-color: #ffffff !important;
+    color: #2d3748 !important;
+}
+
+.bloc-action-vendeur input:focus,
+.bloc-action-vendeur select:focus {
+    border-color: #6c5ce7 !important;
+    outline: none !important;
+}
+
+/* 7. RE-STYLAGE DES CARRÉS DE SÉLECTION DE PHOTOS */
 .zone-upload-images {
     width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
+    margin-top: 15px !important;
 }
 
-/* Restauration de la forme carrée des slots de sélection d'images */
 .vignettes-apercu {
     display: flex !important;
     flex-direction: row !important;
@@ -535,7 +565,7 @@ input:focus, select:focus {
     flex-wrap: wrap !important;
 }
 
-/* Remplacement des styles manquants des carrés photos */
+/* Force les slots à redevenir de belles cases carrées */
 .vignettes-apercu div, 
 .vignettes-apercu [id^="slot-"] {
     width: 65px !important;
@@ -550,4 +580,50 @@ input:focus, select:focus {
     color: #a0aec0 !important;
     font-size: 18px !important;
     box-sizing: border-box !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.vignettes-apercu div:hover, 
+.vignettes-apercu [id^="slot-"]:hover {
+    border-color: #6c5ce7 !important;
+    background-color: #edf2f7 !important;
+    color: #6c5ce7 !important;
+}
+
+/* 8. BOUTON DE PUBLICATION */
+.bloc-action-vendeur button#btn-publier,
+.bloc-action-vendeur .btn-principal-vendeur {
+    width: 100% !important;
+    padding: 14px !important;
+    margin-top: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+}
+
+/* 9. STYLE DU CATALOGUE DE DROITE (Items du catalogue) */
+.item-produit-vendeur {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #f8fafc !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    margin-bottom: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.btn-supprimer-produit {
+    background-color: #fed7d7 !important;
+    color: #c53030 !important;
+    border: none !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.btn-supprimer-produit:hover {
+    background-color: #feb2b2 !important;
 }
