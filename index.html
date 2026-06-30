@@ -137,144 +137,54 @@ function filtrerCategorie(categorie) {
 }
 
 // Bouton "Vendre 🚀"
-function ouvrirEspaceVendeur() {
-    alert("🔐 Redirection vers l'Espace Vendeur... Saisie du code PIN requise.");
-    // Si tu as un bloc ou une page pour le code PIN, tu l'affiches ici, par exemple :
-    // document.getElementById('bloc-pin-vendeur').style.display = 'flex';
-}
+// Variable globale pour stocker l'utilisateur connecté (à synchroniser lors de ta connexion)
+let utilisateurConnecte = JSON.parse(localStorage.getItem('utilisateur_leypay')) || null;
 
-// Bouton "Se connecter / S'inscrire"
-const btnConnexion = document.querySelector('.btn-connexion-nav');
-if (btnConnexion) {
-    btnConnexion.addEventListener('click', () => {
-        alert("🔒 Ouverture de la fenêtre de connexion / inscription.");
-    });
-}
-
-// Bouton du bandeau "Voir les offres"
-const btnHero = document.querySelector('.btn-hero-action');
-if (btnHero) {
-    btnHero.addEventListener('click', () => {
-        // Fait défiler la page doucement jusqu'aux recommandations
-        document.querySelector('.titre-section').scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-// =========================================================
-// 3. LOGIQUE DU PANIER FLOTTANT
-// =========================================================
-function basculerAffichagePanier() {
-    const panier = document.getElementById('panier-flottant-interface');
-    panier.classList.toggle('actif');
-}
-
-function rafraichirVisuelPanier() {
-    const liste = document.getElementById('liste-items-panier');
-    const pastille = document.getElementById('pastille-panier-nbr');
-    const pPrix = document.getElementById('panier-total-prix');
-    const sTotal = document.getElementById('panier-sous-total');
-    const gTotal = document.getElementById('panier-grand-total');
-
-    if (panierArticles.length === 0) {
-        liste.innerHTML = '<p class="panier-vide-texte">Votre panier est vide.</p>';
-        pastille.textContent = "0";
-        pPrix.textContent = "0.00 $";
-        sTotal.textContent = "0.00 $";
-        gTotal.textContent = "0.00 $";
+async function ouvrirEspaceVendeur() {
+    // 1. Si aucun utilisateur n'est connecté au site
+    if (!utilisateurConnecte) {
+        alert("🔒 Veuillez d'abord vous connecter à votre compte client.");
+        // Optionnel : afficher ton bloc de connexion ici
         return;
     }
 
-    liste.innerHTML = '';
-    let totalCumule = 0;
-    
-    panierArticles.forEach((art, index) => {
-        totalCumule += parseFloat(art.prix);
-        const item = document.createElement('div');
-        item.className = 'item-panier-element';
-        item.innerHTML = `
-            <div class="item-panier-details">
-                <h6>${art.nom}</h6>
-                <span>${art.prix} $</span>
-            </div>
-            <button class="btn-retirer-item" onclick="retirerDuPanier(${index})">Retirer</button>
-        `;
-        liste.appendChild(item);
-    });
+    try {
+        // 2. Demande au serveur si l'espace vendeur est verrouillé ou non
+        const reponse = await fetch('/api/vendeur/statut', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: utilisateurConnecte.email })
+        });
+        
+        const statut = await reponse.json();
 
-    pastille.textContent = panierArticles.length;
-    pPrix.textContent = `${(totalCumule + 5).toFixed(2)} $`;
-    sTotal.textContent = `${totalCumule.toFixed(2)} $`;
-    gTotal.textContent = `${(totalCumule + 5).toFixed(2)} $`;
-}
+        // Récupération des conteneurs HTML
+        const blocPIN = document.getElementById('espace-vendeur-container') || document.getElementById('bloc-pin-vendeur');
+        const blocFormulaireVente = document.getElementById('formulaire-vente-container'); // Ton bloc vert d'ajout de produit
 
-function retirerDuPanier(index) {
-    panierArticles.splice(index, 1);
-    rafraichirVisuelPanier();
-}
+        if (statut.estVerrouille) {
+            // 3. Si c'est verrouillé, on affiche la boîte modale du code PIN (image_555638.png)
+            if (blocPIN) {
+                blocPIN.style.display = 'flex';
+                if (blocFormulaireVente) blocFormulaireVente.style.display = 'none';
+                console.log("🔒 Redirection : Affichage de la boîte de saisie du code PIN.");
+            } else {
+                // Secours visuel si le conteneur n'a pas le bon ID
+                alert("🔒 Espace verrouillé. Veuillez saisir votre code PIN à 4 chiffres.");
+            }
+        } else {
+            // 4. Si déjà déverrouillé, on affiche directement le catalogue/formulaire de vente (image_481478.png)
+            if (blocFormulaireVente) {
+                blocFormulaireVente.style.display = 'block';
+                if (blocPIN) blocPIN.style.display = 'none';
+            } else {
+                alert("🚀 Bienvenue dans votre espace vendeur !");
+            }
+        }
 
-function viderPanierComplet() {
-    panierArticles = [];
-    rafraichirVisuelPanier();
-}
-
-function passerCommande() {
-    if (panierArticles.length === 0) {
-        alert("⚠️ Votre panier est vide.");
-        return;
-    }
-    alert("📝 Traitement de votre commande...");
-}
-
-// =========================================================
-// 4. ANCIENNE FONCTION VENDEUR SYNCRO
-// =========================================================
-function ajouterProduitVendeur() {
-    const imagePrincipale = (typeof tableauImagesVendeur !== 'undefined' && tableauImagesVendeur[0]) 
-                            || 'https://via.placeholder.com/150';
-
-    let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_products_global')) || [];
-
-    const nom = document.getElementById('p-nom')?.value;
-    const prix = document.getElementById('p-prix')?.value;
-    const stock = parseInt(document.getElementById('p-stock')?.value) || 0;
-    const categorie = document.getElementById('p-categorie')?.value; 
-    const modeService = document.getElementById('p-mode-service')?.value; 
-
-    if (!nom || !prix) {
-        alert("⚠️ Veuillez remplir le nom et le prix du produit.");
-        return;
-    }
-
-    const nouveauProduit = {
-        id: Date.now(), 
-        nom: nom,
-        prix: parseFloat(prix).toFixed(2),
-        stock: stock,
-        categorie: categorie,
-        modeService: modeService,
-        image: imagePrincipale
-    };
-
-    listeProduitsGlobale.push(nouveauProduit);
-    localStorage.setItem('lp_products_global', JSON.stringify(listeProduitsGlobale));
-
-    alert("🚀 Produit mis en ligne avec succès !");
-
-    // Nettoyage des champs si les éléments existent
-    if(document.getElementById('p-nom')) document.getElementById('p-nom').value = '';
-    if(document.getElementById('p-prix')) document.getElementById('p-prix').value = '';
-    if(document.getElementById('p-stock')) document.getElementById('p-stock').value = '1';
-}
-function ouvrirEspaceVendeur() {
-    // Rend visible le bloc de l'espace vendeur / code PIN
-    const blocPIN = document.getElementById('espace-vendeur-container') || document.getElementById('bloc-pin-vendeur');
-    
-    if (blocPIN) {
-        blocPIN.style.display = 'flex'; 
-        console.log("🔒 Écran du code PIN affiché avec succès.");
-    } else {
-        // Alerte de secours si l'identifiant ne correspond pas encore à ton HTML
-        alert("🔒 Redirection vers l'Espace Vendeur... Saisie du code PIN requise.");
+    } catch (error) {
+        console.error("❌ Erreur lors de la vérification du statut vendeur :", error);
+        alert("⚠️ Impossible de joindre le serveur pour vérifier l'accès vendeur.");
     }
 }
 </script>
