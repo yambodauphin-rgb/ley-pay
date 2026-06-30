@@ -3,235 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ley Pay - Espace Vendeur</title>
+    <title>Ley Pay - Marketplace Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="vendeur-verrouille-pin">
-        <div class="boite-pin">
-            <h3>🔒 Accès Espace Vendeur</h3>
-            <p>Veuillez saisir votre code PIN à 4 chiffres pour continuer.</p>
-            <input type="password" id="input-pin-connexion" placeholder="••••" maxlength="4" oninput="verifierPinVendeur()">
+    <nav class="barre-nav-leypay">
+        <div class="logo-espace">
+            <span class="logo-principal">Ley Pay</span>
+            <span class="logo-badge">Business</span>
+        </div>
+        
+        <div class="zone-recherche">
+            <input type="text" id="recherche-input" placeholder="Rechercher un produit, une marque, un habit...">
+            <button class="btn-recherche" onclick="filtrerRecherche()">🔍</button>
+        </div>
+
+        <div class="liens-navigation">
+            <a href="#" class="lien-nav actif">Accueil</a>
+            <a href="#" class="lien-nav" onclick="ouvrirEspaceVendeur()">Vendre 🚀</a>
+            <a href="#" class="lien-nav">Admin 👑</a>
+            <button class="btn-connexion-nav">Se connecter / S'inscrire</button>
+        </div>
+    </nav>
+
+    <header class="section-hero-leypay">
+        <div class="hero-contenu">
+            <h1>Kitchen essentials & Fashion trends</h1>
+            <p>Découvrez nos nouveautés exclusives adaptées à votre quotidien sur Ley Pay.</p>
+            <button class="btn-hero-action">Voir les offres</button>
+        </div>
+    </header>
+
+    <main class="conteneur-principal-marche">
+        
+        <div class="barre-filtres-badges">
+            <button class="badge-filtre actif" onclick="filtrerCategorie('Tout')">Tout voir</button>
+            <button class="badge-filtre" onclick="filtrerCategorie('Mode')">Vêtements</button>
+            <button class="badge-filtre" onclick="filtrerCategorie('Électronique')">Tech</button>
+            <button class="badge-filtre" onclick="filtrerCategorie('Maison')">Cuisine</button>
+        </div>
+
+        <h2 class="titre-section">Recommandations personnalisées</h2>
+
+        <div id="grille-produits-marketplace" class="grille-produits-flux">
+            </div>
+
+    </main>
+
+    <div id="panier-flottant-interface" class="fenetre-panier-flottante">
+        <div class="panier-entete">
+            <h4>Mon Panier</h4>
+            <span class="badge-total-panier" id="panier-total-prix">0.00 $</span>
+        </div>
+
+        <div id="liste-items-panier" class="panier-corps-liste">
+            <p class="panier-vide-texte">Votre panier est vide.</p>
+        </div>
+
+        <div class="panier-resume-calculs">
+            <div class="ligne-calcul">
+                <span>💰 Sous-total :</span>
+                <b id="panier-sous-total">0.00 $</b>
+            </div>
+            <div class="ligne-calcul">
+                <span>🚚 Livraison :</span>
+                <b id="panier-livraison">5.00 $</b>
+            </div>
+            <div class="ligne-calcul total-general-ligne">
+                <span>Total Général :</span>
+                <b id="panier-grand-total">0.00 $</b>
+            </div>
+        </div>
+
+        <div class="panier-actions-boutons">
+            <button class="btn-vider-panier" onclick="viderPanierComplet()">Tout vider 🗑️</button>
+            <button class="btn-valider-panier" onclick="passerCommande()">Commander 🚀</button>
         </div>
     </div>
 
-    <div id="corps-espace-vendeur" class="cache">
-        
-        <div class="tableau-solde-vendeur">
-            <h4>💵 Votre Solde Net</h4>
-            <div class="stats-solde-container">
-                <div class="stat-box">
-                    <span class="stat-titre">Total Ventes Brutes</span>
-                    <span class="stat-valeur" id="stat-total-ventes">0.00 $</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-titre">Frais Plateforme</span>
-                    <span class="stat-valeur" id="stat-frais-plateforme">0.00 $ (0%)</span>
-                </div>
-                <div class="stat-box net">
-                    <span class="stat-titre">Solde Net Restant</span>
-                    <span class="stat-valeur" id="stat-solde-net">0.00 $</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="grille-vendeur-actions">
-            
-            <div class="bloc-action-vendeur">
-                <h3>🛍️ Mettre un produit en ligne</h3>
-                
-                <div class="champ-groupe">
-                    <label class="form-label">Nom du produit</label>
-                    <input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
-                </div>
-
-                <div class="row-pays-ville">
-                    <div>
-                        <label class="form-label">Prix ($)</label>
-                        <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
-                    </div>
-                    <div>
-                        <label class="form-label">Stock</label>
-                        <input type="number" id="p-stock" placeholder="Ex: 10" value="1">
-                    </div>
-                    <div>
-                        <label class="form-label">Catégorie</label>
-                        <select id="p-categorie">
-                            <option value="Électronique">Électronique 📱</option>
-                            <option value="Mode">Mode & Vêtements 👕</option>
-                            <option value="Maison">Maison & Cuisine 🍳</option>
-                            <option value="Beauté">Beauté & Santé 🧴</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="champ-groupe">
-                    <label class="form-label">Mode de service Ley Pay</label>
-                    <select id="p-mode-service" onchange="calculerFraisVendeur()">
-                        <option value="FMA" selected>Mode FMA (10% de frais plateforme) 🚀</option>
-                        <option value="FMM">Mode FMM (5% de frais plateforme) ⚡</option>
-                    </select>
-                </div>
-
-                <div class="zone-upload-images">
-                    <label class="form-label">Photos du produit (4 maximum)</label>
-                    <p class="form-aide">Cliquez sur chaque carré pour ajouter une image</p>
-                    
-                    <div class="vignettes-apercu">
-                        <div id="slot-0" onclick="declencherInputPhoto(0)">+</div>
-                        <div id="slot-1" onclick="declencherInputPhoto(1)">+</div>
-                        <div id="slot-2" onclick="declencherInputPhoto(2)">+</div>
-                        <div id="slot-3" onclick="declencherInputPhoto(3)">+</div>
-                    </div>
-                    
-                    <input type="file" id="file-slot-0" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 0)">
-                    <input type="file" id="file-slot-1" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 1)">
-                    <input type="file" id="file-slot-2" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 2)">
-                    <input type="file" id="file-slot-3" class="cache" accept="image/*" onchange="chargerPhotoIndependante(this, 3)">
-                </div>
-
-                <button id="btn-publier" class="btn-principal-vendeur" onclick="ajouterProduitVendeur()">🚀 Publier le produit</button>
-            </div>
-
-            <div class="bloc-action-vendeur">
-                <h3>📦 Votre catalogue en ligne</h3>
-                <div id="liste-produits-vendeur" class="conteneur-liste-flux">
-                    <p class="texte-vide">Aucun produit en ligne pour le moment.</p>
-                </div>
-            </div>
-
-        </div>
+    <div class="bouton-panier-declencheur" onclick="basculerAffichagePanier()">
+        🛒
+        <span class="pastille-quantite" id="pastille-panier-nbr">0</span>
     </div>
 
     <script>
-        let tableauImagesVendeur = [null, null, null, null];
-
-        function verifierPinVendeur() {
-            const pin = document.getElementById('input-pin-connexion').value;
-            if (pin.length === 4) {
-                document.getElementById('vendeur-verrouille-pin').classList.add('cache');
-                document.getElementById('corps-espace-vendeur').classList.remove('cache');
-                rafraichirCatalogueVendeur();
-            }
+        // Logique de simulation des données et panier
+        let panierArticles = [];
+        
+        function basculerAffichagePanier() {
+            const panier = document.getElementById('panier-flottant-interface');
+            panier.classList.toggle('actif');
         }
 
-        function declencherInputPhoto(indexSlot) {
-            document.getElementById(`file-slot-${indexSlot}`).click();
-        }
+        // Exemple d'ajout à la volée pour tester le visuel du panier
+        function rafraichirVisuelPanier() {
+            const liste = document.getElementById('liste-items-panier');
+            const pastille = document.getElementById('pastille-panier-nbr');
+            const pPrix = document.getElementById('panier-total-prix');
+            const sTotal = document.getElementById('panier-sous-total');
+            const gTotal = document.getElementById('panier-grand-total');
 
-        function chargerPhotoIndependante(input, indexSlot) {
-            const fichier = input.files[0];
-            if (fichier) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    tableauImagesVendeur[indexSlot] = e.target.result;
-                    const slot = document.getElementById(`slot-${indexSlot}`);
-                    slot.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover; border-radius:6px;">`;
-                    slot.style.borderStyle = "solid";
-                };
-                reader.readAsDataURL(fichier);
-            }
-        }
-
-        function réinitialiserSlotsPhotos() {
-            tableauImagesVendeur = [null, null, null, null];
-            for (let i = 0; i < 4; i++) {
-                const slot = document.getElementById(`slot-${i}`);
-                slot.innerHTML = "+";
-                slot.style.borderStyle = "dashed";
-                document.getElementById(`file-slot-${i}`).value = "";
-            }
-        }
-
-        function calculerFraisVendeur() {
-            const prix = parseFloat(document.getElementById('p-prix').value) || 0;
-            const modeService = document.getElementById('p-mode-service').value;
-            
-            let tauxCommission = 0.10;
-            if (modeService === 'FMM') { tauxCommission = 0.05; }
-
-            const pourcentageAffiche = tauxCommission * 100;
-            const frais = prix * tauxCommission;
-            const soldeNet = prix - frais;
-
-            document.getElementById('stat-total-ventes').textContent = `${prix.toFixed(2)} $`;
-            document.getElementById('stat-frais-plateforme').textContent = `${frais.toFixed(2)} $ (${pourcentageAffiche}%)`;
-            document.getElementById('stat-solde-net').textContent = `${soldeNet.toFixed(2)} $`;
-        }
-
-        function ajouterProduitVendeur() {
-            const nom = document.getElementById('p-nom').value.trim();
-            const prix = document.getElementById('p-prix').value.trim();
-            const stock = parseInt(document.getElementById('p-stock').value) || 1;
-            const categorie = document.getElementById('p-categorie').value;
-
-            if (!nom || !prix) {
-                alert("Veuillez donner un nom et un prix à votre produit.");
+            if(panierArticles.length === 0) {
+                liste.innerHTML = '<p class="panier-vide-texte">Votre panier est vide.</p>';
+                pastille.textContent = "0";
+                pPrix.textContent = "0.00 $";
+                sTotal.textContent = "0.00 $";
+                gTotal.textContent = "0.00 $";
                 return;
             }
 
-            const imagePrincipale = tableauImagesVendeur[0] || 'https://via.placeholder.com/150'; 
-            let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
-
-            const nouveauProduit = {
-                id: Date.now(),
-                nom: nom,
-                prix: parseFloat(prix).toFixed(2),
-                stock: stock,
-                categorie: categorie,
-                modeService: document.getElementById('p-mode-service').value,
-                image: imagePrincipale
-            };
-
-            listeProduitsGlobale.push(nouveauProduit);
-            localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
-
-            alert("🚀 Produit mis en ligne avec succès !");
+            liste.innerHTML = '';
+            let totalCumule = 0;
             
-            document.getElementById('p-nom').value = '';
-            document.getElementById('p-prix').value = '';
-            document.getElementById('p-stock').value = '1';
-            réinitialiserSlotsPhotos(); 
-            calculerFraisVendeur();
-            rafraichirCatalogueVendeur();
-        }
-
-        function rafraichirCatalogueVendeur() {
-            const conteneurListe = document.getElementById('liste-produits-vendeur');
-            if (!conteneurListe) return;
-
-            const listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
-
-            if (listeProduitsGlobale.length === 0) {
-                conteneurListe.innerHTML = '<p class="texte-vide">Aucun produit en ligne pour le moment.</p>';
-                return;
-            }
-
-            conteneurListe.innerHTML = '';
-            listeProduitsGlobale.forEach(produit => {
-                const badgeMode = produit.modeService || 'FMA';
+            panierArticles.forEach((art, index) => {
+                totalCumule += parseFloat(art.prix);
                 const item = document.createElement('div');
-                item.className = 'item-produit-vendeur';
+                item.className = 'item-panier-element';
                 item.innerHTML = `
-                    <img src="${produit.image}" alt="Aperçu">
-                    <div class="info-item-vendeur">
-                        <h5>${produit.nom}</h5>
-                        <span>${produit.prix} $ • ${produit.categorie} • <b style="color:#2ecc71;">Stock: ${produit.stock}</b> <small style="background:#edf2f7; padding:2px 4px; border-radius:4px; font-weight:normal;">${badgeMode}</small></span>
+                    <div class="item-panier-details">
+                        <h6>${art.nom}</h6>
+                        <span>${art.prix} $</span>
                     </div>
-                    <button class="btn-supprimer-produit" onclick="supprimerProduitVendeur(${produit.id})">Supprimer</button>
+                    <button class="btn-retirer-item" onclick="retirerDuPanier(${index})">Retirer</button>
                 `;
-                conteneurListe.appendChild(item);
+                liste.appendChild(item);
             });
+
+            pastille.textContent = panierArticles.length;
+            pPrix.textContent = `${(totalCumule + 5).toFixed(2)} $`;
+            sTotal.textContent = `${totalCumule.toFixed(2)} $`;
+            gTotal.textContent = `${(totalCumule + 5).toFixed(2)} $`;
         }
 
-        function supprimerProduitVendeur(idProduit) {
-            if (confirm("Voulez-vous vraiment retirer ce produit de la vente ?")) {
-                let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
-                listeProduitsGlobale = listeProduitsGlobale.filter(p => p.id !== idProduit);
-                localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
-                rafraichirCatalogueVendeur();
-            }
+        function viderPanierComplet() {
+            panierArticles = [];
+            rafraichirVisuelPanier();
         }
     </script>
 </body>

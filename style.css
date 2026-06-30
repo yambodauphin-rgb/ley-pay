@@ -1,297 +1,347 @@
 /* =========================================================================
-   STYLE GLOBAL & CONFIGURATION PARALLÈLE - LEY PAY 
+   CHARTE GRAPHIQUE MODERNE - LEY PAY MARKETPLACE (STYLE YD BUSINESS)
    ========================================================================= */
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #f7fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f6f8;
     margin: 0;
     padding: 0;
+    color: #232f3e;
 }
 
-/* CLASSE UTILITAIRE DE MASQUAGE */
-.cache {
-    display: none !important;
-}
-
-/* ZONE DE PIN VERROUILLÉE */
-#vendeur-verrouille-pin {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(26, 32, 44, 0.9);
+/* 🌐 BARRE DE NAVIGATION SOMBRE */
+.barre-nav-leypay {
+    background-color: #1a202c;
+    padding: 12px 5%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.boite-pin {
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    text-align: center;
-    max-width: 360px;
-    width: 90%;
-}
-
-.boite-pin h3 { margin-top: 0; color: #2d3748; }
-.boite-pin p { color: #718096; font-size: 14px; }
-.boite-pin input {
-    width: 100%;
-    padding: 12px;
-    font-size: 22px;
-    text-align: center;
-    border: 2px solid #cbd5e0;
-    border-radius: 10px;
-    letter-spacing: 8px;
-    box-sizing: border-box;
-}
-
-/* STRUCTURE ENTIÈRE DE LA PAGE VENDEUR */
-#corps-espace-vendeur {
-    max-width: 1250px !important;
-    width: 95% !important;
-    margin: 30px auto !important;
-    box-sizing: border-box;
-}
-
-/* TABLEAU DES REVENUS ET STATS */
-.tableau-solde-vendeur {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 25px;
-    border: 1px solid #e2e8f0;
-}
-
-.tableau-solde-vendeur h4 { margin: 0 0 15px 0; color: #2d3748; font-size: 16px; }
-.stats-solde-container {
-    display: flex;
     justify-content: space-between;
-    gap: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
-.stat-box {
+.logo-espace {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-principal {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.logo-badge {
+    background-color: #f39c12;
+    color: #1a202c;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* ZONE RECHERCHE FLUIDE */
+.zone-recherche {
     flex: 1;
-    background: #f8fafc;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #edf2f7;
+    max-width: 550px;
+    margin: 0 30px;
+    display: flex;
 }
 
-.stat-box .stat-titre { display: block; font-size: 12px; color: #718096; margin-bottom: 5px; }
-.stat-box .stat-valeur { font-size: 18px; font-weight: 700; color: #2d3748; }
-.stat-box.net { background: #ebf8ff; border-color: #bee3f8; }
-.stat-box.net .stat-valeur { color: #2b6cb0; }
-
-/* RESTRUCTURATION STRICTE CÔTE À CÔTE */
-.grille-vendeur-actions {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    gap: 30px !important;
-    align-items: flex-start !important;
-    width: 100% !important;
-}
-
-/* CHAQUE COLONNE PREND PILE 50% DE L'ÉCRAN */
-.grille-vendeur-actions .bloc-action-vendeur {
-    flex: 1 !important;
-    width: 50% !important;
-    min-width: 0 !important;
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 14px !important;
-    padding: 25px !important;
-    box-sizing: border-box !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
-}
-
-.bloc-action-vendeur h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: #2d3748;
-}
-
-/* GROUPEMENT DE CHAMPS */
-.champ-groupe {
-    margin-bottom: 15px;
+.zone-recherche input {
     width: 100%;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px 0 0 6px;
+    font-size: 14px;
+    outline: none;
 }
 
-/* LIGNE DES MULTI-INPUTS (Prix, Stock, Catégorie) */
-.row-pays-ville {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 15px !important;
-    width: 100% !important;
-    margin: 15px 0 !important;
-}
-
-.row-pays-ville > div {
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-/* LABELS DES INPUTS */
-.form-label {
-    display: block !important;
-    font-weight: 600 !important;
-    color: #4a5568 !important;
-    font-size: 13px !important;
-    margin-bottom: 6px !important;
-    text-align: left !important;
-}
-
-.form-aide {
-    font-size: 12px;
-    color: #a0aec0;
-    margin: -4px 0 10px 0;
-}
-
-/* CHAMPS DE SAISIE ET SELECTEURS UNIFORMES */
-.bloc-action-vendeur input[type="text"],
-.bloc-action-vendeur input[type="number"],
-.bloc-action-vendeur select {
-    width: 100% !important;
-    padding: 12px 14px !important;
-    border: 1px solid #cbd5e0 !important;
-    border-radius: 8px !important;
-    box-sizing: border-box !important;
-    font-size: 14px !important;
-    background-color: #ffffff !important;
-    color: #2d3748 !important;
-}
-
-.bloc-action-vendeur input:focus,
-.bloc-action-vendeur select:focus {
-    border-color: #6c5ce7 !important;
-    outline: none !important;
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
-}
-
-/* GESTION DE LA ZONE PHOTO ET APERCU */
-.zone-upload-images {
-    width: 100% !important;
-    margin-top: 20px !important;
-}
-
-.vignettes-apercu {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 12px !important;
-    flex-wrap: wrap !important;
-}
-
-/* FORÇAGE DES JOLIS CARRÉS D'IMAGE EXCLUSIFS */
-.vignettes-apercu div, 
-.vignettes-apercu [id^="slot-"] {
-    width: 65px !important;
-    height: 65px !important;
-    border: 2px dashed #cbd5e0 !important;
-    border-radius: 8px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    background-color: #f7fafc !important;
-    color: #a0aec0 !important;
-    font-size: 20px !important;
-    box-sizing: border-box !important;
-    transition: all 0.2s ease-in-out !important;
-    user-select: none;
-}
-
-.vignettes-apercu div:hover, 
-.vignettes-apercu [id^="slot-"]:hover {
-    border-color: #6c5ce7 !important;
-    background-color: #edf2f7 !important;
-    color: #6c5ce7 !important;
-}
-
-/* BOUTON DE PUBLICATION PRINCIPAL EN BAS */
-.btn-principal-vendeur {
-    width: 100% !important;
-    background-color: #00b894 !important;
-    color: #ffffff !important;
-    border: none !important;
-    padding: 14px !important;
-    margin-top: 25px !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    border-radius: 10px !important;
-    cursor: pointer !important;
+.btn-recherche {
+    background-color: #f39c12;
+    border: none;
+    padding: 0 16px;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    font-size: 16px;
     transition: background 0.2s;
 }
 
-.btn-principal-vendeur:hover {
-    background-color: #00a383 !important;
+.btn-recherche:hover {
+    background-color: #e67e22;
 }
 
-/* CONTENEUR DE FLUX DU CATALOGUE DE VENTE (DROITE) */
-.conteneur-liste-flux {
-    width: 100%;
-    max-height: 500px;
-    overflow-y: auto;
+/* LIENS DE NAVIGATION */
+.liens-navigation {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.texte-vide {
-    color: #a0aec0;
+.lien-nav {
+    color: #cbd5e0;
+    text-decoration: none;
     font-size: 14px;
-    text-align: center;
-    padding: 30px 0;
+    font-weight: 500;
+    transition: color 0.2s;
 }
 
-/* ÉLÉMENTS INDIVIDUELS DU CATALOGUE DANS LA LISTE */
-.item-produit-vendeur {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    background: #f8fafc !important;
-    padding: 12px !important;
-    border-radius: 10px !important;
-    margin-bottom: 12px !important;
-    border: 1px solid #e2e8f0 !important;
+.lien-nav:hover, .lien-nav.actif {
+    color: #ffffff;
 }
 
-.item-produit-vendeur img {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
+.btn-connexion-nav {
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #cbd5e0;
+    padding: 8px 16px;
     border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
 }
 
-.info-item-vendeur {
-    flex: 1;
-    margin-left: 15px;
+.btn-connexion-nav:hover {
+    background-color: #ffffff;
+    color: #1a202c;
 }
 
-.info-item-vendeur h5 {
-    margin: 0 0 4px 0;
+/* 🎯 BANDEAU HERO (ARRIÈRE-PLAN AVEC IMAGE COMPATIBLE) */
+.section-hero-leypay {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1470&auto=format&fit=crop') no-repeat center center/cover;
+    height: 380px;
+    display: flex;
+    align-items: center;
+    padding: 0 8%;
+}
+
+.hero-contenu {
+    max-width: 550px;
+    color: #ffffff;
+}
+
+.hero-contenu h1 {
+    font-size: 42px;
+    font-weight: 800;
+    margin: 0 0 15px 0;
+    line-height: 1.1;
+}
+
+.hero-contenu p {
+    font-size: 16px;
+    color: #f7fafc;
+    margin-bottom: 25px;
+}
+
+.btn-hero-action {
+    background-color: #f39c12;
+    color: #ffffff;
+    border: none;
+    padding: 12px 28px;
     font-size: 14px;
-    color: #2d3748;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.info-item-vendeur span {
-    font-size: 12px;
-    color: #6c5ce7;
+/* 🛍️ FILTRES ET GRILLE */
+.conteneur-principal-marche {
+    max-width: 1250px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.barre-filtres-badges {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 35px;
+}
+
+.badge-filtre {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.badge-filtre:hover, .badge-filtre.actif {
+    background-color: #1a202c;
+    color: #ffffff;
+    border-color: #1a202c;
+}
+
+.titre-section {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 25px;
+}
+
+/* 🛒 INTERFACE DU PANIER FLOTTANT STRUCTURE YD */
+.fenetre-panier-flottante {
+    position: fixed;
+    bottom: 90px;
+    right: 30px;
+    width: 330px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    display: none;
+    flex-direction: column;
+    z-index: 2000;
+    overflow: hidden;
+}
+
+.fenetre-panier-flottante.actif {
+    display: flex;
+}
+
+.panier-entete {
+    background: #ffffff;
+    padding: 15px;
+    border-bottom: 1px solid #edf2f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panier-entete h4 { margin: 0; font-size: 16px; color: #1a202c; }
+.badge-total-panier { background: #fed7d7; color: #c53030; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 13px; }
+
+.panier-corps-liste {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 10px 15px;
+}
+
+.item-panier-element {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f7fafc;
+    padding: 10px;
+    border-left: 3px solid #f39c12;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.item-panier-details h6 { margin: 0 0 2px 0; font-size: 13px; color: #2d3748; }
+.item-panier-details span { font-size: 12px; color: #718096; font-weight: 600; }
+
+.btn-retirer-item {
+    background: #fed7d7;
+    color: #c53030;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
     font-weight: 600;
 }
 
-.btn-supprimer-produit {
-    background-color: #fed7d7 !important;
-    color: #c53030 !important;
-    border: none !important;
-    padding: 6px 12px !important;
-    border-radius: 6px !important;
-    cursor: pointer !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    transition: background 0.2s;
+/* CALCULS PANIER */
+.panier-resume-calculs {
+    background: #fffaf0;
+    padding: 15px;
+    border-top: 1px dashed #e2e8f0;
 }
 
-.btn-supprimer-produit:hover {
-    background-color: #feb2b2 !important;
+.ligne-calcul {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #4a5568;
+    margin-bottom: 5px;
+}
+
+.total-general-ligne {
+    font-size: 14px;
+    font-weight: 700;
+    color: #c53030;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #edf2f7;
+}
+
+.panier-actions-boutons {
+    display: flex;
+    gap: 10px;
+    padding: 12px 15px;
+    background: #f7fafc;
+}
+
+.btn-vider-panier {
+    flex: 1;
+    background: #e2e8f0;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-valider-panier {
+    flex: 2;
+    background: #1a202c;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* 🎯 ROND BOUTON DU PANIER FLOATING */
+.bouton-panier-declencheur {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 55px;
+    height: 55px;
+    background: #1a202c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 2001;
+}
+
+.pastille-quantite {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: #c53030;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid #1a202c;
 }
