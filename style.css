@@ -652,47 +652,50 @@ input:focus, select:focus {
     box-sizing: border-box !important;
 }
 /* =========================================================================
-   NETTOYAGE ET RESTRUCTURATION DU FORMULAIRE VENDEUR
+   RESTRUCTURATION PROPRE ET SÉCURISÉE DU FORMULAIRE VENDEUR
    ========================================================================= */
 
-/* On force le bloc formulaire à aligner ses éléments de haut en bas */
-.bloc-action-vendeur form, 
-.bloc-action-vendeur div:first-of-type {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
+/* On isole le bloc de gauche pour qu'il reprenne sa structure verticale */
+.grille-vendeur-actions .bloc-action-vendeur {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    box-sizing: border-box !important;
 }
 
-/* Alignement des 3 champs (Prix, Stock, Catégorie) sur une seule ligne propre */
+/* On s'assure que le titre et le nom prennent 100% de la largeur */
+.bloc-action-vendeur h3,
+.bloc-action-vendeur input[type="text"] {
+    width: 100% !important;
+    display: block !important;
+}
+
+/* ALIGNEMENT DES 3 CHAMPS (Prix, Stock, Catégorie) */
 .row-pays-ville {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important; /* Divise proprement en 3 colonnes égales */
     gap: 15px !important;
     width: 100% !important;
-    box-sizing: border-box;
+    margin: 10px 0 !important;
 }
 
-/* Chaque sous-bloc de champ prend une largeur égale */
+/* Pour chaque sous-bloc de champ */
 .row-pays-ville > div {
-    flex: 1 !important;
-    display: flex;
-    flex-direction: column;
-    min-width: 0; /* Évite que les inputs ne débordent */
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-/* Style des étiquettes (labels) pour éviter les décalages */
+/* Gestion propre des labels (étiquettes) */
 .form-label {
+    font-weight: 600 !important;
+    color: #4a5568 !important;
+    font-size: 14px !important;
+    margin-bottom: 5px !important;
+    text-align: left !important;
     display: block !important;
-    margin-bottom: 6px !important;
-    font-weight: 600;
-    color: #4a5568;
-    font-size: 14px;
-    text-align: left;
 }
 
-/* Les inputs et selects prennent toute la largeur de leur colonne */
+/* Style uniforme pour TOUS les champs de saisie */
 .bloc-action-vendeur input,
 .bloc-action-vendeur select {
     width: 100% !important;
@@ -700,31 +703,26 @@ input:focus, select:focus {
     border: 1px solid #cbd5e0 !important;
     border-radius: 8px !important;
     box-sizing: border-box !important;
-    font-size: 14px;
+    font-size: 14px !important;
+    background-color: #fff !important;
 }
 
-/* Zone des photos : elle doit se mettre en dessous des champs, pas à côté ! */
+/* ZONE DES PHOTOS : En dessous des champs */
 .zone-upload-images {
     width: 100% !important;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    margin-top: 15px !important;
 }
 
-/* Conteneur des 4 carrés d'aperçu */
 .vignettes-apercu {
     display: flex !important;
     flex-direction: row !important;
     gap: 12px !important;
-    margin-top: 8px;
-    flex-wrap: wrap;
+    margin-top: 10px !important;
 }
 
-/* Bouton Publier : Largeur totale bien visible en bas */
-.bloc-action-vendeur button#btn-publier,
-.bloc-action-vendeur .btn-principal-vendeur {
+/* BOUTON PUBLIER */
+.bloc-action-vendeur button {
     width: 100% !important;
-    margin-top: 20px !important;
     padding: 14px !important;
+    margin-top: 15px !important;
 }
