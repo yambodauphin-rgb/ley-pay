@@ -651,3 +651,80 @@ input:focus, select:focus {
     padding: 24px !important;
     box-sizing: border-box !important;
 }
+/* =========================================================================
+   NETTOYAGE ET RESTRUCTURATION DU FORMULAIRE VENDEUR
+   ========================================================================= */
+
+/* On force le bloc formulaire à aligner ses éléments de haut en bas */
+.bloc-action-vendeur form, 
+.bloc-action-vendeur div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Alignement des 3 champs (Prix, Stock, Catégorie) sur une seule ligne propre */
+.row-pays-ville {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    gap: 15px !important;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+/* Chaque sous-bloc de champ prend une largeur égale */
+.row-pays-ville > div {
+    flex: 1 !important;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Évite que les inputs ne débordent */
+}
+
+/* Style des étiquettes (labels) pour éviter les décalages */
+.form-label {
+    display: block !important;
+    margin-bottom: 6px !important;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Les inputs et selects prennent toute la largeur de leur colonne */
+.bloc-action-vendeur input,
+.bloc-action-vendeur select {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    border: 1px solid #cbd5e0 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    font-size: 14px;
+}
+
+/* Zone des photos : elle doit se mettre en dessous des champs, pas à côté ! */
+.zone-upload-images {
+    width: 100% !important;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Conteneur des 4 carrés d'aperçu */
+.vignettes-apercu {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+/* Bouton Publier : Largeur totale bien visible en bas */
+.bloc-action-vendeur button#btn-publier,
+.bloc-action-vendeur .btn-principal-vendeur {
+    width: 100% !important;
+    margin-top: 20px !important;
+    padding: 14px !important;
+}

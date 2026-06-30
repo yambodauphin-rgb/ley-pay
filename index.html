@@ -220,17 +220,18 @@
             <h3>🛍️ Mettre un produit en ligne</h3>
             <div class="form-ajout-produit">
                 <label class="form-label">Nom du produit</label>
-                <input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
-                <div class="row-pays-ville" style="display: flex; gap: 10px; justify-content: space-between;">
-    <div style="width: 32%;">
+<input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
+
+<div class="row-pays-ville">
+    <div>
         <label class="form-label">Prix ($)</label>
         <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
     </div>
-    <div style="width: 32%;">
+    <div>
         <label class="form-label">Stock</label>
-        <input type="number" id="p-stock" placeholder="Ex: 10" min="0" value="1">
+        <input type="number" id="p-stock" placeholder="Ex: 10" value="1">
     </div>
-    <div style="width: 32%;">
+    <div>
         <label class="form-label">Catégorie</label>
         <select id="p-categorie">
             <option value="Électronique">Électronique 📱</option>
@@ -243,8 +244,8 @@
 
 <label class="form-label">Mode de service Ley Pay</label>
 <select id="p-mode-service" onchange="calculerFraisVendeur()">
-    <option value="FMM">Mode FMM (5% de frais plateforme le vendeur garde se produit et s'occupe de la livraison ) ⚡</option>
-    <option value="FMA" selected>Mode FMA (10% de frais plateforme l'entreprise s'occupe de la livraison et du stockage) 🚀</option>
+    <option value="FMA">Mode FMA (10% de frais plateforme) 🚀</option>
+    <option value="FMM">Mode FMM (5% de frais plateforme) ⚡</option>
 </select>
                     </div>
                 </div>
