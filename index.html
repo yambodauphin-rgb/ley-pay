@@ -221,13 +221,16 @@
             <div class="form-ajout-produit">
                 <label class="form-label">Nom du produit</label>
                 <input type="text" id="p-nom" placeholder="Ex: Montre Connectée Pro">
-
-                <div class="row-pays-ville">
-    <div style="width: 48%;">
+                <div class="row-pays-ville" style="display: flex; gap: 10px; justify-content: space-between;">
+    <div style="width: 32%;">
         <label class="form-label">Prix ($)</label>
         <input type="number" id="p-prix" placeholder="Ex: 45" oninput="calculerFraisVendeur()">
     </div>
-    <div style="width: 48%;">
+    <div style="width: 32%;">
+        <label class="form-label">Stock</label>
+        <input type="number" id="p-stock" placeholder="Ex: 10" min="0" value="1">
+    </div>
+    <div style="width: 32%;">
         <label class="form-label">Catégorie</label>
         <select id="p-categorie">
             <option value="Électronique">Électronique 📱</option>
@@ -240,8 +243,8 @@
 
 <label class="form-label">Mode de service Ley Pay</label>
 <select id="p-mode-service" onchange="calculerFraisVendeur()">
-    <option value="FMM">Mode FMM (5% de frais plateforme) ⚡</option>
-    <option value="FMA" selected>Mode FMA (10% de frais plateforme) 🚀</option>
+    <option value="FMM">Mode FMM (5% de frais plateforme le vendeur garde se produit et s'occupe de la livraison ) ⚡</option>
+    <option value="FMA" selected>Mode FMA (10% de frais plateforme l'entreprise s'occupe de la livraison et du stockage) 🚀</option>
 </select>
                     </div>
                 </div>
@@ -556,36 +559,38 @@ function ajouterProduitVendeur() {
         return;
     }
 
-    // Récupérer la première image ou mettre un placeholder par défaut
     const imagePrincipale = tableauImagesVendeur[0] || 'https://via.placeholder.com/150'; 
-
-    // ÉTAPE CRUCIALE : Récupérer ou créer la liste globale des produits du site
     let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_produits_global')) || [];
 
-    // Création de l'objet produit unique
-   const nouveauProduit = {
-    id: Date.now(),
-    nom: nom,
-    prix: parseFloat(prix).toFixed(2),
-    categorie: categorie,
-    modeService: document.getElementById('p-mode-service').value, // Enregistre si c'est FMM ou FMA
-    image: imagePrincipale
-};
-    // Sauvegarder dans le stockage local pour que l'accueil et le catalogue y aient accès
+    // Récupérer la valeur du stock saisi
+    const stock = parseInt(document.getElementById('p-stock').value) || 0;
+
+    // L'objet propre, sans lignes de code perdues à l'intérieur
+    const nouveauProduit = {
+        id: Date.now(),
+        nom: nom,
+        prix: parseFloat(prix).toFixed(2),
+        stock: stock, // <-- C'est comme ça qu'on stocke la valeur !
+        categorie: categorie,
+        modeService: document.getElementById('p-mode-service').value,
+        image: imagePrincipale
+    };
+
+    // Sauvegarder dans le stockage local
     listeProduitsGlobale.push(nouveauProduit);
     localStorage.setItem('lp_produits_global', JSON.stringify(listeProduitsGlobale));
 
     alert("🚀 Produit mis en ligne avec succès !");
     
-    // Réinitialisation des champs du formulaire
+    // Réinitialisation des champs du formulaire (C'EST ICI qu'on nettoie le stock !)
     document.getElementById('p-nom').value = '';
     document.getElementById('p-prix').value = '';
+    document.getElementById('p-stock').value = '1'; // Mis au bon endroit !
     réinitialiserSlotsPhotos(); 
 
-    // Relancer l'affichage du catalogue vendeur immédiatement
+    // Forcer l'affichage immédiat dans le catalogue
     rafraichirCatalogueVendeur();
 
-    // Si tu as une fonction existante pour charger les produits sur l'accueil, appelle-la ici :
     if (typeof afficherProduitsAccueil === 'function') {
         afficherProduitsAccueil();
     }
