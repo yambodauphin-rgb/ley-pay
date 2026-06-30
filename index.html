@@ -88,58 +88,116 @@
     </div>
 
     <script>
-        // Logique de simulation des données et panier
-        let panierArticles = [];
-        
-        function basculerAffichagePanier() {
-            const panier = document.getElementById('panier-flottant-interface');
-            panier.classList.toggle('actif');
-        }
+// ==========================================
+// GESTION DU PANIER FLOTTANT
+// ==========================================
+let panierArticles = [];
 
-        // Exemple d'ajout à la volée pour tester le visuel du panier
-        function rafraichirVisuelPanier() {
-            const liste = document.getElementById('liste-items-panier');
-            const pastille = document.getElementById('pastille-panier-nbr');
-            const pPrix = document.getElementById('panier-total-prix');
-            const sTotal = document.getElementById('panier-sous-total');
-            const gTotal = document.getElementById('panier-grand-total');
+function basculerAffichagePanier() {
+    const panier = document.getElementById('panier-flottant-interface');
+    panier.classList.toggle('actif');
+}
 
-            if(panierArticles.length === 0) {
-                liste.innerHTML = '<p class="panier-vide-texte">Votre panier est vide.</p>';
-                pastille.textContent = "0";
-                pPrix.textContent = "0.00 $";
-                sTotal.textContent = "0.00 $";
-                gTotal.textContent = "0.00 $";
-                return;
-            }
+function rafraichirVisuelPanier() {
+    const liste = document.getElementById('liste-items-panier');
+    const pastille = document.getElementById('pastille-panier-nbr');
+    const pPrix = document.getElementById('panier-total-prix');
+    const sTotal = document.getElementById('panier-sous-total');
+    const gTotal = document.getElementById('panier-grand-total');
 
-            liste.innerHTML = '';
-            let totalCumule = 0;
-            
-            panierArticles.forEach((art, index) => {
-                totalCumule += parseFloat(art.prix);
-                const item = document.createElement('div');
-                item.className = 'item-panier-element';
-                item.innerHTML = `
-                    <div class="item-panier-details">
-                        <h6>${art.nom}</h6>
-                        <span>${art.prix} $</span>
-                    </div>
-                    <button class="btn-retirer-item" onclick="retirerDuPanier(${index})">Retirer</button>
-                `;
-                liste.appendChild(item);
-            });
+    if (panierArticles.length === 0) {
+        liste.innerHTML = '<p class="panier-vide-texte">Votre panier est vide.</p>';
+        pastille.textContent = "0";
+        pPrix.textContent = "0.00 $";
+        sTotal.textContent = "0.00 $";
+        gTotal.textContent = "0.00 $";
+        return;
+    }
 
-            pastille.textContent = panierArticles.length;
-            pPrix.textContent = `${(totalCumule + 5).toFixed(2)} $`;
-            sTotal.textContent = `${totalCumule.toFixed(2)} $`;
-            gTotal.textContent = `${(totalCumule + 5).toFixed(2)} $`;
-        }
+    liste.innerHTML = '';
+    let totalCumule = 0;
+    
+    panierArticles.forEach((art, index) => {
+        totalCumule += parseFloat(art.prix);
+        const item = document.createElement('div');
+        item.className = 'item-panier-element';
+        item.innerHTML = `
+            <div class="item-panier-details">
+                <h6>${art.nom}</h6>
+                <span>${art.prix} $</span>
+            </div>
+            <button class="btn-retirer-item" onclick="retirerDuPanier(${index})">Retirer</button>
+        `;
+        liste.appendChild(item);
+    });
 
-        function viderPanierComplet() {
-            panierArticles = [];
-            rafraichirVisuelPanier();
-        }
-    </script>
+    pastille.textContent = panierArticles.length;
+    pPrix.textContent = `${(totalCumule + 5).toFixed(2)} $`;
+    sTotal.textContent = `${totalCumule.toFixed(2)} $`;
+    gTotal.textContent = `${(totalCumule + 5).toFixed(2)} $`;
+}
+
+function viderPanierComplet() {
+    panierArticles = [];
+    rafraichirVisuelPanier();
+}
+
+// ==========================================
+// TON ANCIENNE FONCTION VENDEUR (RÉINTEGRÉE)
+// ==========================================
+function ajouterProduitVendeur() {
+    // 1. Récupération de l'image (prend la première ou une image par défaut)
+    const imagePrincipale = (typeof tableauImagesVendeur !== 'undefined' && tableauImagesVendeur[0]) 
+                            || 'https://via.placeholder.com/150';
+
+    // 2. Récupération ou création de la liste globale des produits du site
+    let listeProduitsGlobale = JSON.parse(localStorage.getItem('lp_products_global')) || [];
+
+    // 3. Récupération des données des champs du formulaire
+    const nom = document.getElementById('p-nom').value;
+    const prix = document.getElementById('p-prix').value;
+    const stock = parseInt(document.getElementById('p-stock').value) || 0;
+    const categorie = document.getElementById('p-categorie').value; // Récupère la catégorie sélectionnée
+    const modeService = document.getElementById('p-mode-service').value; // Enregistre si c'est FMM ou FMA
+
+    // Validation rapide pour éviter d'envoyer un produit vide
+    if (!nom || !prix) {
+        alert("⚠️ Veuillez remplir au moins le nom et le prix du produit.");
+        return;
+    }
+
+    // 4. Création de l'objet produit unique (exactement comme dans tes captures)
+    const nouveauProduit = {
+        id: Date.now(), // Identifiant unique basé sur le temps
+        nom: nom,
+        prix: parseFloat(prix).toFixed(2),
+        stock: stock,
+        categorie: categorie,
+        modeService: modeService,
+        image: imagePrincipale
+    };
+
+    // 5. Sauvegarde dans le stockage local (localStorage)
+    listeProduitsGlobale.push(nouveauProduit);
+    localStorage.setItem('lp_products_global', JSON.stringify(listeProduitsGlobale));
+
+    // 6. Message de succès
+    alert("🚀 Produit mis en ligne avec succès !");
+
+    // 7. Réinitialisation des champs du formulaire après envoi
+    document.getElementById('p-nom').value = '';
+    document.getElementById('p-prix').value = '';
+    document.getElementById('p-stock').value = '1'; // Remet le stock à 1 par défaut
+    
+    if (typeof reininitialiserPhotos === 'function') {
+        reininitialiserPhotos(); // Si tu as une fonction pour vider les carrés de photos
+    }
+    
+    // Optionnel : recharger la liste sur l'écran si nécessaire
+    if (typeof afficherCatalogueVendeur === 'function') {
+        afficherCatalogueVendeur();
+    }
+}
+</script>
 </body>
 </html>
