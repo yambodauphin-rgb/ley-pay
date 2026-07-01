@@ -49,56 +49,105 @@
         </main>
     </div>
 
-    <div id="formulaire-vente-container" style="display: none; max-width: 1200px; margin: 30px auto; padding: 25px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f7fafc; padding-bottom: 15px;">
+    <div id="formulaire-vente-container" style="display: none; max-width: 1200px; margin: 30px auto; padding: 25px; background: #f8fafc; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; font-family: sans-serif;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">
             <h3 style="margin: 0; color: #1a202c; font-size: 1.6rem;">🚀 Votre Tableau de Bord Vendeur</h3>
             <button onclick="retourAccueil()" style="background: #edf2f7; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #4a5568;">← Quitter l'espace</button>
         </div>
-        
-        <form id="formulaire-ajout-produit" onsubmit="event.preventDefault(); ajouterProduitVendeur();">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px;">
-                <div>
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Nom du produit</label>
-                    <input type="text" id="p-nom" placeholder="Ex: Veste en cuir" required style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+
+        <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 25px;">
+            <h4 style="margin-top: 0; margin-bottom: 15px; color: #4a5568; font-size: 1.1rem; border-left: 4px solid #ff6600; padding-left: 8px;">Tableau de calcul financier</h4>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center;">
+                <div style="background: #f7fafc; padding: 15px; border-radius: 6px; border: 1px solid #edf2f7;">
+                    <span style="font-size: 0.9rem; color: #718096; display: block; margin-bottom: 5px;">Vente Brut</span>
+                    <strong id="finances-brut" style="font-size: 1.3rem; color: #2d3748;">0.00 $</strong>
                 </div>
-                <div>
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Prix de vente ($)</label>
-                    <input type="number" id="p-prix" step="0.01" placeholder="Ex: 45.00" required style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                <div style="background: #fff5f5; padding: 15px; border-radius: 6px; border: 1px solid #fed7d7;">
+                    <span style="font-size: 0.9rem; color: #e53e3e; display: block; margin-bottom: 5px;">Pour la plateforme (10%)</span>
+                    <strong id="finances-commission" style="font-size: 1.3rem; color: #c53030;">0.00 $</strong>
                 </div>
-                <div>
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Stock initial</label>
-                    <input type="number" id="p-stock" value="1" min="1" required style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
-                </div>
-                <div>
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Catégorie de produit</label>
-                    <select id="p-categorie" style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box; background: white;">
-                        <option value="Mode">Vêtements / Mode</option>
-                        <option value="Électronique">Tech / Électronique</option>
-                        <option value="Maison">Cuisine / Maison</option>
-                    </select>
+                <div style="background: #f0fff4; padding: 15px; border-radius: 6px; border: 1px solid #c6f6d5;">
+                    <span style="font-size: 0.9rem; color: #38a169; display: block; margin-bottom: 5px;">Mon Argent</span>
+                    <strong id="finances-net" style="font-size: 1.3rem; color: #22543d;">0.00 $</strong>
                 </div>
             </div>
+        </div>
 
-            <div style="margin-bottom: 25px; background: #f7fafc; padding: 20px; border-radius: 8px; border: 1px dashed #cbd5e0;">
-    <label style="display:block; margin-bottom:12px; font-weight:600; color:#4a5568;">Photos du produit (3 photos maximum)</label>
-    
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        <input type="file" id="p-photo-1" accept="image/*" onchange="genererAperçuUnique(this, 'aperçu-1')">
-        <input type="file" id="p-photo-2" accept="image/*" onchange="genererAperçuUnique(this, 'aperçu-2')">
-        <input type="file" id="p-photo-3" accept="image/*" onchange="genererAperçuUnique(this, 'aperçu-3')">
-    </div>
-    
-    <div id="liste-aperçu-photos" style="display: flex; gap: 15px; margin-top: 15px;">
-        <div id="aperçu-1"></div>
-        <div id="aperçu-2"></div>
-        <div id="aperçu-3"></div>
-    </div>
-</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start;">
+            
+            <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #e2e8f0;">
+                <h4 style="margin-top: 0; margin-bottom: 20px; color: #4a5568; font-size: 1.1rem; border-left: 4px solid #3182ce; padding-left: 8px;">Tableau de mise en vente</h4>
+                
+                <form id="formulaire-ajout-produit" onsubmit="event.preventDefault(); ajouterProduitVendeur();">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:6px; font-weight:600; color:#4a5568; font-size:0.9rem;">Nom du produit</label>
+                        <input type="text" id="p-nom" placeholder="Ex: Veste en cuir" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div>
+                            <label style="display:block; margin-bottom:6px; font-weight:600; color:#4a5568; font-size:0.9rem;">Prix ($)</label>
+                            <input type="number" id="p-prix" step="0.01" placeholder="Ex: 45.00" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:6px; font-weight:600; color:#4a5568; font-size:0.9rem;">Stock initial</label>
+                            <input type="number" id="p-stock" value="1" min="1" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                        </div>
+                    </div>
 
-            <button type="submit" style="background: #ff6600; color: white; border: none; padding: 14px 40px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 6px rgba(255,102,0,0.2);">
-                Publier le produit sur le marché
-            </button>
-        </form>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:6px; font-weight:600; color:#4a5568; font-size:0.9rem;">Catégorie</label>
+                        <select id="p-categorie" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box; background: white;">
+                            <option value="Mode">Vêtements / Mode</option>
+                            <option value="Électronique">Tech / Électronique</option>
+                            <option value="Maison">Cuisine / Maison</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px; background: #f7fafc; padding: 15px; border-radius: 6px; border: 1px dashed #cbd5e0;">
+                        <label style="display:block; margin-bottom:10px; font-weight:600; color:#4a5568; font-size:0.9rem;">Photos (3 maximum)</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <input type="file" id="p-photo-1" accept="image/*" onchange="genererAperçuUnique(this, 'aperçu-1')" style="font-size:0.85rem;">
+                            <input type="file" id="p-photo-2" accept="image/*" onchange="genererAperçuUnique(this, 'aperçu-2')" style="font-size:0.85rem;">
+                            <input type="file" id="p-photo-3" accept="image/*" onchange="genererAperçuUnique(this, 'aperçu-3')" style="font-size:0.85rem;">
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 12px;">
+                            <div id="aperçu-1"></div>
+                            <div id="aperçu-2"></div>
+                            <div id="aperçu-3"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" style="width: 100%; background: #ff6600; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+                        Mettre en vente l'objet
+                    </button>
+                </form>
+            </div>
+
+            <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; min-height: 400px;">
+                <h4 style="margin-top: 0; margin-bottom: 20px; color: #4a5568; font-size: 1.1rem; border-left: 4px solid #38a169; padding-left: 8px;">Tableau statique du catalogue</h4>
+                
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #edf2f7; color: #718096;">
+                            <th style="padding: 10px 5px;">Produit</th>
+                            <th style="padding: 10px 5px;">Catégorie</th>
+                            <th style="padding: 10px 5px; text-align: right;">Prix</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corps-catalogue-statique">
+                        <tr>
+                            <td colspan="3" id="catalogue-vide-texte" style="padding: 30px; text-align: center; color: #a0aec0; font-style: italic;">
+                                Aucun produit en vente pour le moment.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
     </div>
     <div id="panier-flottant-interface" class="fenetre-panier-flottante">
         <div class="panier-entete">
@@ -157,130 +206,165 @@
     <script>
         let panierArticles = [];
 
-        // 🚀 ACTIVER L'ESPACE VENDEUR (Masque l'accueil)
-        function ouvrirEspaceVendeur() {
-            document.getElementById('section-accueil-complete').style.display = 'none';
-            document.getElementById('nav-zone-recherche').style.display = 'none';
-            document.getElementById('btn-panier-global').style.display = 'none';
-            document.getElementById('panier-flottant-interface').classList.remove('actif');
-            
-            document.getElementById('formulaire-vente-container').style.display = 'block';
-            document.getElementById('lien-accueil').classList.remove('actif');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+       // Variable globale pour suivre le montant brut total accumulé pendant la session de test
+let totalVentesBrut = 0;
+
+// 🚀 ACTIVER L'ESPACE VENDEUR (Masque l'accueil)
+function ouvrirEspaceVendeur() {
+    document.getElementById('section-accueil-complete').style.display = 'none';
+    document.getElementById('nav-zone-recherche').style.display = 'none';
+    document.getElementById('btn-panier-global').style.display = 'none';
+    document.getElementById('panier-flottant-interface').classList.remove('actif');
+    
+    document.getElementById('formulaire-vente-container').style.display = 'block';
+    document.getElementById('lien-accueil').classList.remove('actif');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 🏠 RETOURNER À L'ACCUEIL
+function retourAccueil() {
+    document.getElementById('formulaire-vente-container').style.display = 'none';
+    
+    document.getElementById('section-accueil-complete').style.display = 'block';
+    document.getElementById('nav-zone-recherche').style.display = 'block';
+    document.getElementById('btn-panier-global').style.display = 'flex';
+    document.getElementById('lien-accueil').classList.add('actif');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 📸 GENERER L'APERÇU VISUEL POUR LES 3 CHAMPS PHOTOS DISTINCTS
+function genererAperçuUnique(input, idConteneurAperçu) {
+    const conteneur = document.getElementById(idConteneurAperçu);
+    conteneur.innerHTML = ""; // Vide l'aperçu précédent du champ
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = "80px";
+            img.style.height = "80px";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "6px";
+            img.style.border = "1px solid #cbd5e0";
+            conteneur.appendChild(img);
         }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-        // 🏠 RETOURNER À L'ACCUEIL
-        function retourAccueil() {
-            document.getElementById('formulaire-vente-container').style.display = 'none';
-            
-            document.getElementById('section-accueil-complete').style.display = 'block';
-            document.getElementById('nav-zone-recherche').style.display = 'block';
-            document.getElementById('btn-panier-global').style.display = 'flex';
-            document.getElementById('lien-accueil').classList.add('actif');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+// 📤 ENVOI DU PRODUIT, CALCUL FINANCIER ET CATALOGUE STATIQUE
+async function ajouterProduitVendeur() {
+    const nom = document.getElementById('p-nom').value.trim();
+    const prix = parseFloat(document.getElementById('p-prix').value);
+    const stock = parseInt(document.getElementById('p-stock').value) || 1;
+    const categorie = document.getElementById('p-categorie').value;
+
+    if (!nom || isNaN(prix)) {
+        alert("⚠️ Le nom et le prix sont obligatoires !");
+        return;
+    }
+
+    // --- 📊 CALCULS FINANCIERS DYNAMIQUES (Haut de page) ---
+    const gainBrutOperation = prix * stock;
+    totalVentesBrut += gainBrutOperation;
+    
+    const commissionPlateforme = totalVentesBrut * 0.10; // Réduction de 10%
+    const monArgentNet = totalVentesBrut - commissionPlateforme;
+
+    // Mise à jour visuelle des trois blocs de calculs
+    if(document.getElementById('finances-brut')) {
+        document.getElementById('finances-brut').innerText = `${totalVentesBrut.toFixed(2)} $`;
+    }
+    if(document.getElementById('finances-commission')) {
+        document.getElementById('finances-commission').innerText = `${commissionPlateforme.toFixed(2)} $`;
+    }
+    if(document.getElementById('finances-net')) {
+        document.getElementById('finances-net').innerText = `${monArgentNet.toFixed(2)} $`;
+    }
+
+    // --- 📋 MISE À JOUR DU TABLEAU STATIQUE (Droite de page) ---
+    const texteVide = document.getElementById('catalogue-vide-texte');
+    if (texteVide) texteVide.remove(); // Enlève le message d'attente
+
+    const corpsCatalogue = document.getElementById('corps-catalogue-statique');
+    if (corpsCatalogue) {
+        const nouvelleLigne = document.createElement('tr');
+        nouvelleLigne.style.borderBottom = "1px solid #f7fafc";
+        nouvelleLigne.innerHTML = `
+            <td style="padding: 12px 5px; font-weight: 600; color: #2d3748;">${nom}</td>
+            <td style="padding: 12px 5px; color: #718096;"><span style="background:#edf2f7; padding:2px 8px; border-radius:4px; font-size:0.8rem;">${categorie}</span></td>
+            <td style="padding: 12px 5px; text-align: right; font-weight: bold; color: #ff6600;">${prix.toFixed(2)} $</td>
+        `;
+        corpsCatalogue.appendChild(nouvelleLigne);
+    }
+
+    // --- 🛡️ TRANSMISSION SERVER MULTIPART / DATABASE ---
+    const formData = new FormData();
+    formData.append('nom', nom);
+    formData.append('prix', prix);
+    formData.append('stock', stock);
+    formData.append('categorie', categorie);
+
+    const photo1 = document.getElementById('p-photo-1') ? document.getElementById('p-photo-1').files[0] : null;
+    const photo2 = document.getElementById('p-photo-2') ? document.getElementById('p-photo-2').files[0] : null;
+    const photo3 = document.getElementById('p-photo-3') ? document.getElementById('p-photo-3').files[0] : null;
+
+    if (photo1) formData.append('photos', photo1);
+    if (photo2) formData.append('photos', photo2);
+    if (photo3) formData.append('photos', photo3);
+
+    try {
+        const reponse = await fetch('/api/produits/ajouter', {
+            method: 'POST',
+            body: formData
+        });
+
+        const resultat = await reponse.json();
+
+        if (resultat.success || reponse.ok) {
+            alert(`🚀 Produit "${nom}" enregistré en base de données avec succès !`);
+        } else {
+            console.warn("Le serveur a répondu avec une erreur, mais le rendu local est actif :", resultat.message);
         }
+    } catch (error) {
+        console.error("Erreur d'envoi réseau (Mode de test local fluide) :", error);
+    }
 
-        // 📸 GENERER L'APERÇU VISUEL POUR LES 3 CHAMPS PHOTOS DISTINCTS
-        function genererAperçuUnique(input, idConteneurAperçu) {
-            const conteneur = document.getElementById(idConteneurAperçu);
-            conteneur.innerHTML = ""; // Vide l'aperçu précédent du champ
+    // --- CLEANUP & RESET DES FORMULAIRES ---
+    document.getElementById('formulaire-ajout-produit').reset();
+    if(document.getElementById('aperçu-1')) document.getElementById('aperçu-1').innerHTML = "";
+    if(document.getElementById('aperçu-2')) document.getElementById('aperçu-2').innerHTML = "";
+    if(document.getElementById('aperçu-3')) document.getElementById('aperçu-3').innerHTML = "";
+    
+    retourAccueil();
+}
 
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = "80px";
-                    img.style.height = "80px";
-                    img.style.objectFit = "cover";
-                    img.style.borderRadius = "6px";
-                    img.style.border = "1px solid #cbd5e0";
-                    conteneur.appendChild(img);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+// 📝 ENVOI DE L'INSCRIPTION
+async function soumettreInscription(event) {
+    if (event) event.preventDefault();
+    const nom = document.getElementById('inscription-nom').value.trim();
+    const email = document.getElementById('inscription-email').value.trim();
+    const mdp = document.getElementById('inscription-mdp').value;
+    const mdpConfirme = document.getElementById('inscription-mdp-confirme').value;
 
-        // 📤 ENVOI DU PRODUIT ET DES 3 IMAGES DISTINCTES AU BACKEND
-        async function ajouterProduitVendeur() {
-            const nom = document.getElementById('p-nom').value.trim();
-            const prix = document.getElementById('p-prix').value;
-            const stock = document.getElementById('p-stock').value;
-            const categorie = document.getElementById('p-categorie').value;
+    if (mdp !== mdpConfirme) { alert("❌ Les mots de passe ne correspondent pas !"); return; }
 
-            if (!nom || !prix) {
-                alert("⚠️ Le nom et le prix sont obligatoires !");
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('nom', nom);
-            formData.append('prix', prix);
-            formData.append('stock', stock);
-            formData.append('categorie', categorie);
-
-            // Récupération des fichiers des 3 inputs distincts
-            const photo1 = document.getElementById('p-photo-1') ? document.getElementById('p-photo-1').files[0] : null;
-            const photo2 = document.getElementById('p-photo-2') ? document.getElementById('p-photo-2').files[0] : null;
-            const photo3 = document.getElementById('p-photo-3') ? document.getElementById('p-photo-3').files[0] : null;
-
-            // Ajout au FormData s'ils existent
-            if (photo1) formData.append('photos', photo1);
-            if (photo2) formData.append('photos', photo2);
-            if (photo3) formData.append('photos', photo3);
-
-            try {
-                const reponse = await fetch('/api/produits/ajouter', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const resultat = await reponse.json();
-
-                if (resultat.success || reponse.ok) {
-                    alert(`🚀 Produit "${nom}" mis en vente avec succès !`);
-                    
-                    // Nettoyage complet
-                    document.getElementById('formulaire-ajout-produit').reset();
-                    if(document.getElementById('aperçu-1')) document.getElementById('aperçu-1').innerHTML = "";
-                    if(document.getElementById('aperçu-2')) document.getElementById('aperçu-2').innerHTML = "";
-                    if(document.getElementById('aperçu-3')) document.getElementById('aperçu-3').innerHTML = "";
-                    
-                    retourAccueil();
-                } else {
-                    alert(`❌ Erreur lors de la mise en vente : ${resultat.message}`);
-                }
-            } catch (error) {
-                console.error("Erreur d'envoi du produit :", error);
-                alert("⚠️ Impossible de joindre le serveur pour publier l'objet.");
-            }
-        }
-
-        // 📝 ENVOI DE L'INSCRIPTION
-        async function soumettreInscription(event) {
-            if (event) event.preventDefault();
-            const nom = document.getElementById('inscription-nom').value.trim();
-            const email = document.getElementById('inscription-email').value.trim();
-            const mdp = document.getElementById('inscription-mdp').value;
-            const mdpConfirme = document.getElementById('inscription-mdp-confirme').value;
-
-            if (mdp !== mdpConfirme) { alert("❌ Les mots de passe ne correspondent pas !"); return; }
-
-            try {
-                const reponse = await fetch('/api/inscription', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nom, email, mdp })
-                });
-                const resultat = await reponse.json();
-                alert(`🎉 ${resultat.message}`);
-                fermerFenetreInscription();
-            } catch (e) {
-                alert("⚠️ Erreur réseau serveur.");
-            }
-        }
+    try {
+        const reponse = await fetch('/api/inscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nom, email, mdp })
+        });
+        const resultat = await reponse.json();
+        alert(`🎉 ${resultat.message}`);
+        fermerFenetreInscription();
+    } catch (e) {
+        alert("⚠️ Erreur réseau serveur.");
+    }
+}
 
         // 🛠️ FONCTIONS D'INTERFACE SECONDAIRES
         function ouvrirFenetreInscription() { document.getElementById('fenetre-inscription-modal').style.display = 'flex'; }
