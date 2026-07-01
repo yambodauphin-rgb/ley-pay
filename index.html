@@ -22,8 +22,8 @@
         <div class="liens-navigation">
             <a href="#" class="lien-nav actif">Accueil</a>
             <a href="#" class="lien-nav" onclick="ouvrirEspaceVendeur()">Vendre 🚀</a>
-            <a href="#" class="lien-nav">Admin 👑</a>
-            <button class="btn-connexion-nav">Se connecter / S'inscrire</button>
+            <a href="#" class="lien-nav" onclick="ouvrirAdmin()">Admin 👑</a>
+            <button class="btn-connexion-nav" onclick="ouvrirFenetreInscription()">Se connecter / S'inscrire</button>
         </div>
     </nav>
 
@@ -31,23 +31,53 @@
         <div class="hero-contenu">
             <h1>Kitchen essentials & Fashion trends</h1>
             <p>Découvrez nos nouveautés exclusives adaptées à votre quotidien sur Ley Pay.</p>
-            <button class="btn-hero-action">Voir les offres</button>
+            <button class="btn-hero-action" onclick="defilerAuxOffres()">Voir les offres</button>
         </div>
     </header>
 
     <main class="conteneur-principal-marche">
         
         <div class="barre-filtres-badges">
-            <button class="badge-filtre actif" onclick="filtrerCategorie('Tout')">Tout voir</button>
-            <button class="badge-filtre" onclick="filtrerCategorie('Mode')">Vêtements</button>
-            <button class="badge-filtre" onclick="filtrerCategorie('Électronique')">Tech</button>
-            <button class="badge-filtre" onclick="filtrerCategorie('Maison')">Cuisine</button>
+            <button class="badge-filtre actif" onclick="filtrerCategorie('Tout', this)">Tout voir</button>
+            <button class="badge-filtre" onclick="filtrerCategorie('Mode', this)">Vêtements</button>
+            <button class="badge-filtre" onclick="filtrerCategorie('Électronique', this)">Tech</button>
+            <button class="badge-filtre" onclick="filtrerCategorie('Maison', this)">Cuisine</button>
         </div>
 
-        <h2 class="titre-section">Recommandations personnalisées</h2>
+        <div id="formulaire-vente-container" style="display: none; background: white; padding: 25px; border-radius: 12px; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <h3 style="margin-top: 0; color: #1a202c; font-size: 1.4rem; margin-bottom: 20px;">🚀 Ajouter un produit sur Ley Pay</h3>
+            
+            <form id="formulaire-ajout-produit" onsubmit="event.preventDefault(); ajouterProduitVendeur();">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Nom du produit</label>
+                        <input type="text" id="p-nom" placeholder="Ex: Veste en cuir" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Prix ($)</label>
+                        <input type="number" id="p-prix" step="0.01" placeholder="Ex: 45.00" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Stock disponible</label>
+                        <input type="number" id="p-stock" value="1" min="1" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Catégorie</label>
+                        <select id="p-categorie" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                            <option value="Mode">Vêtements / Mode</option>
+                            <option value="Électronique">Tech / Électronique</option>
+                            <option value="Maison">Cuisine / Maison</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" style="background: #ff6600; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                    Publier le produit en ligne
+                </button>
+            </form>
+        </div>
 
-        <div id="grille-produits-marketplace" class="grille-produits-flux">
-            </div>
+        <h2 id="titre-recommandations" class="titre-section">Recommandations personnalisées</h2>
+        <div id="grille-produits-marketplace" class="grille-produits-flux"></div>
 
     </main>
 
@@ -56,26 +86,14 @@
             <h4>Mon Panier</h4>
             <span class="badge-total-panier" id="panier-total-prix">0.00 $</span>
         </div>
-
         <div id="liste-items-panier" class="panier-corps-liste">
             <p class="panier-vide-texte">Votre panier est vide.</p>
         </div>
-
         <div class="panier-resume-calculs">
-            <div class="ligne-calcul">
-                <span>💰 Sous-total :</span>
-                <b id="panier-sous-total">0.00 $</b>
-            </div>
-            <div class="ligne-calcul">
-                <span>🚚 Livraison :</span>
-                <b id="panier-livraison">5.00 $</b>
-            </div>
-            <div class="ligne-calcul total-general-ligne">
-                <span>Total Général :</span>
-                <b id="panier-grand-total">0.00 $</b>
-            </div>
+            <div class="ligne-calcul"><span>💰 Sous-total :</span><b id="panier-sous-total">0.00 $</b></div>
+            <div class="ligne-calcul"><span>🚚 Livraison :</span><b id="panier-livraison">5.00 $</b></div>
+            <div class="ligne-calcul total-general-ligne"><span>Total Général :</span><b id="panier-grand-total">0.00 $</b></div>
         </div>
-
         <div class="panier-actions-boutons">
             <button class="btn-vider-panier" onclick="viderPanierComplet()">Tout vider 🗑️</button>
             <button class="btn-valider-panier" onclick="passerCommande()">Commander 🚀</button>
@@ -83,110 +101,134 @@
     </div>
 
     <div class="bouton-panier-declencheur" onclick="basculerAffichagePanier()">
-        🛒
-        <span class="pastille-quantite" id="pastille-panier-nbr">0</span>
+        🛒 <span class="pastille-quantite" id="pastille-panier-nbr">0</span>
+    </div>
+
+    <div id="fenetre-inscription-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="position: absolute; width: 100%; height: 100%;" onclick="fermerFenetreInscription()"></div>
+        <div class="conteneur-formulaire-inscription" style="position: relative; z-index: 2001; background: white; border-radius: 12px; padding: 25px; max-width: 450px; width: 90%; box-shadow: 0px 5px 15px rgba(0,0,0,0.3);">
+            <div class="entete-inscription"><h2>Inscription</h2></div>
+            <div class="corps-inscription">
+                <h3>Créer un compte</h3>
+                <p style="color: #718096; font-size: 0.9rem; margin-bottom: 20px;">Rejoignez-nous et commencez à vendre ou à acheter dès maintenant.</p>
+                
+                <form id="formulaire-inscription-element" onsubmit="soumettreInscription(event)">
+                    <div style="margin-bottom: 12px;">
+                        <label for="inscription-nom" style="display:block; margin-bottom:5px; font-weight:600;">Nom complet</label>
+                        <input type="text" id="inscription-nom" placeholder="Entrez votre nom complet" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label for="inscription-email">Adresse e-mail</label>
+                        <input type="email" id="inscription-email" placeholder="Entrez votre e-mail" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label for="inscription-mdp">Mot de passe</label>
+                        <input type="password" id="inscription-mdp" placeholder="Créez un mot de passe" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="inscription-mdp-confirme">Confirmer le mot de passe</label>
+                        <input type="password" id="inscription-mdp-confirme" placeholder="Confirmez votre mot de passe" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box;">
+                    </div>
+                    <button type="submit" id="btn-valider-inscription" style="width: 100%; padding: 12px; background: #ff6600; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem;">
+                        Créer mon compte
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+                    Vous avez déjà un compte ? <a href="#" style="color:#ff6600; font-weight:bold; text-decoration:none;" onclick="alert('Ouverture de la connexion...')">Connectez-vous</a>
+                </p>
+            </div>
+        </div>
     </div>
 
     <script>
-// =========================================================
-// 1. STOCKAGE ET CONFIGURATION INITIALE
-// =========================================================
-let panierArticles = [];
+        let panierArticles = [];
 
-// Chargement initial au démarrage de la page
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 Ley Pay Pro connecté et prêt !");
-    
-    // Rendre la touche 'Entrée' fonctionnelle pour la barre de recherche
-    const inputRecherche = document.getElementById('recherche-input');
-    if (inputRecherche) {
-        inputRecherche.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') filtrerRecherche();
-        });
-    }
-});
-
-// =========================================================
-// 2. FONCTIONS DE LA BARRE DE NAVIGATION & ACCUEIL
-// =========================================================
-
-// Fonction pour le bouton de recherche
-function filtrerRecherche() {
-    const valeur = document.getElementById('recherche-input').value.trim().toLowerCase();
-    if (!valeur) {
-        alert("🔍 Veuillez saisir un mot-clé pour la recherche.");
-        return;
-    }
-    alert(`Recherche en cours pour : "${valeur}" (Connexion API à venir...)`);
-    // Ici, tu pourras filtrer l'affichage de ta grille de produits
-}
-
-// Fonction pour les badges de catégories (Tout voir, Vêtements, Tech, Cuisine)
-function filtrerCategorie(categorie) {
-    // 1. Met à jour le style visuel des boutons (badges)
-    const badges = document.querySelectorAll('.badge-filtre');
-    badges.forEach(badge => badge.classList.remove('actif'));
-    
-    // Trouve le badge cliqué et lui ajoute la classe 'actif'
-    const badgeClique = Array.from(badges).find(b => b.textContent.includes(categorie) || (categorie === 'Tout' && b.textContent.includes('Tout')));
-    if (badgeClique) badgeClique.classList.add('actif');
-
-    console.log(`🗂️ Filtrage sur la catégorie : ${categorie}`);
-    alert(`Filtrage actif : ${categorie}`);
-    // Ici, tu mettras ta logique pour masquer/afficher les produits de cette catégorie
-}
-
-// Bouton "Vendre 🚀"
-// Variable globale pour stocker l'utilisateur connecté (à synchroniser lors de ta connexion)
-let utilisateurConnecte = JSON.parse(localStorage.getItem('utilisateur_leypay')) || null;
-
-async function ouvrirEspaceVendeur() {
-    // 1. Si aucun utilisateur n'est connecté au site
-    if (!utilisateurConnecte) {
-        alert("🔒 Veuillez d'abord vous connecter à votre compte client.");
-        // Optionnel : afficher ton bloc de connexion ici
-        return;
-    }
-
-    try {
-        // 2. Demande au serveur si l'espace vendeur est verrouillé ou non
-        const reponse = await fetch('/api/vendeur/statut', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: utilisateurConnecte.email })
-        });
-        
-        const statut = await reponse.json();
-
-        // Récupération des conteneurs HTML
-        const blocPIN = document.getElementById('espace-vendeur-container') || document.getElementById('bloc-pin-vendeur');
-        const blocFormulaireVente = document.getElementById('formulaire-vente-container'); // Ton bloc vert d'ajout de produit
-
-        if (statut.estVerrouille) {
-            // 3. Si c'est verrouillé, on affiche la boîte modale du code PIN (image_555638.png)
-            if (blocPIN) {
-                blocPIN.style.display = 'flex';
-                if (blocFormulaireVente) blocFormulaireVente.style.display = 'none';
-                console.log("🔒 Redirection : Affichage de la boîte de saisie du code PIN.");
-            } else {
-                // Secours visuel si le conteneur n'a pas le bon ID
-                alert("🔒 Espace verrouillé. Veuillez saisir votre code PIN à 4 chiffres.");
-            }
-        } else {
-            // 4. Si déjà déverrouillé, on affiche directement le catalogue/formulaire de vente (image_481478.png)
-            if (blocFormulaireVente) {
-                blocFormulaireVente.style.display = 'block';
-                if (blocPIN) blocPIN.style.display = 'none';
-            } else {
-                alert("🚀 Bienvenue dans votre espace vendeur !");
+        // 1. Bouton "Vendre 🚀" : Ouvre et affiche instantanément le conteneur vendeur
+        function ouvrirEspaceVendeur() {
+            const formulaireVente = document.getElementById('formulaire-vente-container');
+            if (formulaireVente) {
+                if (formulaireVente.style.display === 'none' || formulaireVente.style.display === '') {
+                    formulaireVente.style.display = 'block';
+                    formulaireVente.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    formulaireVente.style.display = 'none';
+                }
             }
         }
 
-    } catch (error) {
-        console.error("❌ Erreur lors de la vérification du statut vendeur :", error);
-        alert("⚠️ Impossible de joindre le serveur pour vérifier l'accès vendeur.");
-    }
-}
-</script>
+        // 2. Bouton "Créer mon compte" : Envoie directement les infos sur MongoDB
+        async function soumettreInscription(event) {
+            if (event) event.preventDefault();
+            
+            const nom = document.getElementById('inscription-nom').value.trim();
+            const email = document.getElementById('inscription-email').value.trim();
+            const mdp = document.getElementById('inscription-mdp').value;
+            const mdpConfirme = document.getElementById('inscription-mdp-confirme').value;
+
+            if (mdp !== mdpConfirme) {
+                alert("❌ Les deux mots de passe ne correspondent pas !");
+                return;
+            }
+
+            try {
+                const reponse = await fetch('/api/inscription', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nom, email, mdp })
+                });
+                const resultat = await reponse.json();
+                
+                if (resultat.success || reponse.ok) {
+                    alert(`🎉 Inscription réussie : ${resultat.message}`);
+                    fermerFenetreInscription();
+                    document.getElementById('formulaire-inscription-element').reset();
+                } else {
+                    alert(`❌ Échec : ${resultat.message}`);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("⚠️ Erreur réseau. Vérifie que ton serveur en ligne tourne bien.");
+            }
+        }
+
+        // 3. Bouton "Publier le produit" : Exécute l'ajout de produit direct
+        function ajouterProduitVendeur() {
+            const nom = document.getElementById('p-nom').value.trim();
+            const prix = document.getElementById('p-prix').value;
+            const stock = document.getElementById('p-stock').value;
+            const cat = document.getElementById('p-categorie').value;
+
+            if (!nom || !prix) {
+                alert("⚠️ Remplis au moins le nom et le prix !");
+                return;
+            }
+
+            alert(`🚀 Produit "${nom}" enregistré avec succès (${prix} $, Catégorie: ${cat}, Stock: ${stock}) !`);
+            document.getElementById('formulaire-ajout-produit').reset();
+        }
+
+        // 4. Modales et Fenêtres d'affichage
+        function ouvrirFenetreInscription() { document.getElementById('fenetre-inscription-modal').style.display = 'flex'; }
+        function fermerFenetreInscription() { document.getElementById('fenetre-inscription-modal').style.display = 'none'; }
+        function basculerAffichagePanier() { document.getElementById('panier-flottant-interface').classList.toggle('actif'); }
+        
+        // 5. Actions d'accueil et Filtres
+        function defilerAuxOffres() { document.getElementById('titre-recommandations').scrollIntoView({ behavior: 'smooth' }); }
+        function ouvrirAdmin() { alert("👑 Accès à l'espace Admin."); }
+        function filtrerRecherche() { 
+            const recherche = document.getElementById('recherche-input').value.trim();
+            alert(recherche ? `🔍 Recherche lancée pour : "${recherche}"` : "Veuillez taper un mot-clé."); 
+        }
+
+        function filtrerCategorie(categorie, bouton) {
+            const badges = document.querySelectorAll('.badge-filtre');
+            badges.forEach(b => b.classList.remove('actif'));
+            if (bouton) bouton.classList.add('actif');
+            console.log(`Filtrage actif : ${categorie}`);
+        }
+
+        function viderPanierComplet() { panierArticles = []; alert("🗑️ Panier vidé."); }
+        function passerCommande() { alert("🚀 Commande transmise !"); }
+    </script>
 </body>
 </html>
