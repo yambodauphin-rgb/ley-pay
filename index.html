@@ -78,12 +78,20 @@
                     </select>
                 </div>
             </div>
+
+            <div style="margin-bottom: 25px; background: #f7fafc; padding: 20px; border-radius: 8px; border: 1px dashed #cbd5e0;">
+                <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Photos du produit (3 photos max)</label>
+                <input type="file" id="p-photos" accept="image/*" multiple onchange="verifierNombrePhotos(this)" style="display: block; margin-bottom: 10px;">
+                <small style="color: #718096; display: block;">Sélectionnez jusqu'à 3 images nettes pour mettre en valeur votre article.</small>
+                
+                <div id="liste-aperçu-photos" style="display: flex; gap: 10px; margin-top: 15px;"></div>
+            </div>
+
             <button type="submit" style="background: #ff6600; color: white; border: none; padding: 14px 40px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 6px rgba(255,102,0,0.2);">
                 Publier le produit sur le marché
             </button>
         </form>
     </div>
-
     <div id="panier-flottant-interface" class="fenetre-panier-flottante">
         <div class="panier-entete">
             <h4>Mon Panier</h4>
@@ -191,13 +199,88 @@
         }
 
         // --- AJOUT PRODUIT ---
-        function ajouterProduitVendeur() {
-            const nom = document.getElementById('p-nom').value.trim();
-            alert(`🚀 Produit "${nom}" publié sur le marché !`);
+       // 1. Vérification des 3 photos maximum + affichage de l'aperçu miniature
+function verifierNombrePhotos(input) {
+    const conteneurAperçu = document.getElementById('liste-aperçu-photos');
+    conteneurAperçu.innerHTML = ""; // Vide l'aperçu précédent
+
+    if (input.files.length > 3) {
+        alert("❌ Vous ne pouvez pas ajouter plus de 3 photos.");
+        input.value = ""; // Réinitialise le choix
+        return;
+    }
+
+    // Génère l'aperçu visuel des images
+    Array.from(input.files).forEach(fichier => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = "80px";
+            img.style.height = "80px";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "6px";
+            img.style.border = "1px solid #cbd5e0";
+            conteneurAperçu.appendChild(img);
+        }
+        reader.readAsDataURL(fichier);
+    });
+}
+
+// 2. Envoi réel du produit et des images vers ton serveur Node/MongoDB
+async function ajouterProduitVendeur() {
+    const nom = document.getElementById('p-nom').value.trim();
+    const prix = document.getElementById('p-prix').value;
+    const stock = document.getElementById('p-stock').value;
+    const categorie = document.getElementById('p-categorie').value;
+    const photosInput = document.getElementById('p-photos');
+
+    if (!nom || !prix) {
+        alert("⚠️ Le nom et le prix sont obligatoires !");
+        return;
+    }
+
+    // Utilisation de FormData pour empaqueter les textes ET les fichiers multimédias
+    const formData = new FormData();
+    formData.append('nom', nom);
+    formData.append('prix', prix);
+    formData.append('stock', stock);
+    formData.append('categorie', categorie);
+
+    // Ajoute les photos sélectionnées (max 3) dans le FormData
+    for (let i = 0; i < photosInput.files.length; i++) {
+        formData.append('photos', photosInput.files[i]);
+    }
+
+    try {
+        // Envoi vers ta route backend de création de produit
+        const reponse = await fetch('/api/produits/ajouter', {
+            method: 'POST',
+            body: formData // Pas de header Content-Type ici, le navigateur le gère automatiquement avec FormData
+        });
+
+        const resultat = await reponse.json();
+
+        if (resultat.success || reponse.ok) {
+            alert(`🚀 Produit "${nom}" mis en vente avec succès !`);
+            
+            // Nettoyage complet de l'interface
             document.getElementById('formulaire-ajout-produit').reset();
-            retourAccueil(); // Optionnel : retourne à l'accueil pour voir les résultats
+            document.getElementById('liste-aperçu-photos').innerHTML = "";
+            
+            retourAccueil(); // Redirige vers la grille d'accueil
+            
+            // Optionnel : recharger la liste des produits si tu as une fonction dédiée
+            // rafraichirCatalogue(); 
+        } else {
+            alert(`❌ Erreur lors de la mise en vente : ${resultat.message}`);
         }
 
+    } catch (error) {
+        console.error("Erreur d'envoi du produit :", error);
+        alert("⚠️ Impossible de joindre le serveur pour publier l'objet.");
+    }
+}
         // Fonctions d'interface secondaires
         function ouvrirFenetreInscription() { document.getElementById('fenetre-inscription-modal').style.display = 'flex'; }
         function fermerFenetreInscription() { document.getElementById('fenetre-inscription-modal').style.display = 'none'; }
