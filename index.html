@@ -9,77 +9,80 @@
 <body>
 
     <nav class="barre-nav-leypay">
-        <div class="logo-espace">
+        <div class="logo-espace" onclick="retourAccueil()" style="cursor: pointer;">
             <span class="logo-principal">Ley Pay</span>
             <span class="logo-badge">Business</span>
         </div>
         
-        <div class="zone-recherche">
+        <div class="zone-recherche" id="nav-zone-recherche">
             <input type="text" id="recherche-input" placeholder="Rechercher un produit, une marque, un habit...">
             <button class="btn-recherche" onclick="filtrerRecherche()">🔍</button>
         </div>
 
         <div class="liens-navigation">
-            <a href="#" class="lien-nav actif">Accueil</a>
+            <a href="#" class="lien-nav actif" id="lien-accueil" onclick="retourAccueil()">Accueil</a>
             <a href="#" class="lien-nav" onclick="ouvrirEspaceVendeur()">Vendre 🚀</a>
             <a href="#" class="lien-nav" onclick="ouvrirAdmin()">Admin 👑</a>
             <button class="btn-connexion-nav" onclick="ouvrirFenetreInscription()">Se connecter / S'inscrire</button>
         </div>
     </nav>
 
-    <header class="section-hero-leypay">
-        <div class="hero-contenu">
-            <h1>Kitchen essentials & Fashion trends</h1>
-            <p>Découvrez nos nouveautés exclusives adaptées à votre quotidien sur Ley Pay.</p>
-            <button class="btn-hero-action" onclick="defilerAuxOffres()">Voir les offres</button>
-        </div>
-    </header>
+    <div id="section-accueil-complete">
+        <header class="section-hero-leypay">
+            <div class="hero-contenu">
+                <h1>Kitchen essentials & Fashion trends</h1>
+                <p>Découvrez nos nouveautés exclusives adaptées à votre quotidien sur Ley Pay.</p>
+                <button class="btn-hero-action" onclick="defilerAuxOffres()">Voir les offres</button>
+            </div>
+        </header>
 
-    <main class="conteneur-principal-marche">
+        <main class="conteneur-principal-marche">
+            <div class="barre-filtres-badges">
+                <button class="badge-filtre actif" onclick="filtrerCategorie('Tout', this)">Tout voir</button>
+                <button class="badge-filtre" onclick="filtrerCategorie('Mode', this)">Vêtements</button>
+                <button class="badge-filtre" onclick="filtrerCategorie('Électronique', this)">Tech</button>
+                <button class="badge-filtre" onclick="filtrerCategorie('Maison', this)">Cuisine</button>
+            </div>
+
+            <h2 id="titre-recommandations" class="titre-section">Recommandations personnalisées</h2>
+            <div id="grille-produits-marketplace" class="grille-produits-flux"></div>
+        </main>
+    </div>
+
+    <div id="formulaire-vente-container" style="display: none; max-width: 1200px; margin: 30px auto; padding: 25px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f7fafc; padding-bottom: 15px;">
+            <h3 style="margin: 0; color: #1a202c; font-size: 1.6rem;">🚀 Votre Tableau de Bord Vendeur</h3>
+            <button onclick="retourAccueil()" style="background: #edf2f7; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #4a5568;">← Quitter l'espace</button>
+        </div>
         
-        <div class="barre-filtres-badges">
-            <button class="badge-filtre actif" onclick="filtrerCategorie('Tout', this)">Tout voir</button>
-            <button class="badge-filtre" onclick="filtrerCategorie('Mode', this)">Vêtements</button>
-            <button class="badge-filtre" onclick="filtrerCategorie('Électronique', this)">Tech</button>
-            <button class="badge-filtre" onclick="filtrerCategorie('Maison', this)">Cuisine</button>
-        </div>
-
-        <div id="formulaire-vente-container" style="display: none; background: white; padding: 25px; border-radius: 12px; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h3 style="margin-top: 0; color: #1a202c; font-size: 1.4rem; margin-bottom: 20px;">🚀 Ajouter un produit sur Ley Pay</h3>
-            
-            <form id="formulaire-ajout-produit" onsubmit="event.preventDefault(); ajouterProduitVendeur();">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                    <div>
-                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Nom du produit</label>
-                        <input type="text" id="p-nom" placeholder="Ex: Veste en cuir" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Prix ($)</label>
-                        <input type="number" id="p-prix" step="0.01" placeholder="Ex: 45.00" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Stock disponible</label>
-                        <input type="number" id="p-stock" value="1" min="1" required style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:5px; font-weight:600; color:#4a5568;">Catégorie</label>
-                        <select id="p-categorie" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
-                            <option value="Mode">Vêtements / Mode</option>
-                            <option value="Électronique">Tech / Électronique</option>
-                            <option value="Maison">Cuisine / Maison</option>
-                        </select>
-                    </div>
+        <form id="formulaire-ajout-produit" onsubmit="event.preventDefault(); ajouterProduitVendeur();">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px;">
+                <div>
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Nom du produit</label>
+                    <input type="text" id="p-nom" placeholder="Ex: Veste en cuir" required style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
                 </div>
-                <button type="submit" style="background: #ff6600; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
-                    Publier le produit en ligne
-                </button>
-            </form>
-        </div>
-
-        <h2 id="titre-recommandations" class="titre-section">Recommandations personnalisées</h2>
-        <div id="grille-produits-marketplace" class="grille-produits-flux"></div>
-
-    </main>
+                <div>
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Prix de vente ($)</label>
+                    <input type="number" id="p-prix" step="0.01" placeholder="Ex: 45.00" required style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Stock initial</label>
+                    <input type="number" id="p-stock" value="1" min="1" required style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#4a5568;">Catégorie de produit</label>
+                    <select id="p-categorie" style="width:100%; padding:12px; border:1px solid #cbd5e0; border-radius:6px; box-sizing: border-box; background: white;">
+                        <option value="Mode">Vêtements / Mode</option>
+                        <option value="Électronique">Tech / Électronique</option>
+                        <option value="Maison">Cuisine / Maison</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" style="background: #ff6600; color: white; border: none; padding: 14px 40px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 6px rgba(255,102,0,0.2);">
+                Publier le produit sur le marché
+            </button>
+        </form>
+    </div>
 
     <div id="panier-flottant-interface" class="fenetre-panier-flottante">
         <div class="panier-entete">
@@ -100,7 +103,7 @@
         </div>
     </div>
 
-    <div class="bouton-panier-declencheur" onclick="basculerAffichagePanier()">
+    <div id="btn-panier-global" class="bouton-panier-declencheur" onclick="basculerAffichagePanier()">
         🛒 <span class="pastille-quantite" id="pastille-panier-nbr">0</span>
     </div>
 
@@ -110,8 +113,6 @@
             <div class="entete-inscription"><h2>Inscription</h2></div>
             <div class="corps-inscription">
                 <h3>Créer un compte</h3>
-                <p style="color: #718096; font-size: 0.9rem; margin-bottom: 20px;">Rejoignez-nous et commencez à vendre ou à acheter dès maintenant.</p>
-                
                 <form id="formulaire-inscription-element" onsubmit="soumettreInscription(event)">
                     <div style="margin-bottom: 12px;">
                         <label for="inscription-nom" style="display:block; margin-bottom:5px; font-weight:600;">Nom complet</label>
@@ -133,9 +134,6 @@
                         Créer mon compte
                     </button>
                 </form>
-                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
-                    Vous avez déjà un compte ? <a href="#" style="color:#ff6600; font-weight:bold; text-decoration:none;" onclick="alert('Ouverture de la connexion...')">Connectez-vous</a>
-                </p>
             </div>
         </div>
     </div>
@@ -143,32 +141,40 @@
     <script>
         let panierArticles = [];
 
-        // 1. Bouton "Vendre 🚀" : Ouvre et affiche instantanément le conteneur vendeur
+        // 🚀 ACTIVER L'ESPACE VENDEUR (Masque l'accueil et la recherche)
         function ouvrirEspaceVendeur() {
-            const formulaireVente = document.getElementById('formulaire-vente-container');
-            if (formulaireVente) {
-                if (formulaireVente.style.display === 'none' || formulaireVente.style.display === '') {
-                    formulaireVente.style.display = 'block';
-                    formulaireVente.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    formulaireVente.style.display = 'none';
-                }
-            }
+            document.getElementById('section-accueil-complete').style.display = 'none';
+            document.getElementById('nav-zone-recherche').style.display = 'none';
+            document.getElementById('btn-panier-global').style.display = 'none';
+            document.getElementById('panier-flottant-interface').classList.remove('actif');
+            
+            document.getElementById('formulaire-vente-container').style.display = 'block';
+            document.getElementById('lien-accueil').classList.remove('actif');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 2. Bouton "Créer mon compte" : Envoie directement les infos sur MongoDB
+        // 🏠 RETOURNER À L'ACCUEIL (Masque l'espace vendeur)
+        function retourAccueil() {
+            document.getElementById('formulaire-vente-container').style.display = 'none';
+            
+            document.getElementById('section-accueil-complete').style.display = 'block';
+            document.getElementById('nav-zone-recherche').style.display = 'block';
+            document.getElementById('btn-panier-global').style.display = 'flex';
+            document.getElementById('lien-accueil').classList.add('actif');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- ENVOI DE L'INSCRIPTION ---
         async function soumettreInscription(event) {
             if (event) event.preventDefault();
-            
             const nom = document.getElementById('inscription-nom').value.trim();
             const email = document.getElementById('inscription-email').value.trim();
             const mdp = document.getElementById('inscription-mdp').value;
             const mdpConfirme = document.getElementById('inscription-mdp-confirme').value;
 
-            if (mdp !== mdpConfirme) {
-                alert("❌ Les deux mots de passe ne correspondent pas !");
-                return;
-            }
+            if (mdp !== mdpConfirme) { alert("❌ Les mots de passe ne correspondent pas !"); return; }
 
             try {
                 const reponse = await fetch('/api/inscription', {
@@ -177,58 +183,34 @@
                     body: JSON.stringify({ nom, email, mdp })
                 });
                 const resultat = await reponse.json();
-                
-                if (resultat.success || reponse.ok) {
-                    alert(`🎉 Inscription réussie : ${resultat.message}`);
-                    fermerFenetreInscription();
-                    document.getElementById('formulaire-inscription-element').reset();
-                } else {
-                    alert(`❌ Échec : ${resultat.message}`);
-                }
+                alert(`🎉 ${resultat.message}`);
+                fermerFenetreInscription();
             } catch (e) {
-                console.error(e);
-                alert("⚠️ Erreur réseau. Vérifie que ton serveur en ligne tourne bien.");
+                alert("⚠️ Erreur réseau serveur.");
             }
         }
 
-        // 3. Bouton "Publier le produit" : Exécute l'ajout de produit direct
+        // --- AJOUT PRODUIT ---
         function ajouterProduitVendeur() {
             const nom = document.getElementById('p-nom').value.trim();
-            const prix = document.getElementById('p-prix').value;
-            const stock = document.getElementById('p-stock').value;
-            const cat = document.getElementById('p-categorie').value;
-
-            if (!nom || !prix) {
-                alert("⚠️ Remplis au moins le nom et le prix !");
-                return;
-            }
-
-            alert(`🚀 Produit "${nom}" enregistré avec succès (${prix} $, Catégorie: ${cat}, Stock: ${stock}) !`);
+            alert(`🚀 Produit "${nom}" publié sur le marché !`);
             document.getElementById('formulaire-ajout-produit').reset();
+            retourAccueil(); // Optionnel : retourne à l'accueil pour voir les résultats
         }
 
-        // 4. Modales et Fenêtres d'affichage
+        // Fonctions d'interface secondaires
         function ouvrirFenetreInscription() { document.getElementById('fenetre-inscription-modal').style.display = 'flex'; }
         function fermerFenetreInscription() { document.getElementById('fenetre-inscription-modal').style.display = 'none'; }
         function basculerAffichagePanier() { document.getElementById('panier-flottant-interface').classList.toggle('actif'); }
-        
-        // 5. Actions d'accueil et Filtres
         function defilerAuxOffres() { document.getElementById('titre-recommandations').scrollIntoView({ behavior: 'smooth' }); }
         function ouvrirAdmin() { alert("👑 Accès à l'espace Admin."); }
-        function filtrerRecherche() { 
-            const recherche = document.getElementById('recherche-input').value.trim();
-            alert(recherche ? `🔍 Recherche lancée pour : "${recherche}"` : "Veuillez taper un mot-clé."); 
+        function filtrerRecherche() { alert("Recherche lancée."); }
+        function filtrerCategorie(cat, b) { 
+            document.querySelectorAll('.badge-filtre').forEach(btn => btn.classList.remove('actif'));
+            if(b) b.classList.add('actif');
         }
-
-        function filtrerCategorie(categorie, bouton) {
-            const badges = document.querySelectorAll('.badge-filtre');
-            badges.forEach(b => b.classList.remove('actif'));
-            if (bouton) bouton.classList.add('actif');
-            console.log(`Filtrage actif : ${categorie}`);
-        }
-
-        function viderPanierComplet() { panierArticles = []; alert("🗑️ Panier vidé."); }
-        function passerCommande() { alert("🚀 Commande transmise !"); }
+        function viderPanierComplet() { panierArticles = []; }
+        function passerCommande() { alert("Commande validée !"); }
     </script>
 </body>
 </html>
